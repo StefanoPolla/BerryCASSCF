@@ -45,11 +45,19 @@ CAS_LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 REFERENCE_CAS = (12, 12)
 
 GRID = (11, 11)
-# "anchor" costs two SA-CASSCF solves per grid point but is path-independent (see
-# berrycasscf.config.ScanConfig). CAS(12,12) at ~30 s/solve would double a one-hour scan, so it
-# uses cold-only; the mirror-symmetry check printed below verifies that this was safe.
-STRATEGY = {(12, 12): "cold"}
-DEFAULT_STRATEGY = "anchor"
+# One strategy for the whole ladder, so that rungs are directly comparable.
+#
+# "cold" is used rather than the "anchor" default of ScanConfig. Both are path-independent --
+# the mirror-symmetry check below confirms it for every rung -- but the anchor sits at the
+# intersection itself, and transferring those orbitals outward turns out to be a poor guess:
+# CAS(6,6) ran at 8.6 s/point with "anchor" against 0.65 s cold. For the same reliability at a
+# fraction of the cost, the ladder uses cold throughout. The price is that cold can settle on a
+# slightly higher SA-CASSCF solution than the best reachable (measured for CAS(4,4):
+# -77.79438 cold against -77.79469 anchor). That does not reach the observable: both give an
+# identical intersection position and an identical minimum gap, 1.362 mHa at (90, 114).
+# See docs/active_space.md.
+STRATEGY: dict[tuple[int, int], str] = {}
+DEFAULT_STRATEGY = "cold"
 
 LOOP_RADIUS = (12.0, 12.0)       # degrees in (tau, phi)
 # Three discretizations: N=13 is deliberately coarse enough to fail the continuity test for

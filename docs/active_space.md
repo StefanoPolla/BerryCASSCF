@@ -60,11 +60,34 @@ For CAS(4,4)/6-31G\* on an 11×11 grid:
 So SA-CASSCF here has **more than one stationary point**, and a warm sweep reaches the lower one
 only from some directions. `anchor` (now the default in `ScanConfig`) solves once, cold, at the
 centre of the region, then gives every grid point the same two path-independent guesses: a cold
-start and that one anchor transferred in. Same cost as `best`, without the path dependence.
+start and that one anchor transferred in.
+
+**The ladder itself uses `cold`, not `anchor`.** Both are path-independent, but this region's
+anchor sits at the intersection, and transferring those orbitals outward is a poor guess:
+CAS(6,6) ran at **8.6 s/point** with `anchor` against **0.65 s** cold, which would have put the
+full ladder beyond the compute budget. Cold's cost is that it can settle on a slightly higher
+SA-CASSCF solution than the best reachable — for CAS(4,4), −77.79438 against −77.79469. That
+difference does not reach the observable: on the same grid the two strategies give an identical
+intersection position *and* an identical minimum gap, **1.362 mHa at (90, 114)** for both. Using
+one strategy for every rung also keeps the rungs directly comparable.
 
 **Mirror asymmetry is reported for every scan** and is treated as a first-class reliability
 criterion: a map that fails the symmetry test is path-dependent and not trustworthy, whatever
 number it reports.
+
+### The formaldimine results are unaffected
+
+Since this defect was found after `docs/results.md` was written, the formaldimine headline scan
+was recomputed with `anchor` and compared against the committed warm-started one:
+
+| | min gap | at (alpha, phi) | mean SA energy |
+|---|---|---|---|
+| committed (warm) | 0.000882 Ha | (130.000, 89.900) | −92.74471004 |
+| `anchor` | 0.000881 Ha | (130.000, 89.900) | −92.74471004 |
+
+Maximum gap difference anywhere on the 25x25 grid: **2.5e-06 Ha**. Same intersection position,
+same energies. Drift needs a large enough active space to have somewhere to drift *to*;
+CAS(4,4) on formaldimine does not. All conclusions in `docs/results.md` stand.
 
 ## Criteria
 
@@ -77,6 +100,15 @@ space.
 **SA comparator** succeeds if its gap minimum is (a) inside `E_x`, (b) close to the reference
 active space's minimum, (c) low enough to read as an intersection, and (d) on a
 mirror-symmetric map.
+
+## The control loops really do enclose nothing
+
+The scan region covers only `tau` in [70, 110], so the controls at `tau = 60` and `120` sit
+outside it. Sampling the SA-CASSCF(2,2) gap on and inside each control loop (centre, plus two
+rings of 8 points at radius 6 deg and 12 deg) gives a minimum of **81.8 mHa** for both, against
+**0.177 mHa** at the intersection: a factor of 460. Nothing is enclosed.
+
+Both controls return 81.80 mHa at mirror-image points, which is the symmetry check again.
 
 ## A free end-to-end check
 

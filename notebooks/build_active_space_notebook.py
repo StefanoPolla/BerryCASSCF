@@ -105,17 +105,33 @@ the mirror symmetry, and the residual asymmetry is reported for each.
 """)
 
 code(r"""
-print(f"{'active space':>14}   {'min gap (mHa)':>13}   {'at (tau, phi)':>18}   {'mirror asymmetry':>17}")
-print("-" * 72)
+ref = scans.get(REFERENCE_CAS)
+ref_pt = ref.min_gap_point()[:2] if ref is not None else None
+
+def gap_at(r, tau, phi):
+    # gap this active space predicts at a given point, in mHa
+    i = int(np.argmin(np.abs(r.alphas - tau)))
+    j = int(np.argmin(np.abs(r.phis - phi)))
+    return r.gap[i, j] * 1e3
+
+print(f"{'active space':>13} {'own min (mHa)':>13} {'at (tau, phi)':>17} "
+      f"{'err vs ref':>11} {'gap at ref CI':>14} {'mirror asym':>13}")
+print("-" * 89)
 for cas in LADDER:
     r = scans.get(cas)
     if r is None:
-        print(f"{'CAS%s' % (cas,):>14}   {'(not run)':>13}")
+        print(f"{'CAS%s' % (cas,):>13} {'(not run)':>13}")
         continue
     t, p, g = r.min_gap_point()
-    print(f"{'CAS%s' % (cas,):>14}   {g*1e3:13.3f}   {f'({t:.1f}, {p:.1f})':>18}"
-          f"   {mirror_asymmetry(r):17.2e}")
-print("\nAsymmetries at the 1e-3 mHa level or below mean the scan is path-independent.")
+    err = "  -" if ref_pt is None else f"{np.hypot(t-ref_pt[0], p-ref_pt[1]):9.1f} d"
+    atref = "  -" if ref_pt is None else f"{gap_at(r, *ref_pt):14.3f}"
+    print(f"{'CAS%s' % (cas,):>13} {g*1e3:13.3f} {f'({t:.1f}, {p:.1f})':>17} {err} {atref} "
+          f"{mirror_asymmetry(r):13.2e}")
+print("\nMirror asymmetry at the 1e-3 mHa level or below means the scan is path-independent.")
+print("Grid spacing is 4 deg, so a position error of 4 deg is one grid step.")
+print("'gap at ref CI' is the sharper measure: what each active space thinks the gap is at the")
+print("position the reference puts the intersection. A large value there means that active")
+print("space does not see an intersection where there is one.")
 """)
 
 md(r"""
@@ -285,6 +301,11 @@ md(r"""
 ## 6. Verdict: the smallest active space each method needs
 
 Two separate questions, judged with the criteria used throughout this project.
+
+The controls sit outside the scanned region, so they were checked separately: sampling the
+SA-CASSCF(2,2) gap on and inside each (centre plus rings of 8 points at radius 6&deg; and
+12&deg;) gives a minimum of **81.8 mHa** for both, against **0.177 mHa** at the intersection.
+Nothing is enclosed.
 
 **Berry phase.** For each active space, the smallest `N` at which the run passes every check
 (all points converged, continuity held, endpoint returned to the same state, both estimators

@@ -117,3 +117,32 @@ def test_mirror_symmetry_is_reproduced_by_a_cold_started_casscf():
         mc.kernel()
         energies.append(np.asarray(mc.e_states[:2]))
     assert np.allclose(energies[0], energies[1], atol=1e-9)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("strategy", ["cold", "anchor"])
+def test_gap_scan_is_path_independent(strategy):
+    """Regression test for active-space drift in the scan.
+
+    A warm-started sweep made the gap map depend on the route taken to each geometry, so
+    mirror-image points disagreed by up to 9.8 mHa. The path-independent strategies must
+    reproduce the geometric mirror symmetry to numerical precision.
+    """
+    from berrycasscf.config import CasConfig, ScanConfig
+    from berrycasscf.geometry import Loop
+    from berrycasscf.scan import scan_gap
+
+    # A small odd grid symmetric about tau = 90, so mirror pairs are actually sampled.
+    region = Loop("test", centre=(90.0, 110.0), radius=(10.0, 8.0))
+    res = scan_gap(
+        region,
+        cas=CasConfig(basis="sto-3g", ncas=2, nelecas=2),
+        scan=ScanConfig(n_alpha=5, n_phi=3, margin=0.0, strategy=strategy),
+        geom_fn=ethylene_geom,
+    )
+    gap = res.gap
+    assert np.isfinite(gap).all()
+    assert np.allclose(gap, gap[::-1, :], atol=1e-8), (
+        f"strategy={strategy} produced a path-dependent map: "
+        f"max asymmetry {np.abs(gap - gap[::-1, :]).max():.2e} Ha"
+    )
