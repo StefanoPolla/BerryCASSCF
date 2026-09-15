@@ -176,3 +176,70 @@ submission rather than executed locally. Two jobs, ~4–11 h and ~1–3 h at CAS
 CAS(2,2) Berry phase is right by construction or by luck — a direct check would be to compute
 the overlap between the CAS(2,2) and CAS(6,6) S0 wavefunctions around the loop, which needs a
 generalization of the overlap code to two different active-space definitions.
+
+---
+
+## 2026-09-16 — Active-space convergence study (ethylene)
+
+**Question.** Is there a system for which the workflows need larger active spaces than
+formaldimine's CAS(2,2) (Berry) and CAS(4,4) (state-averaged comparator)?
+
+**Fulvene was tried first and abandoned.** Its S1/S0 intersection is not reachable with the
+rigid two-coordinate model in `berrycasscf/fulvene.py`: scanning the whole (exocyclic bond
+length, methylene torsion) plane at SA-CASSCF(6,6)/STO-3G gives a gap that never falls below
+59 mHa and decreases monotonically toward the corner, and extending the stretch to 2.5 A at full
+twist does not close it either. The real fulvene intersection needs ring deformation, which that
+model freezes. Recorded rather than forced; the fulvene module and its cluster jobs are unchanged
+and still valid for the two-stage scan-then-loop protocol in `docs/followup.md`.
+
+**Ethylene** was used instead: the twisted-pyramidalized S1/S0 intersection, two rigid
+coordinates (CH2 torsion `tau`, umbrella pyramidalization `phi`). **6-31G\* is required** —
+STO-3G has no intersection along these coordinates at all (gap bottoms out near 10 mHa), because
+twisted-ethylene S1 is the zwitterionic V state. CAS(12,12) is the full valence space and serves
+as the in-basis reference.
+
+**A real defect in the scan was found and fixed.** Ethylene's mirror symmetry (`tau` and
+`180 - tau` geometries are exactly isometric) means a correct gap map must be symmetric about
+`tau = 90`. Warm-started CAS(8,8) returned **19.1** and **29.4 mHa** at two mirror-image
+geometries, against **26.9 mHa** cold: the active space drifts along the scan path, so the answer
+depended on the route taken to a geometry. SA-CASSCF turns out to have more than one stationary
+point here, and a warm sweep reaches the lower one only from some directions. Added a
+path-independent `anchor` strategy (now the `ScanConfig` default) and made mirror asymmetry a
+reported reliability criterion. **The formaldimine results are unaffected** — recomputing its
+CAS(4,4) scan reproduces the committed one to 2.5e-06 Ha across the whole grid; drift needs an
+active space large enough to have somewhere to drift to.
+
+**Result — the intersection position across the ladder** (reference CAS(12,12): `phi` = 110.01):
+
+| CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|---|
+| `phi` | 110.02 | 114.85 | 102.09 | 103.11 | 109.10 | 110.01 |
+| error | +0.01 | +4.84 | −7.92 | −6.90 | −0.91 | ref |
+
+Convergence is **not monotonic**: the minimal pi space is essentially exact, the intermediate
+spaces are displaced by 5–8 degrees in both directions, and the reference is recovered only from
+CAS(10,10). Every rung passes the mirror-symmetry test (1e-11 to 1e-5 mHa), so this is the
+physics of truncation, not noise.
+
+**Answer.** For the comparator, **yes** — but the useful statement distinguishes two questions.
+The smallest active space that *gets the right answer* is CAS(2,2); the smallest that could be
+*trusted without already knowing the answer* is CAS(10,10), since only there does enlarging the
+space stop moving the result — which is the test anyone would actually apply. Formaldimine fails
+the opposite way (CAS(2,2) qualitatively wrong, CAS(4,4) already converged), which is the
+argument for checking convergence per system rather than reusing an active-space recipe.
+
+For the **Berry phase, no**: CAS(2,2) suffices on both systems, and it is insensitive to the
+8-degree misplacement that defeats the comparator, because a loop of radius 12 degrees encloses
+the intersection either way. Its cost with active space is *discretization* — min adjacent
+overlap on the CI-enclosing loop at N=13 falls from 0.895 at CAS(2,2) to ~0.67 at CAS(8,8), so
+the larger spaces fail the continuity test at N=13 and pass at N=21. That failure is detected and
+reported, never silently absorbed.
+
+**Deliverables.** `berrycasscf/ethylene.py`, `examples/run_active_space_study.py`,
+`notebooks/active_space.ipynb`, `docs/active_space.md`, 28 new tests including a regression test
+for the path-independence fix.
+
+**Next step.** A system whose S1 is genuinely doubly excited (a polyene 2Ag state, e.g.
+butadiene or hexatriene) would test whether a case exists where *no* small active space is
+accurate, as opposed to ethylene's accidental-but-unverifiable CAS(2,2). That needs a CI search
+in a new coordinate plane and is cluster work.

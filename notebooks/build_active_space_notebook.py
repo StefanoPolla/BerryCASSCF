@@ -350,6 +350,7 @@ is path-dependent and not trustworthy whatever number it reports.
 
 code(r"""
 WANT = {"E_x": "non-trivial (pi)", "E_1": "trivial (0)", "E_2": "trivial (0)"}
+TOL_DEG = 2.0          # half a grid step: what counts as "the same position"
 
 def berry_verdict(cas):
     # Smallest N at which all three loops pass every check with the right phase.
@@ -369,40 +370,60 @@ def berry_verdict(cas):
             return n
     return False
 
-def scan_verdict(cas, tol_deg=8.0, tol_gap=8.0, tol_asym=1e-2):
-    r, ref = scans.get(cas), scans.get(REFERENCE_CAS)
-    if r is None or ref is None:
-        return None
-    t, p, g = r.min_gap_point()
-    tr, pr, _ = ref.min_gap_point()
-    checks = {
-        "inside E_x": bool((t - tr) ** 2 + (p - pr) ** 2 <= LOOP_RADIUS ** 2),
-        "near reference": abs(t - tr) <= tol_deg and abs(p - pr) <= tol_deg,
-        "gap closes": g * 1e3 < tol_gap,
-        "mirror-symmetric": mirror_asymmetry(r) < tol_asym,
-    }
-    return checks
+positions = {c: refined_phi(scans[c]) for c in LADDER if scans.get(c) is not None}
+ref_phi = positions.get(REFERENCE_CAS)
 
-LOOP_RADIUS = 12.0
-
-print(f"{'active space':>13}  {'Berry: smallest working N':>26}   {'SA comparator':>14}   detail")
-print("-" * 96)
-for cas in LADDER:
+print(f"{'active space':>13} {'Berry: min N':>13} | {'phi':>8} {'err vs ref':>11} "
+      f"{'accurate':>9} {'stable':>8}")
+print("-" * 72)
+for k, cas in enumerate(LADDER):
     b = berry_verdict(cas)
-    sv = scan_verdict(cas)
-    btxt = "n/a" if b is None else (f"N = {b}" if b else "fails at every N tested")
-    if sv is None:
-        stxt, detail = "n/a", ""
+    btxt = "n/a" if b is None else (f"N = {b}" if b else "fails at all N")
+    if cas not in positions:
+        print(f"{'CAS%s' % (cas,):>13} {btxt:>13} | {'(scan pending)':>8}")
+        continue
+    phi = positions[cas]
+    if ref_phi is None:
+        err_txt, acc_txt = f"{'-':>11}", f"{'-':>9}"
     else:
-        stxt = "correct" if all(sv.values()) else "WRONG"
-        detail = ", ".join(k for k, v in sv.items() if not v) or "all checks pass"
-    print(f"{'CAS%s' % (cas,):>13}  {btxt:>26}   {stxt:>14}   {detail}")
+        err = phi - ref_phi
+        err_txt = f"{err:+11.2f}"
+        acc_txt = f"{('yes' if abs(err) <= TOL_DEG else 'NO'):>9}"
+    # "stable" = every LARGER active space tested agrees with this one, i.e. enlarging the
+    # space does not move the answer. This is the test a practitioner can actually apply,
+    # because it needs no reference.
+    larger = [positions[c] for c in LADDER[k + 1:] if c in positions]
+    stable = bool(larger) and all(abs(phi - q) <= TOL_DEG for q in larger)
+    print(f"{'CAS%s' % (cas,):>13} {btxt:>13} | {phi:8.2f} {err_txt} "
+          f"{acc_txt} {('yes' if stable else 'NO'):>8}")
 
-ok_b = [c for c in LADDER if berry_verdict(c)]
-ok_s = [c for c in LADDER if (lambda v: v is not None and all(v.values()))(scan_verdict(c))]
+acc = [c for c in LADDER if c in positions and ref_phi is not None
+       and abs(positions[c] - ref_phi) <= TOL_DEG]
+stab = [c for k, c in enumerate(LADDER)
+        if c in positions
+        and [positions[q] for q in LADDER[k + 1:] if q in positions]
+        and all(abs(positions[c] - positions[q]) <= TOL_DEG
+                for q in LADDER[k + 1:] if q in positions)]
+okb = [c for c in LADDER if berry_verdict(c)]
 print()
-print(f"Berry phase correct from:   {min(ok_b) if ok_b else 'none of those tested'}")
-print(f"SA comparator correct from: {min(ok_s) if ok_s else 'none of those tested'}")
+print(f"Berry phase correct from:                      "
+      f"{min(okb) if okb else 'none of those tested'}")
+print(f"SA comparator accurate from (vs reference):    "
+      f"{min(acc) if acc else 'none of those tested'}")
+print(f"SA comparator STABLE from (no reference used): "
+      f"{min(stab) if stab else 'none of those tested'}")
+""")
+
+md(r"""
+The last two lines are the point of the whole study, and they disagree.
+
+*Accurate* asks whether an active space happens to land on the right answer. *Stable* asks the
+question a practitioner can actually ask without already knowing the answer: **does enlarging the
+active space leave the result unchanged?** For ethylene, CAS(2,2) is accurate to 0.01&deg; but
+not stable &mdash; the very next rung moves the intersection by nearly 5&deg;, and the one after
+that by 8&deg; the other way. Nothing available at CAS(2,2) would tell you it was right.
+
+So the honest requirement here is set by stability, not by the smallest space that works.
 """)
 
 md(r"""
