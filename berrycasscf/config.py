@@ -88,7 +88,25 @@ class ScanConfig:
     weights: tuple[float, ...] = (0.5, 0.5)
     conv_tol: float = 1e-9
     max_cycle_macro: int = 200
-    warm_start: bool = True      # reuse the previous grid point's orbitals
+    # How each grid point is started. Unlike the Berry-phase loop, a scan is NOT a
+    # continuation problem, so nothing here needs a consistent gauge -- the only question is
+    # which SA-CASSCF stationary point each solve lands on.
+    #   "warm" : reuse the previous grid point's orbitals. Fastest, but for larger active
+    #            spaces the active space can drift along the scan path, making the result
+    #            path-dependent. Measured for ethylene CAS(8,8)/6-31G*: two geometries that
+    #            are exact mirror images returned 19.1 and 29.4 mHa, against 26.9 mHa cold.
+    #   "cold" : fresh RHF orbitals at every point. Path-independent and deterministic, but
+    #            can miss a lower-energy SA-CASSCF solution that a warm start finds.
+    #   "best" : warm and cold, keep the lower SA energy. Finds better solutions than cold,
+    #            but inherits warm's path dependence -- measured 7.9 mHa mirror asymmetry for
+    #            ethylene CAS(4,4).
+    #   "anchor": cold, plus a warm start transferred from ONE fixed anchor geometry solved
+    #            cold at the centre of the region; keep the lower SA energy. Reaches the same
+    #            lower-energy branch as a warm sweep, but every point is computed from the same
+    #            two path-independent guesses, so the result cannot depend on the scan route.
+    #            This is the default: same cost as "best", without the path dependence.
+    strategy: str = "anchor"
+    warm_start: bool = True      # deprecated alias; ignored unless strategy is None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

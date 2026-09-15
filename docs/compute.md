@@ -19,6 +19,9 @@ STO-3G, PySCF 2.14:
 | **Whole Berry sweep** (3 loops x 3 CAS x 4 discretizations = 36 runs) | **~4 min** |
 | FCI reference point (STO-3G, 1.66M determinants) | ~28 s |
 | One CASSCF point, fulvene CAS(6,6)/STO-3G | 0.8 s |
+| One SA-CASSCF point, ethylene CAS(8,8)/6-31G\* | 0.9 s warm, ~4 s with `strategy="best"` |
+| One SA-CASSCF point, ethylene CAS(10,10)/6-31G\* | 4.5 s |
+| One SA-CASSCF point, ethylene CAS(12,12)/6-31G\* | 28 s |
 | Test suite (`pytest -q`) | ~15 s |
 
 Overlaps are three to four orders of magnitude cheaper than the CASSCF solve they compare,

@@ -168,6 +168,25 @@ def scan_gap(
         except (FileNotFoundError, OSError):
             pass
 
+    # For strategy="anchor": solve once, cold, at the centre of the region. Every grid point
+    # then gets the same two path-independent guesses (cold, and this anchor transferred in),
+    # so no result can depend on the order in which the grid was walked.
+    anchor_mol = anchor_mo = None
+    if getattr(scan, "strategy", None) == "anchor":
+        a_mid = float(alphas[len(alphas) // 2])
+        p_mid = float(phis[len(phis) // 2])
+        anchor_mol = build_mol(geom_fn(a_mid, p_mid), cas.basis,
+                               charge=cas.charge, spin=cas.spin)
+        try:
+            _, anchor_mo, _ = run_sa_casscf(
+                anchor_mol, cas.ncas, cas.nelecas, scan.weights,
+                conv_tol=scan.conv_tol, max_cycle_macro=scan.max_cycle_macro,
+            )
+            say(f"  anchor solved cold at ({a_mid:.3f}, {p_mid:.3f})")
+        except Exception as exc:                          # noqa: BLE001
+            say(f"  anchor solve failed ({exc}); falling back to cold-only")
+            anchor_mol = anchor_mo = None
+
     prev_mol = None
     prev_mo = None
     for i, alpha in enumerate(alphas):
@@ -178,25 +197,41 @@ def scan_gap(
                 continue
             phi = phis[j]
             mol = build_mol(geom_fn(alpha, phi), cas.basis, charge=cas.charge, spin=cas.spin)
-            mo_guess = None
-            if scan.warm_start and prev_mo is not None:
-                mo_guess = transfer_mo(prev_mol, prev_mo, mol)
-            try:
-                e, mo, conv = run_sa_casscf(
-                    mol,
-                    cas.ncas,
-                    cas.nelecas,
-                    scan.weights,
-                    mo_guess=mo_guess,
-                    conv_tol=scan.conv_tol,
-                    max_cycle_macro=scan.max_cycle_macro,
-                )
+            strategy = getattr(scan, "strategy", None) or (
+                "warm" if scan.warm_start else "cold"
+            )
+            attempts = []
+            if strategy in ("warm", "best") and prev_mo is not None:
+                attempts.append(transfer_mo(prev_mol, prev_mo, mol))
+            if strategy == "anchor" and anchor_mo is not None:
+                attempts.append(transfer_mo(anchor_mol, anchor_mo, mol))
+            if strategy in ("cold", "best", "anchor") or not attempts:
+                attempts.append(None)
+
+            best = None
+            for guess in attempts:
+                try:
+                    e, mo, conv = run_sa_casscf(
+                        mol, cas.ncas, cas.nelecas, scan.weights,
+                        mo_guess=guess,
+                        conv_tol=scan.conv_tol,
+                        max_cycle_macro=scan.max_cycle_macro,
+                    )
+                except Exception as exc:                  # noqa: BLE001 - record and continue
+                    say(f"    grid point ({alpha:.2f},{phi:.2f}) failed: {exc}")
+                    continue
+                # Prefer the lower state-averaged energy: that is the better stationary point.
+                sa = float(np.dot(scan.weights, e[: len(scan.weights)]))
+                if best is None or sa < best[0] - 1e-10:
+                    best = (sa, e, mo, conv)
+
+            if best is None:
+                converged[i, j] = False
+            else:
+                _, e, mo, conv = best
                 e_states[i, j, :] = e[: scan.nroots]
                 converged[i, j] = conv
                 prev_mol, prev_mo = mol, mo
-            except Exception as exc:                      # noqa: BLE001 - record and continue
-                say(f"    grid point ({alpha:.2f},{phi:.2f}) failed: {exc}")
-                converged[i, j] = False
             done[i, j] = True
         say(
             f"  row {i + 1}/{scan.n_alpha}  alpha={alpha:7.3f}  "

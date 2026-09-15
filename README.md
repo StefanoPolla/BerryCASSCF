@@ -87,6 +87,21 @@ python notebooks/build_notebook.py
 jupyter nbconvert --to notebook --execute --inplace notebooks/results.ipynb
 ```
 
+### Active-space convergence study (ethylene)
+
+How large an active space does each method actually need? Same two workflows, one system, a
+ladder of active spaces, and — critically — the **same loops throughout**:
+
+```bash
+python examples/run_active_space_study.py scan     # SA-CASSCF gap maps, CAS(2,2) .. (12,12)
+python examples/run_active_space_study.py berry    # Berry phase on three fixed loops
+python notebooks/build_active_space_notebook.py
+jupyter nbconvert --to notebook --execute --inplace notebooks/active_space.ipynb
+```
+
+Results and interpretation: [notebooks/active_space.ipynb](notebooks/active_space.ipynb) and
+[docs/active_space.md](docs/active_space.md).
+
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
 gap scans additionally checkpoint after each grid row.
 
@@ -149,13 +164,14 @@ berrycasscf/
   continuation.py  walk a loop, gauge fix, fallback ladder, collect diagnostics
   berry.py         the two estimators and the pass/fail verdict
   scan.py          SA-CASSCF and FCI gap scans
-  fulvene.py       the follow-up system: reference geometry and its two coordinates
+  ethylene.py      twisted-pyramidalized CI; the active-space convergence study
+  fulvene.py       prepared for the cluster: reference geometry and its two coordinates
   toy.py           2x2 linear Jahn-Teller validation model
   config.py        every scientific choice, as dataclass fields
   store.py         JSON/NPZ records
   report.py        result tables and stability verdicts
 examples/          experiment drivers (see "Running the benchmark")
-notebooks/         results.ipynb + its generator
+notebooks/         results.ipynb (formaldimine), active_space.ipynb (ethylene ladder)
 slurm/             batch templates for the cluster
 docs/              plan, provenance, results, limitations, compute, progress, follow-up
 tests/             pytest suite
@@ -200,7 +216,8 @@ sbatch --export=ALL,BASIS="6-31g*",CAS="6,6",NPOINTS="17 25" slurm/fulvene_berry
 | [docs/results.md](docs/results.md) | the formaldimine numbers and their interpretation |
 | [docs/limitations.md](docs/limitations.md) | what this does not do, and open questions |
 | [docs/compute.md](docs/compute.md) | measured costs, cluster jobs, scaling guidance |
-| [docs/followup.md](docs/followup.md) | the second system: status and how to run it |
+| [docs/active_space.md](docs/active_space.md) | how large an active space each method needs |
+| [docs/followup.md](docs/followup.md) | fulvene: status and how to run it |
 | [docs/progress.md](docs/progress.md) | dated progress log |
 
 ## References

@@ -8,6 +8,10 @@ coordinate space:
    initial-final overlap.
 2. :func:`berrycasscf.scan.scan_gap` -- resolve the S0/S1 near-degeneracy inside the
    loop with a state-averaged CASSCF gap scan.
+
+Systems: formaldimine (:mod:`berrycasscf.geometry`), ethylene (:mod:`berrycasscf.ethylene`)
+and fulvene (:mod:`berrycasscf.fulvene`). Each exposes a ``<name>_geom(x, y)`` function with
+the same signature, so the same drivers work on all of them via their ``geom_fn`` argument.
 """
 
 from .geometry import (
@@ -28,6 +32,7 @@ from .continuation import traverse_loop, LoopTraversal
 from .berry import analyse, run_loop, BerryResult, TRIVIAL, NONTRIVIAL, UNDETERMINED
 from .scan import scan_gap, ScanResult
 from .toy import jt_loop_berry_phase
+from . import ethylene, fulvene
 
 __version__ = "0.1.0"
 
@@ -41,4 +46,5 @@ __all__ = [
     "analyse", "run_loop", "BerryResult", "TRIVIAL", "NONTRIVIAL", "UNDETERMINED",
     "scan_gap", "ScanResult",
     "jt_loop_berry_phase",
+    "ethylene", "fulvene",
 ]
