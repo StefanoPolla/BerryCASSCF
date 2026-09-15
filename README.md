@@ -99,6 +99,25 @@ python notebooks/build_active_space_notebook.py
 jupyter nbconvert --to notebook --execute --inplace notebooks/active_space.ipynb
 ```
 
+Where each active space puts ethylene's intersection (reference is CAS(12,12), the full valence
+space, at φ = 110.01°):
+
+| CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|---|
+| φ | 110.02 | 114.85 | 102.09 | 103.11 | 109.10 | 110.01 |
+| error | **+0.01°** | +4.84° | −7.92° | −6.90° | −0.91° | ref |
+
+Convergence is **not monotonic**: the minimal π space is essentially exact, the intermediate
+spaces are displaced by 5–8° in *both* directions, and the reference is recovered only from
+CAS(10,10). So the answer depends on which question is asked — the smallest active space that
+*gets the right answer* is CAS(2,2), but the smallest one you could *trust without already
+knowing the answer* is CAS(10,10), since only there does enlarging the space stop moving the
+result. Formaldimine fails the opposite way, which is the argument for checking convergence per
+system rather than reusing a recipe.
+
+The Berry phase needs only CAS(2,2) on both systems and is unbothered by an 8° misplacement that
+defeats the comparator — a loop of radius 12° encloses the intersection either way.
+
 Results and interpretation: [notebooks/active_space.ipynb](notebooks/active_space.ipynb) and
 [docs/active_space.md](docs/active_space.md).
 

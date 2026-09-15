@@ -201,9 +201,12 @@ inside a trivial loop) and CAS(4,4) was already converged. The two systems fail 
 which is the argument for checking convergence per system rather than reusing an active-space
 recipe.
 
-**For the Berry phase: no.** CAS(2,2) suffices on both systems tested. It is also strikingly
-insensitive to the errors that defeat the comparator: an 8 deg misplacement of the intersection
-is irrelevant to a loop of radius 12 deg that encloses it either way. The topological question is
+**For the Berry phase: no.** CAS(2,2) suffices on both systems tested, and the reason it is
+insensitive to the errors that defeat the comparator can be made quantitative. `E_x` is centred
+at `phi` = 110 with radius 12 deg, and the largest displacement anywhere on the ladder is
+CAS(6,6)'s 7.92 deg. **Every active space tested still places the intersection inside the loop**,
+so every one of them returns the same, correct, topological answer — even the rungs whose
+geometry is badly wrong. The topological question is
 far more forgiving than the geometric one — the same conclusion the formaldimine FCI calibration
 reached, now with a second, independent illustration.
 
