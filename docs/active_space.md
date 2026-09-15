@@ -122,5 +122,91 @@ Measured: the largest discrepancy in the product estimator across the ladder is 
 
 ## Results
 
-*(filled in below once the ladder completed — see the tables in
-`notebooks/active_space.ipynb`, which are generated from the saved records.)*
+Live tables are generated from the saved records in `notebooks/active_space.ipynb`; the numbers
+below are the summary.
+
+### Where each active space puts the intersection
+
+The reference is CAS(12,12) (full valence), which along `tau = 90` gives a clean V with its
+minimum at **phi = 110.01**, gap 0.187 mHa. Sub-grid positions come from parabolic
+interpolation through the grid minimum and its neighbours (grid step 4 deg).
+
+| active space | own minimum gap | phi (refined) | error vs reference | mirror asymmetry |
+|---|---|---|---|---|
+| CAS(2,2) | 0.175 mHa | 110.02 | **+0.01 deg** | 2.8e-11 |
+| CAS(4,4) | 1.362 mHa | 114.85 | **+4.84 deg** | 1.1e-07 |
+| CAS(6,6) | 0.155 mHa | 102.09 | **−7.92 deg** | 2.8e-05 |
+| CAS(8,8) | 2.033 mHa | 103.11 | **−6.90 deg** | 1.1e-06 |
+| CAS(10,10) | 1.850 mHa | 109.10 | −0.91 deg | 3.5e-09 |
+| **CAS(12,12)** | **0.187 mHa** | **110.01** | reference | — |
+
+Every scan passes the mirror-symmetry test (asymmetries 1e-11 to 1e-5 mHa), so these
+differences are the physics of the truncation, not numerical noise.
+
+**Convergence with active space is not monotonic.** The error runs
++0.01, +4.84, −7.92, −6.90, −0.91, 0 degrees. The minimal pi space is essentially exact;
+CAS(4,4), (6,6) and (8,8) are displaced by 5–8 degrees *in both directions*; the reference is
+recovered only from CAS(10,10). An intermediate active space here is markedly **worse** than the
+smallest one.
+
+The likely reason is balance rather than size. CAS(2,2) contains exactly the pi/pi\* pair that
+the twisted-ethylene S1/S0 pair is built from, so both states are described equally. Adding
+orbitals a few at a time brings in correlation that lowers one state more than the other until
+the space is large enough to treat them evenly again.
+
+### Berry phase
+
+Every active space tested gives the correct topology — non-trivial (pi) on `E_x`, trivial on
+both controls — provided the loop is discretized finely enough. What changes with the active
+space is not the answer but how hard it is to obtain:
+
+| active space | min adjacent overlap on `E_x`, N=13 | smallest working N |
+|---|---|---|
+| CAS(2,2) | 0.895 | 13 |
+| CAS(4,4) | 0.718 | 21 |
+| CAS(6,6) | 0.689 | 21 |
+| CAS(8,8) | 0.673 | 21 |
+| CAS(10,10) | 0.692 | 21 |
+| CAS(12,12) | 0.686 | 21 |
+
+A larger active space has more freedom to rearrange, so the wavefunction turns faster around the
+same loop and the same `N` yields smaller adjacent overlaps. Below the 0.80 continuity
+threshold the run is reported FAILED — correctly, since continuity has not been established —
+and refining `N` fixes it. This is a statement about **loop resolution**, not about whether the
+active space can describe the physics, and the two must not be conflated.
+
+One further sign of the same effect: at CAS(10,10) the endpoint overlap comes back as
+**−0.9860** rather than −1.0000. The closing solve, at a geometry identical to the start, lands
+on a very slightly different solution. It still passes the 0.90 threshold, but the margin
+shrinks as the active space grows.
+
+## Answering the question
+
+**Is there a system for which larger active spaces are needed?** For the state-averaged
+resolver, **yes — ethylene**, and the way it fails is instructive.
+
+* **Smallest active space that gets the right answer: CAS(2,2)** (error 0.01 deg).
+* **Smallest active space you could *trust* without already knowing the answer: CAS(10,10)–(12,12)**,
+  because only there does enlarging the space stop changing the result.
+
+Those are different questions and for ethylene they differ by four rungs. CAS(2,2) is right, but
+nothing available at CAS(2,2) tells you so: the very next rung moves the intersection by 5 deg,
+and the one after that by 8 deg in the other direction. The usual practical test — "enlarge the
+active space and see whether the answer moves" — would reject CAS(2,2), and would keep rejecting
+until CAS(10,10). So an honest protocol needs a much larger space than CAS(4,4) here, even
+though a lucky small one exists.
+
+Compare formaldimine, where CAS(2,2) was *qualitatively* wrong (it invented an intersection
+inside a trivial loop) and CAS(4,4) was already converged. The two systems fail in opposite ways,
+which is the argument for checking convergence per system rather than reusing an active-space
+recipe.
+
+**For the Berry phase: no.** CAS(2,2) suffices on both systems tested. It is also strikingly
+insensitive to the errors that defeat the comparator: an 8 deg misplacement of the intersection
+is irrelevant to a loop of radius 12 deg that encloses it either way. The topological question is
+far more forgiving than the geometric one — the same conclusion the formaldimine FCI calibration
+reached, now with a second, independent illustration.
+
+The cost of that robustness is discretization, not active space: larger spaces need finer loops
+(N = 21 rather than 13 here), which is cheap and, more importantly, *detected* — the continuity
+check fails loudly rather than returning a wrong phase.

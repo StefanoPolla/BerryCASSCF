@@ -45,6 +45,15 @@ CAS_LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 REFERENCE_CAS = (12, 12)
 
 GRID = (11, 11)
+# CAS(12,12) costs ~45 s per point, so a full 11x11 grid would be ~1.5 h for one rung. It only
+# has to do two jobs: fix the reference intersection position (which lives on the tau = 90 line)
+# and be checkable for path independence. A 3 x 11 grid does both -- tau in {70, 90, 110} gives
+# the tau = 90 line plus one exact mirror pair -- for a quarter of the cost.
+GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (3, 11)}
+
+
+def grid_for(ne: int, ncas: int) -> tuple[int, int]:
+    return GRID_OVERRIDE.get((ne, ncas), GRID)
 # One strategy for the whole ladder, so that rungs are directly comparable.
 #
 # "cold" is used rather than the "anchor" default of ScanConfig. Both are path-independent --
@@ -66,7 +75,8 @@ NPOINTS = [13, 21, 31]
 
 
 def scan_path(ne: int, ncas: int) -> str:
-    return os.path.join(RESULT_DIR, f"ethylene_scan_cas{ne}-{ncas}_{GRID[0]}x{GRID[1]}.npz")
+    g = grid_for(ne, ncas)
+    return os.path.join(RESULT_DIR, f"ethylene_scan_cas{ne}-{ncas}_{g[0]}x{g[1]}.npz")
 
 
 def berry_path(loop: str, ne: int, ncas: int, n: int) -> str:
@@ -96,13 +106,14 @@ def do_scans(args) -> int:
                       f"{mirror_asymmetry(res):.2e} mHa")
                 continue
         strategy = STRATEGY.get((ne, ncas), DEFAULT_STRATEGY)
-        print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {GRID[0]}x{GRID[1]}  "
+        g = grid_for(ne, ncas)
+        print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {g[0]}x{g[1]}  "
               f"strategy={strategy} ===")
         t0 = time.time()
         res = scan_gap(
             CI_REGION,
             cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
-            scan=ScanConfig(n_alpha=GRID[0], n_phi=GRID[1], margin=0.0, strategy=strategy),
+            scan=ScanConfig(n_alpha=g[0], n_phi=g[1], margin=0.0, strategy=strategy),
             geom_fn=ethylene_geom,
             progress=None if args.quiet else print,
             checkpoint=path,

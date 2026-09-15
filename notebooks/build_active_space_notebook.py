@@ -66,12 +66,15 @@ REFERENCE_CAS = (12, 12)
 plt.rcParams.update({"figure.dpi": 120, "font.size": 9, "axes.grid": True,
                      "grid.alpha": 0.25, "figure.facecolor": "white"})
 
-def load_scan(ne, ncas, grid="11x11"):
-    p = os.path.join(ETH, f"ethylene_scan_cas{ne}-{ncas}_{grid}.npz")
-    if not os.path.exists(p):
-        return None
-    r = ScanResult.load(p)
-    return r if np.isfinite(r.e_states).all() else None
+def load_scan(ne, ncas):
+    # CAS(12,12) uses a thinner grid (see examples/run_active_space_study.py), so match on
+    # the active space rather than a fixed grid shape.
+    hits = sorted(glob.glob(os.path.join(ETH, f"ethylene_scan_cas{ne}-{ncas}_*.npz")))
+    for p in hits:
+        r = ScanResult.load(p)
+        if np.isfinite(r.e_states).all():
+            return r
+    return None
 
 def mirror_asymmetry(r):
     g = r.gap * 1000.0
@@ -114,18 +117,37 @@ def gap_at(r, tau, phi):
     j = int(np.argmin(np.abs(r.phis - phi)))
     return r.gap[i, j] * 1e3
 
-print(f"{'active space':>13} {'own min (mHa)':>13} {'at (tau, phi)':>17} "
+def refined_phi(r):
+    # Sub-grid intersection position along phi at tau = 90, by parabolic interpolation
+    # through the grid minimum and its two neighbours. The grid step is 4 deg, so without
+    # this the comparison between active spaces is quantised far too coarsely.
+    i = int(np.argmin(np.abs(r.alphas - 90.0)))
+    row = r.gap[i]
+    j = int(np.nanargmin(row))
+    if j == 0 or j == len(row) - 1:
+        return float(r.phis[j])
+    y0, y1, y2 = row[j - 1], row[j], row[j + 1]
+    denom = y0 - 2 * y1 + y2
+    if abs(denom) < 1e-18:
+        return float(r.phis[j])
+    step = float(r.phis[1] - r.phis[0])
+    return float(r.phis[j] + 0.5 * (y0 - y2) / denom * step)
+
+ref_phi = refined_phi(ref) if ref is not None else None
+
+print(f"{'active space':>13} {'own min (mHa)':>13} {'phi (refined)':>13} "
       f"{'err vs ref':>11} {'gap at ref CI':>14} {'mirror asym':>13}")
-print("-" * 89)
+print("-" * 83)
 for cas in LADDER:
     r = scans.get(cas)
     if r is None:
         print(f"{'CAS%s' % (cas,):>13} {'(not run)':>13}")
         continue
     t, p, g = r.min_gap_point()
-    err = "  -" if ref_pt is None else f"{np.hypot(t-ref_pt[0], p-ref_pt[1]):9.1f} d"
+    rp = refined_phi(r)
+    err = "  -" if ref_phi is None else f"{rp - ref_phi:+10.2f}d"
     atref = "  -" if ref_pt is None else f"{gap_at(r, *ref_pt):14.3f}"
-    print(f"{'CAS%s' % (cas,):>13} {g*1e3:13.3f} {f'({t:.1f}, {p:.1f})':>17} {err} {atref} "
+    print(f"{'CAS%s' % (cas,):>13} {g*1e3:13.3f} {rp:13.2f} {err} {atref} "
           f"{mirror_asymmetry(r):13.2e}")
 print("\nMirror asymmetry at the 1e-3 mHa level or below means the scan is path-independent.")
 print("Grid spacing is 4 deg, so a position error of 4 deg is one grid step.")
@@ -136,6 +158,13 @@ print("space does not see an intersection where there is one.")
 
 md(r"""
 ## 2. Where each active space puts the intersection
+
+CAS(12,12) costs about 45 s per grid point, so the reference is run on a thinner
+3&times;11 grid rather than the 11&times;11 used for the other rungs. That still does both jobs it
+has to: it contains the `tau = 90` line, where the intersection sits and from which the
+reference position is measured, and it contains one exact mirror pair
+(`tau` = 70 and 110) for the path-independence check. Its panel below is correspondingly
+narrow.
 """)
 
 code(r"""
@@ -156,7 +185,8 @@ for k, cas in enumerate(avail):
     ax.plot(p, t, "wo", ms=8, mec="k", zorder=6)
     if ref_pt is not None:
         ax.plot(ref_pt[1], ref_pt[0], "kx", ms=10, mew=2, zorder=7)
-    ax.set_title(f"CAS{cas}: {g*1e3:.2f} mHa at ({t:.0f}, {p:.0f})", fontsize=9)
+    ax.set_title(f"CAS{cas}: {g*1e3:.2f} mHa at ({t:.0f}, {p:.0f})"
+                 + ("  [3x11 grid]" if r.alphas.size < 11 else ""), fontsize=9)
     ax.set_xlabel(r"$\phi$ (deg)"); ax.set_ylabel(r"$\tau$ (deg)")
 for k in range(len(avail), nrow * ncol):
     axes[k // ncol][k % ncol].set_visible(False)
