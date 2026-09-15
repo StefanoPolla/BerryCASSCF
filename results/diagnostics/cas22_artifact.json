@@ -1,0 +1,38 @@
+{
+  "point": {
+    "alpha": 150.91666666666666,
+    "phi": 89.9
+  },
+  "source_scan": "results/scan/C_2_cas2-2_25x25.npz",
+  "rows": [
+    {
+      "cas": "CAS(2,2)",
+      "e0": -92.64708342813019,
+      "e1": -92.64673805077106,
+      "gap": 0.0003453773591246545,
+      "converged": true
+    },
+    {
+      "cas": "CAS(4,4)",
+      "e0": -92.74815255504667,
+      "e1": -92.7098051645981,
+      "gap": 0.03834739044857827,
+      "converged": true
+    },
+    {
+      "cas": "CAS(6,6)",
+      "e0": -92.78146394713207,
+      "e1": -92.74360079448127,
+      "gap": 0.0378631526508002,
+      "converged": true
+    },
+    {
+      "cas": "CAS(8,8)",
+      "e0": -92.80323310342737,
+      "e1": -92.76355810689796,
+      "gap": 0.03967499652941342,
+      "converged": true
+    }
+  ],
+  "verdict": "ARTIFACT: the larger active spaces agree there is no degeneracy here"
+}

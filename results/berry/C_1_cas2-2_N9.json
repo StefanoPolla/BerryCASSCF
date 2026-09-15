@@ -1,0 +1,201 @@
+{
+  "result": {
+    "loop_name": "C_1",
+    "cas_label": "CAS(2,2)",
+    "basis": "sto-3g",
+    "n_points": 9,
+    "loop_centre": [
+      110.0,
+      89.9
+    ],
+    "loop_radius": [
+      10.0,
+      10.0
+    ],
+    "product_estimator": 0.8067328868658548,
+    "endpoint_estimator": 0.9999999898560645,
+    "closing_overlap": 0.9404167084326038,
+    "berry_phase": "trivial (0)",
+    "status": "OK",
+    "checks": {
+      "all_points_converged": true,
+      "continuity": true,
+      "endpoint_is_same_state": true,
+      "estimators_agree": true
+    },
+    "messages": [],
+    "min_abs_adjacent_overlap": 0.9653127672495775,
+    "mean_abs_adjacent_overlap": 0.9810634813485016,
+    "min_casci_gap": 0.3193333406460539,
+    "energy_range": [
+      -92.77070785138419,
+      -92.75835446875512
+    ],
+    "wall_time": 0.7815370559692383
+  },
+  "traversal": {
+    "loop_name": "C_1",
+    "loop_centre": [
+      110.0,
+      89.9
+    ],
+    "loop_radius": [
+      10.0,
+      10.0
+    ],
+    "n_points": 9,
+    "cas_label": "CAS(2,2)",
+    "basis": "sto-3g",
+    "points": [
+      {
+        "index": 0,
+        "t": 0.0,
+        "alpha": 119.87688340595138,
+        "phi": 91.46434465040231,
+        "energy": -92.75835446875512,
+        "converged": true,
+        "raw_overlap_with_prev": null,
+        "gauge_sign": 1,
+        "abs_overlap_with_prev": null,
+        "casci_gap": 0.3233287336100119,
+        "guess_orthonormality_error": null,
+        "max_mo_change": null,
+        "strategy": "initial",
+        "wall_time": 0.17094111442565918
+      },
+      {
+        "index": 1,
+        "t": 0.1111111111111111,
+        "alpha": 116.56059028990508,
+        "phi": 97.44709580222772,
+        "energy": -92.76426854245052,
+        "converged": true,
+        "raw_overlap_with_prev": 0.9653127672495775,
+        "gauge_sign": 1,
+        "abs_overlap_with_prev": 0.9653127672495775,
+        "casci_gap": 0.3367639512401297,
+        "guess_orthonormality_error": 8.43769498715119e-15,
+        "max_mo_change": 0.17510288890575926,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.07742905616760254
+      },
+      {
+        "index": 2,
+        "t": 0.2222222222222222,
+        "alpha": 110.17452406437283,
+        "phi": 99.89847695156392,
+        "energy": -92.77001127069559,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9919802716423596,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9919802716423596,
+        "casci_gap": 0.33974819833282766,
+        "guess_orthonormality_error": 8.770761894538737e-15,
+        "max_mo_change": 0.06406256649902164,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05645012855529785
+      },
+      {
+        "index": 3,
+        "t": 0.3333333333333333,
+        "alpha": 103.70679608950162,
+        "phi": 97.67145961456971,
+        "energy": -92.76964573378017,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9878790673833288,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9878790673833288,
+        "casci_gap": 0.32975739550558103,
+        "guess_orthonormality_error": 8.326672684688674e-15,
+        "max_mo_change": 0.08081520238670464,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05573296546936035
+      },
+      {
+        "index": 4,
+        "t": 0.4444444444444444,
+        "alpha": 100.18372816552336,
+        "phi": 91.80808995376546,
+        "energy": -92.7666905878225,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9746331200551775,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9746331200551775,
+        "casci_gap": 0.3193333406460539,
+        "guess_orthonormality_error": 1.099120794378905e-14,
+        "max_mo_change": 0.14088968417452769,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05986189842224121
+      },
+      {
+        "index": 5,
+        "t": 0.5555555555555556,
+        "alpha": 101.25380292860604,
+        "phi": 85.05190379753664,
+        "energy": -92.76788574213289,
+        "converged": true,
+        "raw_overlap_with_prev": 0.9690905574993915,
+        "gauge_sign": 1,
+        "abs_overlap_with_prev": 0.9690905574993915,
+        "casci_gap": 0.32321026652964235,
+        "guess_orthonormality_error": 1.0769163338864018e-14,
+        "max_mo_change": 0.15305394504875086,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05880284309387207
+      },
+      {
+        "index": 6,
+        "t": 0.6666666666666666,
+        "alpha": 106.41632050454699,
+        "phi": 80.564195735028,
+        "energy": -92.77070785138419,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9811642174173928,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9811642174173928,
+        "casci_gap": 0.33585412792012903,
+        "guess_orthonormality_error": 9.992007221626409e-15,
+        "max_mo_change": 0.11731865947955936,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05820107460021973
+      },
+      {
+        "index": 7,
+        "t": 0.7777777777777778,
+        "alpha": 113.25568154457156,
+        "phi": 80.44481424400684,
+        "energy": -92.76818250012488,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9912903226772685,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9912903226772685,
+        "casci_gap": 0.34104011520820166,
+        "guess_orthonormality_error": 1.021405182655144e-14,
+        "max_mo_change": 0.055517922464554004,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.05895590782165527
+      },
+      {
+        "index": 8,
+        "t": 0.8888888888888888,
+        "alpha": 118.57167300702112,
+        "phi": 84.74961925089946,
+        "energy": -92.76111146792331,
+        "converged": true,
+        "raw_overlap_with_prev": -0.9871575268635171,
+        "gauge_sign": -1,
+        "abs_overlap_with_prev": 0.9871575268635171,
+        "casci_gap": 0.3312028905182274,
+        "guess_orthonormality_error": 1.1324274851176597e-14,
+        "max_mo_change": 0.08469990723049772,
+        "strategy": "warm-mo+warm-ci",
+        "wall_time": 0.08657574653625488
+      }
+    ],
+    "closing_overlap": 0.9404167084326038,
+    "endpoint_overlap": 0.9999999898560645,
+    "endpoint_converged": true,
+    "wall_time": 0.7815370559692383,
+    "warnings": []
+  }
+}

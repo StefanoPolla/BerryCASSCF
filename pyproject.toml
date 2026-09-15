@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "berrycasscf"
+version = "0.1.0"
+description = "Variational Berry-phase conical-intersection detection at CASSCF level, with a state-averaged CASSCF comparator"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyscf>=2.5",
+    "numpy>=1.24",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+plots = ["matplotlib>=3.7"]
+notebook = ["jupyter", "nbformat", "matplotlib>=3.7"]
+dev = ["pytest>=7.0"]
+
+[tool.setuptools]
+packages = ["berrycasscf"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: requires CASSCF calculations (seconds to minutes)",
+]

@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+.venv/
+.DS_Store
+logs/
+
+# Saved results ARE committed: they are small (~700 KB total) and make the notebook and
+# docs verifiable without rerunning anything. Only bulky checkpoint formats are excluded.
+results/**/*.h5
+results/**/*.chk
