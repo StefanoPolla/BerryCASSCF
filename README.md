@@ -98,11 +98,15 @@ from berrycasscf import LOOP_CI, CasConfig, run_loop
 result, traversal = run_loop(LOOP_CI.with_n_points(25), cas=CasConfig(ncas=2, nelecas=2))
 print(result.summary())
 # Loop C_x  centre=(130.0, 89.9)  radius=(10.0, 10.0)  N=25  CAS(2,2)/sto-3g
-#   product estimator   Pi = -0.801117
+#   product estimator   Pi = -0.801136
 #   endpoint estimator  w  = -1.000000
 #   min |adjacent overlap| = 0.9863
+#   min CASCI S0/S1 gap    = 0.3226 Ha
 #   BERRY PHASE: non-trivial (pi)   [OK]
 ```
+
+The last digits of `Pi` wander by ~1e-5 between runs, since each point is an independently
+converged CASSCF solve. The sign — the entire physical content — does not.
 
 ## Expected output
 
