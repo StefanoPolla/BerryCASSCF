@@ -393,9 +393,11 @@ for k, cas in enumerate(LADDER):
     # space does not move the answer. This is the test a practitioner can actually apply,
     # because it needs no reference.
     larger = [positions[c] for c in LADDER[k + 1:] if c in positions]
-    stable = bool(larger) and all(abs(phi - q) <= TOL_DEG for q in larger)
+    # The largest rung has nothing above it to be checked against, so it is not "unstable".
+    stab_txt = "-" if not larger else ("yes" if all(abs(phi - q) <= TOL_DEG for q in larger)
+                                       else "NO")
     print(f"{'CAS%s' % (cas,):>13} {btxt:>13} | {phi:8.2f} {err_txt} "
-          f"{acc_txt} {('yes' if stable else 'NO'):>8}")
+          f"{acc_txt} {stab_txt:>8}")
 
 acc = [c for c in LADDER if c in positions and ref_phi is not None
        and abs(positions[c] - ref_phi) <= TOL_DEG]

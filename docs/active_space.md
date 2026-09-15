@@ -128,26 +128,36 @@ below are the summary.
 ### Where each active space puts the intersection
 
 The reference is CAS(12,12) (full valence), which along `tau = 90` gives a clean V with its
-minimum at **phi = 110.01**, gap 0.187 mHa. Sub-grid positions come from parabolic
+minimum at **phi = 110.00**, gap 0.189 mHa. Sub-grid positions come from parabolic
 interpolation through the grid minimum and its neighbours (grid step 4 deg).
 
 | active space | own minimum gap | phi (refined) | error vs reference | mirror asymmetry |
 |---|---|---|---|---|
-| CAS(2,2) | 0.175 mHa | 110.02 | **+0.01 deg** | 2.8e-11 |
-| CAS(4,4) | 1.362 mHa | 114.85 | **+4.84 deg** | 1.1e-07 |
-| CAS(6,6) | 0.155 mHa | 102.09 | **−7.92 deg** | 2.8e-05 |
+| CAS(2,2) | 0.175 mHa | 110.02 | **+0.02 deg** | 2.8e-11 |
+| CAS(4,4) | 1.362 mHa | 114.85 | **+4.85 deg** | 1.1e-07 |
+| CAS(6,6) | 0.155 mHa | 102.09 | **−7.91 deg** | 2.8e-05 |
 | CAS(8,8) | 2.033 mHa | 103.11 | **−6.90 deg** | 1.1e-06 |
-| CAS(10,10) | 1.850 mHa | 109.10 | −0.91 deg | 3.5e-09 |
-| **CAS(12,12)** | **0.187 mHa** | **110.01** | reference | — |
+| CAS(10,10) | 1.850 mHa | 109.10 | −0.90 deg | 3.5e-09 |
+| **CAS(12,12)** | **0.189 mHa** | **110.00** | reference | 4.3e-11 |
 
 Every scan passes the mirror-symmetry test (asymmetries 1e-11 to 1e-5 mHa), so these
 differences are the physics of the truncation, not numerical noise.
 
 **Convergence with active space is not monotonic.** The error runs
-+0.01, +4.84, −7.92, −6.90, −0.91, 0 degrees. The minimal pi space is essentially exact;
++0.02, +4.85, −7.91, −6.90, −0.90, 0 degrees. The minimal pi space is essentially exact;
 CAS(4,4), (6,6) and (8,8) are displaced by 5–8 degrees *in both directions*; the reference is
 recovered only from CAS(10,10). An intermediate active space here is markedly **worse** than the
 smallest one.
+
+A sharper way to see the same thing is to ask what each active space believes the gap to be
+**at the position the reference puts the intersection**:
+
+| CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|---|
+| gap at reference CI | 0.175 | 6.758 | 11.305 | 9.250 | 1.850 | 0.189 mHa |
+
+CAS(6,6) reports 11.3 mHa where the gap is actually ~0.2: it does not see an intersection there
+at all. CAS(2,2) reports 0.175 mHa, essentially the exact value.
 
 The likely reason is balance rather than size. CAS(2,2) contains exactly the pi/pi\* pair that
 the twisted-ethylene S1/S0 pair is built from, so both states are described equally. Adding
@@ -185,7 +195,7 @@ shrinks as the active space grows.
 **Is there a system for which larger active spaces are needed?** For the state-averaged
 resolver, **yes — ethylene**, and the way it fails is instructive.
 
-* **Smallest active space that gets the right answer: CAS(2,2)** (error 0.01 deg).
+* **Smallest active space that gets the right answer: CAS(2,2)** (error 0.02 deg).
 * **Smallest active space you could *trust* without already knowing the answer: CAS(10,10)–(12,12)**,
   because only there does enlarging the space stop changing the result.
 

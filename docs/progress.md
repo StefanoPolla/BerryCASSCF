@@ -209,12 +209,12 @@ reported reliability criterion. **The formaldimine results are unaffected** — 
 CAS(4,4) scan reproduces the committed one to 2.5e-06 Ha across the whole grid; drift needs an
 active space large enough to have somewhere to drift to.
 
-**Result — the intersection position across the ladder** (reference CAS(12,12): `phi` = 110.01):
+**Result — the intersection position across the ladder** (reference CAS(12,12): `phi` = 110.00):
 
 | CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
 |---|---|---|---|---|---|---|
-| `phi` | 110.02 | 114.85 | 102.09 | 103.11 | 109.10 | 110.01 |
-| error | +0.01 | +4.84 | −7.92 | −6.90 | −0.91 | ref |
+| `phi` | 110.02 | 114.85 | 102.09 | 103.11 | 109.10 | 110.00 |
+| error | +0.02 | +4.85 | −7.91 | −6.90 | −0.90 | ref |
 
 Convergence is **not monotonic**: the minimal pi space is essentially exact, the intermediate
 spaces are displaced by 5–8 degrees in both directions, and the reference is recovered only from
