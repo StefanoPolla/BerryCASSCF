@@ -5,7 +5,7 @@ state-averaged comparator (`docs/results.md`). Those are small, and the obvious 
 whether that reflects the methods or just an easy molecule. This study runs the same two
 workflows over a ladder of active spaces on a second system.
 
-Narrative version with figures: `notebooks/active_space.ipynb`.
+Narrative version with figures: `notebooks/active_space_study.ipynb`.
 Reproduce with `python examples/run_active_space_study.py scan` then `... berry`.
 
 ## System and design
@@ -194,7 +194,7 @@ Measured: the largest discrepancy in the product estimator across the ladder is 
 
 ## Results
 
-Live tables are generated from the saved records in `notebooks/active_space.ipynb`; the numbers
+Live tables are generated from the saved records in `notebooks/active_space_study.ipynb`; the numbers
 below are the summary.
 
 ### Where each active space puts the intersection

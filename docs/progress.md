@@ -136,7 +136,7 @@ monotonically. The Berry phase is unaffected — a 2° error is irrelevant to a 
 the expected `O(1/N)`: adjacent states differ by an angle of order 1/N, so each overlap is
 `1 − O(1/N²)` and the product of N of them is `1 − O(1/N)`.
 
-**Deliverables.** `notebooks/results.ipynb` (executed, with figures), `docs/results.md`,
+**Deliverables.** `notebooks/formaldimine_benchmark.ipynb` (executed, with figures), `docs/results.md`,
 `docs/limitations.md`, `docs/compute.md` with measured timings, SLURM templates.
 
 **Next step.** The follow-up system.
@@ -236,7 +236,7 @@ the larger spaces fail the continuity test at N=13 and pass at N=21. That failur
 reported, never silently absorbed.
 
 **Deliverables.** `berrycasscf/ethylene.py`, `examples/run_active_space_study.py`,
-`notebooks/active_space.ipynb`, `docs/active_space.md`, 28 new tests including a regression test
+`notebooks/active_space_study.ipynb`, `docs/active_space.md`, 28 new tests including a regression test
 for the path-independence fix.
 
 **Next step.** A system whose S1 is genuinely doubly excited (a polyene 2Ag state, e.g.

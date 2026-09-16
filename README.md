@@ -42,7 +42,7 @@ that the ~2° offset of the truncated active spaces is truncation error convergi
 (CAS(4,4) 130.0° → CAS(6,6) 130.9° → FCI 132.6°). The Berry phase is untouched by that offset:
 **the topological question is far more forgiving than the geometric one.**
 
-Full narrative with figures: [notebooks/results.ipynb](notebooks/results.ipynb).
+Full narrative with figures: [notebooks/formaldimine_benchmark.ipynb](notebooks/formaldimine_benchmark.ipynb).
 
 ## Installation
 
@@ -83,8 +83,8 @@ python examples/diagnose_cas22_artifact.py
 python examples/run_fci_reference.py --loop C_x --line
 
 # Rebuild the results notebook from saved results                   (seconds)
-python notebooks/build_notebook.py
-jupyter nbconvert --to notebook --execute --inplace notebooks/results.ipynb
+python notebooks/build_formaldimine_notebook.py
+jupyter nbconvert --to notebook --execute --inplace notebooks/formaldimine_benchmark.ipynb
 ```
 
 ### Active-space convergence study (ethylene)
@@ -95,8 +95,8 @@ ladder of active spaces, and — critically — the **same loops throughout**:
 ```bash
 python examples/run_active_space_study.py scan     # SA-CASSCF gap maps, CAS(2,2) .. (12,12)
 python examples/run_active_space_study.py berry    # Berry phase on three fixed loops
-python notebooks/build_active_space_notebook.py
-jupyter nbconvert --to notebook --execute --inplace notebooks/active_space.ipynb
+python notebooks/build_active_space_study_notebook.py
+jupyter nbconvert --to notebook --execute --inplace notebooks/active_space_study.ipynb
 ```
 
 Where each active space puts ethylene's intersection (reference is CAS(12,12), the full valence
@@ -142,7 +142,7 @@ reference exists to adjudicate. Every rung passes the plane-reflection symmetry 
 
 Full account: [docs/butadiene.md](docs/butadiene.md).
 
-Results and interpretation: [notebooks/active_space.ipynb](notebooks/active_space.ipynb),
+Results and interpretation: [notebooks/active_space_study.ipynb](notebooks/active_space_study.ipynb),
 [docs/active_space.md](docs/active_space.md) and [docs/butadiene.md](docs/butadiene.md).
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
@@ -215,7 +215,7 @@ berrycasscf/
   store.py         JSON/NPZ records
   report.py        result tables and stability verdicts
 examples/          experiment drivers (see "Running the benchmark")
-notebooks/         results.ipynb (formaldimine), active_space.ipynb (ethylene ladder)
+notebooks/         formaldimine_benchmark.ipynb, active_space_study.ipynb
 slurm/             batch templates for the cluster
 docs/              plan, provenance, results, limitations, compute, progress, follow-up
 tests/             pytest suite

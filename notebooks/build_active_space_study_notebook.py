@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-"""Generate notebooks/active_space.ipynb.
+"""Generate notebooks/active_space_study.ipynb (ethylene and butadiene ladders).
 
 Reads saved results only; runs no electronic structure, so it executes in seconds.
-Companion to results.ipynb, which covers the formaldimine benchmark.
+Companion to formaldimine_benchmark.ipynb, which covers the primary benchmark.
 """
 
 import os
@@ -23,7 +23,7 @@ def code(text):
 md(r"""
 # How large an active space does each method actually need?
 
-The formaldimine benchmark (see `results.ipynb`) settled on **CAS(2,2)** for the Berry phase and
+The formaldimine benchmark (see `formaldimine_benchmark.ipynb`) settled on **CAS(2,2)** for the Berry phase and
 **CAS(4,4)** for the state-averaged comparator. Those are small. This notebook asks whether
 that is a property of the methods or just of an easy molecule, by running the same two
 workflows over a ladder of active spaces on a harder system.
@@ -534,6 +534,72 @@ if have:
 """)
 
 md(r"""
+### The comparator maps, and the loops they are being asked about
+
+Same presentation as the ethylene ladder. The scanned window is `tw` in [70, 110], `pyr` in
+[80, 140]; the two control loops sit at `tw` = 60 and 120 and therefore fall **outside** it, so
+the axes are widened to show where they are and the colour map is drawn only where data exists.
+
+White circle: that rung's own intersection. Black cross: the reference CAS(12,12) position, which
+is also the centre of `B_x`. The panels make the 19&deg; scatter visible directly &mdash; and show
+CAS(8,8)'s circle sitting outside the `B_x` ellipse.
+
+CAS(12,12) has no panel: it was scanned on the single `tw = 90` row to keep its cost bounded
+(>2.4 min per point), so there is no two-dimensional map for it &mdash; only the position marked
+by the cross.
+""")
+
+code(r"""
+import matplotlib.patheffects as pe
+OUTLINE = [pe.withStroke(linewidth=2.5, foreground="white")]
+
+two_d = [c for c in have if buta[c].alphas.size > 1]
+if two_d:
+    B_CENTRE = (90.0, buta_refined_pyr(buta[have[-1]])[0])
+    B_RADIUS = (12.0, 18.0)
+    B_LOOPS = {
+        "B_x": (B_CENTRE[0], B_CENTRE[1], "tab:red"),
+        "B_1": (B_CENTRE[0] - 2.5 * B_RADIUS[0], B_CENTRE[1], "tab:blue"),
+        "B_2": (B_CENTRE[0] + 2.5 * B_RADIUS[0], B_CENTRE[1], "tab:green"),
+    }
+    ncol = 2
+    nrow = int(np.ceil(len(two_d) / ncol))
+    fig, axes = plt.subplots(nrow, ncol, figsize=(11.5, 4.1 * nrow), squeeze=False)
+    for k, cas in enumerate(two_d):
+        ax = axes[k // ncol][k % ncol]
+        r = buta[cas]
+        T, P = np.meshgrid(r.alphas, r.phis, indexing="ij")
+        pcm = ax.pcolormesh(T, P, r.gap * 1e3, shading="nearest", cmap="viridis_r")
+        fig.colorbar(pcm, ax=ax, label="mHa")
+        for name, (ct, cp, col) in B_LOOPS.items():
+            ax.add_patch(Ellipse((ct, cp), 2 * B_RADIUS[0], 2 * B_RADIUS[1], fill=False,
+                                 lw=2.0, ec=col, zorder=5))
+            # label inside the bottom of each ellipse, clear of the markers above
+            ax.text(ct, cp - B_RADIUS[1] + 4, name, color=col, ha="center",
+                    fontweight="bold", fontsize=9, zorder=6, path_effects=OUTLINE)
+        pyr_here, tw_here = buta_refined_pyr(r)
+        ax.plot(tw_here, pyr_here, "wo", ms=9, mec="k", zorder=7,
+                label="this CAS's intersection")
+        ax.plot(B_CENTRE[0], B_CENTRE[1], "kx", ms=11, mew=2.5, zorder=7,
+                label="reference CAS(12,12) = loop centre")
+        if k == 0:
+            ax.legend(loc="lower left", fontsize=7.5, framealpha=0.9)
+        inside = abs(pyr_here - B_CENTRE[1]) <= B_RADIUS[1]
+        ax.set_title(f"CAS{cas}:  pyr = {pyr_here:.2f}   "
+                     f"({'inside' if inside else 'OUTSIDE'} B$_x$)", fontsize=9.5)
+        ax.set_xlabel("twist tw (deg)"); ax.set_ylabel(r"pyramidalization $\phi$ (deg)")
+        ax.set_xlim(40, 140); ax.set_ylim(72, 148)
+    for k in range(len(two_d), nrow * ncol):
+        axes[k // ncol][k % ncol].set_visible(False)
+    fig.suptitle("Butadiene SA-CASSCF gap by active space, with the three tested loops\n"
+                 "(map drawn only over the scanned window; the controls lie outside it)",
+                 y=1.01)
+    plt.tight_layout(); plt.show()
+else:
+    print("No two-dimensional butadiene scans available.")
+""")
+
+md(r"""
 ### Does the Berry phase survive this?
 
 On formaldimine and ethylene the Berry phase was immune to the errors that defeated the
@@ -633,6 +699,6 @@ nb.metadata = {
     "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
     "language_info": {"name": "python"},
 }
-out = os.path.join(HERE, "active_space.ipynb")
+out = os.path.join(HERE, "active_space_study.ipynb")
 nbf.write(nb, out)
 print(f"wrote {out} with {len(CELLS)} cells")

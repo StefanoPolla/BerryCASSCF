@@ -2,7 +2,7 @@
 
 All numbers below are reproducible from this repository; see `README.md` for the commands.
 Basis STO-3G, C1 symmetry, PySCF 2.14.0. The narrative version with figures is
-`notebooks/results.ipynb`.
+`notebooks/formaldimine_benchmark.ipynb`.
 
 ## The three loops
 

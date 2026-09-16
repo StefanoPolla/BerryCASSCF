@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate notebooks/results.ipynb.
+"""Generate notebooks/formaldimine_benchmark.ipynb (the primary benchmark).
 
 The notebook only *reads* saved results from results/; it runs no electronic structure, so
 it executes in seconds and can be re-run after any sweep.
@@ -468,6 +468,6 @@ nb.metadata = {
     "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
     "language_info": {"name": "python"},
 }
-out = os.path.join(HERE, "results.ipynb")
+out = os.path.join(HERE, "formaldimine_benchmark.ipynb")
 nbf.write(nb, out)
 print(f"wrote {out} with {len(CELLS)} cells")
