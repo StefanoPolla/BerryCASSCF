@@ -40,8 +40,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "results", "butadiene", "failure_modes.json")
 
 CENTRE = (90.0, 101.85)        # the enclosing loop's centre, from the CAS(12,12) reference
-RADII = [6.0, 8.0, 10.0, 12.0, 18.0]
-NPOINTS = [15, 31, 61]
+# Loops that pass close to a degeneracy converge slowly (the solver's fallback ladder retries
+# several strategies per point), so the sweep is kept deliberately small. N = 61 is spent only
+# where it answers something: on the radii that were refused at coarser N, to separate
+# "discretization too coarse" from "genuinely too close to the seam".
+RADII = [6.0, 8.0, 12.0, 18.0]
+NPOINTS = [15, 31]
+RESCUE_N = 61
+RESCUE_RADII = [6.0, 8.0]
 CAS = (8, 8)                   # the rung whose gap-scan minimum leaves the loop
 
 
@@ -63,6 +69,9 @@ def main() -> int:
     fn = plane_geom_fn("tw", "pyr", tc=0.0, bend=0.0)
     cas = CasConfig(basis=args.basis, ncas=CAS[1], nelecas=CAS[0])
     rows = []
+
+    def checkpoint():
+        save_json({"centre": CENTRE, "cas": list(CAS), "basis": args.basis, "runs": rows}, OUT)
 
     print(f"Loop transport at CAS{CAS}/{args.basis}, centre (tw, pyr) = {CENTRE}")
     print(f"{'radius':>7} {'reach':>7} {'N':>4} {'min|ovl|':>9} {'product':>9} "
@@ -89,13 +98,33 @@ def main() -> int:
             })
             print(f"{rp:7.0f} {CENTRE[1]+rp:7.1f} {n:4d} {res.min_abs_adjacent_overlap:9.3f} "
                   f"{res.product_estimator:+9.4f} {abs(res.endpoint_estimator):11.4f}  "
-                  f"{classify(res)}")
+                  f"{classify(res)}", flush=True)
+            checkpoint()
+
+    # Spend the expensive discretization only where a refusal has to be explained.
+    print("\nRescue attempts: refine N on the radii that were refused")
+    for rp in RESCUE_RADII:
+        loop = Loop("probe", CENTRE, (12.0, rp), n_points=RESCUE_N)
+        res, _ = run_loop(loop, cas=cas, geom_fn=fn,
+                          progress=None if args.quiet else print)
+        rows.append({
+            "kind": "enclosing", "radius_pyr": rp, "n_points": RESCUE_N,
+            "min_abs_overlap": res.min_abs_adjacent_overlap,
+            "product": res.product_estimator, "endpoint": res.endpoint_estimator,
+            "status": res.status, "phase": res.berry_phase,
+            "would_have_said": "pi" if res.product_estimator < 0 else "0",
+            "messages": res.messages,
+        })
+        print(f"{rp:7.0f} {CENTRE[1]+rp:7.1f} {RESCUE_N:4d} "
+              f"{res.min_abs_adjacent_overlap:9.3f} {res.product_estimator:+9.4f} "
+              f"{abs(res.endpoint_estimator):11.4f}  {classify(res)}", flush=True)
+        checkpoint()
 
     # Control: a loop that encloses nothing but passes near the seam. If the checks refuse this
     # too, they are refusing proximity rather than lost continuity.
     print("\nControl: displaced loop, encloses nothing, still passes near the seam")
     for n in NPOINTS:
-        loop = Loop("displaced", (CENTRE[0], CENTRE[1] - 26.0), (12.0, 10.0), n_points=n)
+        loop = Loop("displaced", (CENTRE[0], CENTRE[1] - 26.0), (12.0, 10.0), n_points=n)  # noqa: E501
         res, _ = run_loop(loop, cas=cas, geom_fn=fn, progress=None if args.quiet else print)
         rows.append({
             "kind": "displaced_control", "radius_pyr": 10.0, "n_points": n,
@@ -107,9 +136,10 @@ def main() -> int:
         })
         print(f"{'—':>7} {'—':>7} {n:4d} {res.min_abs_adjacent_overlap:9.3f} "
               f"{res.product_estimator:+9.4f} {abs(res.endpoint_estimator):11.4f}  "
-              f"{classify(res)}")
+              f"{classify(res)}", flush=True)
+        checkpoint()
 
-    save_json({"centre": CENTRE, "cas": list(CAS), "basis": args.basis, "runs": rows}, OUT)
+    checkpoint()
     print(f"\n-> {os.path.relpath(OUT, ROOT)}")
 
     refused = [r for r in rows if r["status"] != "OK"]

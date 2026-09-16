@@ -1,0 +1,191 @@
+{
+  "centre": [
+    90.0,
+    101.85
+  ],
+  "cas": [
+    8,
+    8
+  ],
+  "basis": "6-31g*",
+  "runs": [
+    {
+      "kind": "enclosing",
+      "radius_pyr": 6.0,
+      "n_points": 15,
+      "min_abs_overlap": 0.4727922748457686,
+      "product": 0.32832110700334877,
+      "endpoint": 0.999999987500852,
+      "status": "FAILED",
+      "phase": "undetermined",
+      "would_have_said": "0",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [4] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+        "continuity lost: |overlap| = 0.473 < 0.8 at step 4; increase n_points or the solution jumped branch"
+      ],
+      "wall_time": 244.39143013954163
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 6.0,
+      "n_points": 31,
+      "min_abs_overlap": 0.8439082521832879,
+      "product": -0.5535018053778998,
+      "endpoint": -0.9840400283523889,
+      "status": "OK",
+      "phase": "non-trivial (pi)",
+      "would_have_said": "pi",
+      "messages": [
+        "continuation chain broken at point(s) [6]: the warm start was abandoned there, so those points were not reached by continuation. The overlap checks still apply, but treat the result with suspicion.",
+        "fell back to a weaker warm start at point(s) [19, 24] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+      ],
+      "wall_time": 481.6655328273773
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 8.0,
+      "n_points": 15,
+      "min_abs_overlap": 0.23745992930898951,
+      "product": -0.17638748007465999,
+      "endpoint": -0.9999999850419113,
+      "status": "FAILED",
+      "phase": "undetermined",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [10, 12] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+        "continuity lost: |overlap| = 0.237 < 0.8 at step 4; increase n_points or the solution jumped branch"
+      ],
+      "wall_time": 234.39603400230408
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 8.0,
+      "n_points": 31,
+      "min_abs_overlap": 0.7649305968279299,
+      "product": -0.5188883863034637,
+      "endpoint": -0.9999999847952774,
+      "status": "FAILED",
+      "phase": "undetermined",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [21] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+        "continuity lost: |overlap| = 0.765 < 0.8 at step 7; increase n_points or the solution jumped branch"
+      ],
+      "wall_time": 322.451534986496
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 12.0,
+      "n_points": 15,
+      "min_abs_overlap": 0.5593324714416374,
+      "product": -0.40210134085660715,
+      "endpoint": -0.9999999845606842,
+      "status": "FAILED",
+      "phase": "undetermined",
+      "would_have_said": "pi",
+      "messages": [
+        "continuity lost: |overlap| = 0.559 < 0.8 at step 4; increase n_points or the solution jumped branch"
+      ],
+      "wall_time": 132.6868941783905
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 12.0,
+      "n_points": 31,
+      "min_abs_overlap": 0.8736854131113719,
+      "product": -0.6543533966730148,
+      "endpoint": -0.9999999837283878,
+      "status": "OK",
+      "phase": "non-trivial (pi)",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [27, 29] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+      ],
+      "wall_time": 318.023934841156
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 18.0,
+      "n_points": 15,
+      "min_abs_overlap": 0.8006228383842505,
+      "product": -0.5366437183514946,
+      "endpoint": -0.999999984732851,
+      "status": "OK",
+      "phase": "non-trivial (pi)",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [12] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+      ],
+      "wall_time": 138.83776307106018
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 18.0,
+      "n_points": 31,
+      "min_abs_overlap": 0.9480629465891293,
+      "product": -0.7368730725024485,
+      "endpoint": -0.999999984764886,
+      "status": "OK",
+      "phase": "non-trivial (pi)",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [22, 27, 29] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+      ],
+      "wall_time": 340.8045210838318
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 6.0,
+      "n_points": 61,
+      "min_abs_overlap": 0.7341307127634402,
+      "product": 0.5731066403604468,
+      "endpoint": 0.9840399569750227,
+      "status": "FAILED",
+      "phase": "undetermined",
+      "would_have_said": "0",
+      "messages": [
+        "continuation chain broken at point(s) [16]: the warm start was abandoned there, so those points were not reached by continuation. The overlap checks still apply, but treat the result with suspicion.",
+        "fell back to a weaker warm start at point(s) [12] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+        "continuity lost: |overlap| = 0.734 < 0.8 at step 16; increase n_points or the solution jumped branch"
+      ]
+    },
+    {
+      "kind": "enclosing",
+      "radius_pyr": 8.0,
+      "n_points": 61,
+      "min_abs_overlap": 0.8213529436705221,
+      "product": -0.6609809162790985,
+      "endpoint": -0.9999999849701662,
+      "status": "OK",
+      "phase": "non-trivial (pi)",
+      "would_have_said": "pi",
+      "messages": [
+        "fell back to a weaker warm start at point(s) [46, 52, 53, 56] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+      ]
+    },
+    {
+      "kind": "displaced_control",
+      "radius_pyr": 10.0,
+      "n_points": 15,
+      "min_abs_overlap": 0.9459667942532526,
+      "product": 0.7630259362366361,
+      "endpoint": 0.9999999946794136,
+      "status": "OK",
+      "phase": "trivial (0)",
+      "would_have_said": "0",
+      "messages": []
+    },
+    {
+      "kind": "displaced_control",
+      "radius_pyr": 10.0,
+      "n_points": 31,
+      "min_abs_overlap": 0.9870294052542686,
+      "product": 0.8760564222820225,
+      "endpoint": 0.9999999950233293,
+      "status": "OK",
+      "phase": "trivial (0)",
+      "would_have_said": "0",
+      "messages": []
+    }
+  ]
+}

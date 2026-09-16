@@ -38,12 +38,23 @@ Ethylene, error in the intersection position against the CAS(12,12) reference:
 |---|---|---|---|---|---|---|
 | error (deg) | **+0.02** | +4.85 | −7.91 | −6.90 | −0.90 | ref |
 
-Butadiene, shift from the previous rung (no reference exists):
+Butadiene, from fine 1-deg cuts refined with the cone model (no reference exists):
 
-| CAS | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
-|---|---|---|---|---|---|
-| pyr (deg) | 109.83 | 114.81 | 121.05 | 105.04 | 101.85 |
-| shift | — | +4.98 | +6.24 | **−16.01** | −3.19 |
+| CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|---|
+| pyr (deg) | 105.86 | 109.68 | 114.46 | 120.87 | 105.07 | 102.17 |
+| shift | — | +3.83 | +4.78 | +6.41 | **−15.80** | −2.90 |
+| closest approach (mHa) | 0.67 | 0.92 | **3.13** | 0.00 | 0.66 | 2.94 |
+
+Spread **18.7 deg**, and the top two rungs still differ by **2.90 deg** — above the 2-deg
+tolerance ethylene met at CAS(10,10), so the sequence has not settled even at the largest
+affordable active space.
+
+**CAS(2,2) is included deliberately although it is below the pi space and not a chemically
+defensible choice.** It turns out to be well defined here, and it lands 3.7 deg from the largest
+rung while CAS(8,8) — three times the orbitals — lands 18.7 deg away. That is the ethylene pattern
+again: the minimal space is accidentally the better one, and nothing available at that level would
+tell you so.
 
 Formaldimine is the third pattern again: CAS(2,2) is not merely imprecise but *qualitatively*
 wrong — it reports a 0.34 mHa near-degeneracy inside a **trivial** control loop and finds nothing
@@ -73,7 +84,7 @@ four rungs: accurate from CAS(2,2), stable only from CAS(10,10).
 |---|---|---|
 | formaldimine | CAS(2,2) | correct (π on the enclosing loop, 0 on both controls) |
 | ethylene | CAS(2,2) | correct |
-| butadiene | CAS(4,4) → CAS(2,2) *(in progress)* | correct at every rung tested |
+| butadiene | CAS(2,2) | correct at every rung tested |
 
 The cost asymmetry is large: loop transport at the smallest active space is seconds, against hours
 for the gap scan ladder.
@@ -114,16 +125,49 @@ direction". What can be said is that it is self-consistent, passes every interna
 cheap. Settling it needs a system where an exact reference exists *and* the ladder still
 misbehaves — which none of the three provides.
 
-## 5. Failures are detected, not silent — and the check is conservative
+## 5. Failure behaviour: what the checks catch, what they cost, and what they miss
 
-When a loop passes too close to a degeneracy the adjacent overlaps collapse and the continuity
-check **refuses to report a phase**. The clearest case: at CAS(8,8), radius 8, N=15, the product
-estimator was **−0.176**. Reported naively that reads as a weak non-trivial phase — a plausible
-wrong answer. The check rejected it (min overlap 0.24).
+Probed directly at butadiene CAS(8,8) by shrinking the loop toward the degeneracy and varying the
+discretization independently (`examples/run_failure_modes.py`). Every run records what it *would*
+have reported had the checks not run, so refusals of correct answers count as a cost rather than
+a save.
 
-The cost of that conservatism is real and is reported alongside: the same loop at N=31 reaches
-min overlap 0.77 and is *still* refused, though its sign agrees with the better-resolved runs. The
-check errs toward refusal, which means it will sometimes reject answers that were correct.
+| radius (reach in pyr) | N=15 | N=31 | N=61 |
+|---|---|---|---|
+| 6 (107.8) | refused, would say **0** | reported π (ovl 0.844) | refused, would say **0** |
+| 8 (109.8) | refused, would say π | refused, would say π | **reported π** (ovl 0.821) |
+| 12 (113.8) | refused, would say π | reported π (ovl 0.874) | — |
+| 18 (119.8) | reported π (ovl 0.801) | reported π (ovl 0.948) | — |
+| displaced control | reported 0 (ovl 0.946) | reported 0 (ovl 0.987) | — |
+
+**It catches wrong answers, not just imprecise ones.** At radius 6, N=15 the product estimator was
++0.328 — a confident-looking *trivial* verdict, the opposite of what every well-resolved loop
+says. The continuity check refused it (min overlap 0.473).
+
+**It distinguishes "too coarse" from "too close".** Radius 8 is refused at N=15 and N=31 but its
+sign is stable (−0.18, −0.52, −0.66) and it passes at N=61: a pure discretization problem,
+resolved by refinement. Radius 6 is different — its sign *flips* (+0.33, −0.55, +0.57) and it
+never passes twice. Sign stability under refinement is what separates the two.
+
+**The conservatism has a measured price.** Five of twelve runs were refused; three of those would
+have given the same sign as the well-resolved ones. The check errs toward refusal.
+
+**It refuses lost continuity, not mere proximity.** The displaced control encloses nothing but
+passes near the seam, and is accepted with overlaps of 0.95–0.99, correctly reporting a trivial
+phase. Without this control the refusals above could have been the check rejecting anything near
+a seam.
+
+### A single passing run is not enough — and this is where a per-run check fails
+
+Radius 6 at N=31 **passed** every per-run check (overlap 0.844, endpoint 0.984) and reported π.
+Its neighbours at N=15 and N=61 both say 0. Since radius 8 reports π reliably and radius 6 does
+not, the degeneracy most likely sits *between* their reaches — pyr between 107.8 and 109.8 —
+which would make **0 the correct answer at radius 6 and the passing run the wrong one**.
+
+So the per-run checks are necessary but not sufficient: one of them accepted an answer that is
+probably wrong. What rejects it is the **stability criterion**, which demands at least two
+discretizations *all* passing with the same phase. Radius 6 has exactly one passing N, so no phase
+is claimed for it. The layering is what makes the protocol safe, not any individual check.
 
 ## 6. The required loop discretization grows with the active space
 
@@ -169,9 +213,14 @@ compared unrelated geometries. Both facts are locked in by tests.
 1. **Is loop transport right on butadiene, or consistently wrong?** Unresolvable without an exact
    reference. The strongest available evidence is self-consistency across rungs plus agreement
    with the two better-converged gap-scan rungs.
-2. **Where exactly does the state-specific degeneracy sit, per rung?** Currently only bounded
-   (< 113.9 deg at CAS(8,8)). Bisecting on loop radius per rung would turn the bound into a
-   measurement and let the two methods' intersection estimates be plotted against each other.
+2. **Where exactly does the state-specific degeneracy sit, per rung?** At CAS(8,8) it is bounded
+   to roughly pyr 107.8–109.8 by the radius sweep above — inside the radius-8 loop, outside or
+   marginal at radius 6. That is already ≥11 deg from the gap-scan intersection at 120.87.
+   Bisecting per rung, with enough discretization to keep continuity, would turn the bound into a
+   measurement for every rung and let the two methods' estimates be plotted against each other.
+   An earlier reading of this sweep took a single passing run at radius 6 at face value and
+   inferred a tighter bound; refining N contradicted it. The bound above rests only on runs whose
+   sign is stable across discretizations.
 3. **Solution discontinuities in the gap maps.** The butadiene CAS(8,8) cut jumps 2.84 → 27.35 mHa
    between pyr 125 and 130, and the CAS(12,12) cut drops 28.72 → 7.04 between 130 and 135. These
    are branch changes, not cone structure, and they sit near the region the control loops occupy.
