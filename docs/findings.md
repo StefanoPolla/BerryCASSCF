@@ -280,7 +280,60 @@ larger active space has more freedom to rearrange, so the wavefunction turns fas
 same loop. This is a statement about *loop resolution*, not about whether the active space can
 describe the physics, and the two must not be conflated.
 
-## 7. Methodological results that are not about active spaces
+## 7. One update per point versus converging each point
+
+arXiv:2304.06070 takes **one parameter update per loop point** rather than optimizing to
+convergence, on the argument that updates are the cost and a fixed budget is better spent on more
+points with fewer updates each. This package converges every point. Both were run on the same
+loops (`notebooks/stepping_comparison.ipynb`, 96 runs over two loops, two active spaces, eight
+discretizations and three update budgets).
+
+**The paper's argument holds in the currency it is stated in.** At a fixed number of parameter
+updates, single-stepping buys a finer loop, and the discretization error is what limits accuracy:
+
+| budget (updates) | converged | single-step | advantage |
+|---|---|---|---|
+| 500 | N=13, 1−\|Π\| = 0.348 | N=97, 1−\|Π\| = 0.056 | **6.3x** |
+| 900 | N=25, 1−\|Π\| = 0.199 | N=97, 1−\|Π\| = 0.056 | 3.6x |
+
+**In wall time the advantage is real but roughly halves**, to 1.9–2.3x. The cost decomposition
+says why: fitting `wall ≈ a·(points) + b·(updates)` separates the per-point overhead — integrals,
+the AO→MO transformation, the mean-field solve — from the work that scales with updates. That
+overhead does not shrink when fewer updates are taken per point, so doubling the number of points
+doubles it regardless.
+
+| | per-point overhead | per-update | ratio | overhead share of a single-step run |
+|---|---|---|---|---|
+| CAS(2,2) | 33.6 ms | 2.3 ms | 14.4 | 67% |
+| CAS(6,6) | 75.2 ms | 19.4 ms | 3.9 | 26% |
+
+**The advantage grows with the active space.** The overhead-to-update ratio falls from 14.4 to 3.9
+between CAS(2,2) and CAS(6,6), because the fixed per-point work is roughly unchanged while each
+update gets much more expensive. Extrapolating, in the large-active-space regime the classical
+cost model converges toward the quantum one and the paper's reasoning should hold in wall time
+too — though two active spaces is not enough to establish that limit, and it is stated here as an
+expectation rather than a result.
+
+**The lag vanishes steeply with refinement.** `1 − |ω|`, the failure of the transported state to
+return to itself around a closed loop, scales as `N^-6.4` at CAS(2,2) and `N^-4.4` at CAS(6,6).
+It is exactly zero for converged continuation by construction. That steepness is why
+single-stepping is safe at moderate N: the accumulated drift collapses much faster than the
+discretization error it competes with.
+
+**Neither mode ever produced a wrong Z2 answer.** Of 96 runs, 94 passed the checks and all 94 were
+correct; the two refusals were single-step at N = 9, where the endpoint lag reached 0.47 and 0.61
+and the check refused rather than returning a sign. The cheap mode fails loudly, which is what
+makes it safe to use.
+
+**So the methodological difference is understood and quantified.** On hardware, where updates are
+the currency, single-stepping is the right choice and the paper is right to make it. Classically
+the per-point overhead pulls the optimum toward fewer, better-converged points for small active
+spaces, and back toward the paper's choice as the active space grows. Converging every point, as
+this package does, costs a factor of a few in wall time and buys an endpoint fidelity of 1e-10
+rather than 1e-4 — worth it while the calculations are cheap, and not obviously worth it once they
+are not.
+
+## 8. Methodological results that are not about active spaces
 
 **Locating an intersection: fit the square of the gap.** Near a conical intersection the gap is
 linear, so a cut through the region is a V and a parabola fitted to the *gap* is biased toward the

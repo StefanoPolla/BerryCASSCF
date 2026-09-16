@@ -215,7 +215,8 @@ berrycasscf/
   store.py         JSON/NPZ records
   report.py        result tables and stability verdicts
 examples/          experiment drivers (see "Running the benchmark")
-notebooks/         formaldimine_benchmark.ipynb, active_space_study.ipynb
+notebooks/         formaldimine_benchmark.ipynb, active_space_study.ipynb,
+                   stepping_comparison.ipynb
 slurm/             batch templates for the cluster
 docs/              plan, provenance, results, limitations, compute, progress, follow-up
 tests/             pytest suite
@@ -262,6 +263,7 @@ sbatch --export=ALL,BASIS="6-31g*",CAS="6,6",NPOINTS="17 25" slurm/fulvene_berry
 | [docs/compute.md](docs/compute.md) | measured costs, cluster jobs, scaling guidance |
 | [docs/active_space.md](docs/active_space.md) | how large an active space each method needs |
 | [docs/butadiene.md](docs/butadiene.md) | the third system, its CI search, and why nothing converges |
+| [docs/findings.md](docs/findings.md) | consolidated observations across all systems |
 | [docs/followup.md](docs/followup.md) | fulvene: status and how to run it |
 | [docs/progress.md](docs/progress.md) | dated progress log |
 

@@ -252,6 +252,1583 @@
       "phase": "non-trivial (pi)",
       "status": "OK",
       "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 49,
+      "micro": 422,
+      "macro": 106,
+      "wall": 2.8199050426483154,
+      "endpoint_abs": 0.9999999993516746,
+      "product_abs": 0.8931055861516024,
+      "product": -0.8931055861516024,
+      "min_abs_overlap": 0.996247535515053,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 65,
+      "micro": 550,
+      "macro": 138,
+      "wall": 3.637082815170288,
+      "endpoint_abs": 0.9999999998364177,
+      "product_abs": 0.9183314716071848,
+      "product": -0.9183314716071848,
+      "min_abs_overlap": 0.9979173450915533,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 97,
+      "micro": 806,
+      "macro": 202,
+      "wall": 5.264136075973511,
+      "endpoint_abs": 0.9999999999083353,
+      "product_abs": 0.9445190298990425,
+      "product": -0.9445190298990425,
+      "min_abs_overlap": 0.9990768287705428,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 9,
+      "micro": 70,
+      "macro": 18,
+      "wall": 0.5765109062194824,
+      "endpoint_abs": 0.5326875893635716,
+      "product_abs": 0.25908352958612735,
+      "product": -0.25908352958612735,
+      "min_abs_overlap": 0.9202852235763345,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 13,
+      "micro": 86,
+      "macro": 22,
+      "wall": 0.7733709812164307,
+      "endpoint_abs": 0.9471891911816167,
+      "product_abs": 0.6146694191697744,
+      "product": -0.6146694191697744,
+      "min_abs_overlap": 0.9525459176325086,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 17,
+      "micro": 102,
+      "macro": 26,
+      "wall": 0.8857021331787109,
+      "endpoint_abs": 0.9931394403046063,
+      "product_abs": 0.7164130218347893,
+      "product": -0.7164130218347893,
+      "min_abs_overlap": 0.9766306794124112,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 25,
+      "micro": 134,
+      "macro": 34,
+      "wall": 1.2331981658935547,
+      "endpoint_abs": 0.9997602154767252,
+      "product_abs": 0.8023551463613245,
+      "product": -0.8023551463613245,
+      "min_abs_overlap": 0.9883662124402276,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 33,
+      "micro": 166,
+      "macro": 42,
+      "wall": 1.5275211334228516,
+      "endpoint_abs": 0.9999547018622008,
+      "product_abs": 0.8455085760133028,
+      "product": -0.8455085760133028,
+      "min_abs_overlap": 0.9920701223764079,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 49,
+      "micro": 230,
+      "macro": 58,
+      "wall": 2.302016019821167,
+      "endpoint_abs": 0.9999944379331684,
+      "product_abs": 0.8929371927544157,
+      "product": -0.8929371927544157,
+      "min_abs_overlap": 0.9959965976075784,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 65,
+      "micro": 294,
+      "macro": 74,
+      "wall": 2.946135997772217,
+      "endpoint_abs": 0.9999987131375985,
+      "product_abs": 0.9182177849302113,
+      "product": -0.9182177849302113,
+      "min_abs_overlap": 0.997746285646211,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 97,
+      "micro": 422,
+      "macro": 106,
+      "wall": 4.092742919921875,
+      "endpoint_abs": 0.9999998283803311,
+      "product_abs": 0.9444803662715693,
+      "product": -0.9444803662715693,
+      "min_abs_overlap": 0.9990140951366532,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 9,
+      "micro": 232,
+      "macro": 82,
+      "wall": 1.0319302082061768,
+      "endpoint_abs": 0.9999999898560645,
+      "product_abs": 0.8067328868658548,
+      "product": 0.8067328868658548,
+      "min_abs_overlap": 0.9653127672495775,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 13,
+      "micro": 308,
+      "macro": 107,
+      "wall": 1.3016958236694336,
+      "endpoint_abs": 0.9999999891456308,
+      "product_abs": 0.8586778535737494,
+      "product": 0.8586778535737494,
+      "min_abs_overlap": 0.9783558774041888,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 17,
+      "micro": 400,
+      "macro": 145,
+      "wall": 1.6030693054199219,
+      "endpoint_abs": 0.9999999884905812,
+      "product_abs": 0.8890760823082438,
+      "product": 0.8890760823082438,
+      "min_abs_overlap": 0.9855587262860347,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 25,
+      "micro": 565,
+      "macro": 214,
+      "wall": 2.181265115737915,
+      "endpoint_abs": 0.9999999903379397,
+      "product_abs": 0.9226511295039413,
+      "product": 0.9226511295039413,
+      "min_abs_overlap": 0.9917248254973288,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 33,
+      "micro": 722,
+      "macro": 278,
+      "wall": 2.8715319633483887,
+      "endpoint_abs": 0.9999999903417816,
+      "product_abs": 0.940688499819293,
+      "product": 0.940688499819293,
+      "min_abs_overlap": 0.9946477539200296,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 49,
+      "micro": 986,
+      "macro": 376,
+      "wall": 3.9863882064819336,
+      "endpoint_abs": 0.9999999891794875,
+      "product_abs": 0.959584127444925,
+      "product": 0.959584127444925,
+      "min_abs_overlap": 0.9974123374377996,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 65,
+      "micro": 1247,
+      "macro": 474,
+      "wall": 4.9950902462005615,
+      "endpoint_abs": 0.9999999890418625,
+      "product_abs": 0.9693584255990081,
+      "product": 0.9693584255990081,
+      "min_abs_overlap": 0.9985173323850567,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 97,
+      "micro": 1750,
+      "macro": 672,
+      "wall": 7.171825885772705,
+      "endpoint_abs": 0.9999999904187127,
+      "product_abs": 0.9793519338070273,
+      "product": 0.9793519338070273,
+      "min_abs_overlap": 0.9993331498024802,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 9,
+      "micro": 128,
+      "macro": 38,
+      "wall": 0.6680948734283447,
+      "endpoint_abs": 0.9987687325839669,
+      "product_abs": 0.8073426852056828,
+      "product": 0.8073426852056828,
+      "min_abs_overlap": 0.9678862095369126,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 13,
+      "micro": 160,
+      "macro": 46,
+      "wall": 0.8569109439849854,
+      "endpoint_abs": 0.9995703230399493,
+      "product_abs": 0.8581774380164974,
+      "product": 0.8581774380164974,
+      "min_abs_overlap": 0.9804868740291479,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 17,
+      "micro": 192,
+      "macro": 54,
+      "wall": 1.0485787391662598,
+      "endpoint_abs": 0.9997243990126925,
+      "product_abs": 0.8886705642315585,
+      "product": 0.8886705642315585,
+      "min_abs_overlap": 0.9872437700726107,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 25,
+      "micro": 256,
+      "macro": 70,
+      "wall": 1.4890308380126953,
+      "endpoint_abs": 0.9998577038220313,
+      "product_abs": 0.9224135336740247,
+      "product": 0.9224135336740247,
+      "min_abs_overlap": 0.9923990294518805,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 33,
+      "micro": 320,
+      "macro": 86,
+      "wall": 1.876465082168579,
+      "endpoint_abs": 0.9999232885040741,
+      "product_abs": 0.94053967656441,
+      "product": 0.94053967656441,
+      "min_abs_overlap": 0.9949232446456109,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 49,
+      "micro": 447,
+      "macro": 118,
+      "wall": 2.66749906539917,
+      "endpoint_abs": 0.9999650794042798,
+      "product_abs": 0.9595148282341965,
+      "product": 0.9595148282341965,
+      "min_abs_overlap": 0.9974608821331938,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 65,
+      "micro": 575,
+      "macro": 150,
+      "wall": 3.4837229251861572,
+      "endpoint_abs": 0.9999801931812902,
+      "product_abs": 0.9693190299380922,
+      "product": 0.9693190299380922,
+      "min_abs_overlap": 0.998525025466363,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 97,
+      "micro": 828,
+      "macro": 214,
+      "wall": 5.066681146621704,
+      "endpoint_abs": 0.9999911134206383,
+      "product_abs": 0.9793345534415209,
+      "product": 0.9793345534415209,
+      "min_abs_overlap": 0.9993359106372641,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 9,
+      "micro": 96,
+      "macro": 30,
+      "wall": 0.565770149230957,
+      "endpoint_abs": 0.9903456307954652,
+      "product_abs": 0.8117587774394148,
+      "product": 0.8117587774394148,
+      "min_abs_overlap": 0.9695264411954168,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 13,
+      "micro": 112,
+      "macro": 34,
+      "wall": 0.7663149833679199,
+      "endpoint_abs": 0.9935774013030202,
+      "product_abs": 0.8563919739587773,
+      "product": 0.8563919739587773,
+      "min_abs_overlap": 0.9847121155443392,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 17,
+      "micro": 128,
+      "macro": 38,
+      "wall": 0.9161522388458252,
+      "endpoint_abs": 0.9957800240354818,
+      "product_abs": 0.8861006675198265,
+      "product": 0.8861006675198265,
+      "min_abs_overlap": 0.990916216454115,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 25,
+      "micro": 160,
+      "macro": 46,
+      "wall": 1.210832118988037,
+      "endpoint_abs": 0.998139650148663,
+      "product_abs": 0.9205002566236303,
+      "product": 0.9205002566236303,
+      "min_abs_overlap": 0.9940927232204133,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 33,
+      "micro": 192,
+      "macro": 54,
+      "wall": 1.5272269248962402,
+      "endpoint_abs": 0.9987222957616072,
+      "product_abs": 0.9391859783962383,
+      "product": 0.9391859783962383,
+      "min_abs_overlap": 0.9956500255676152,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 49,
+      "micro": 256,
+      "macro": 70,
+      "wall": 2.5460188388824463,
+      "endpoint_abs": 0.999453625642165,
+      "product_abs": 0.9588166359644565,
+      "product": 0.9588166359644565,
+      "min_abs_overlap": 0.9976210470852608,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 65,
+      "micro": 320,
+      "macro": 86,
+      "wall": 2.8130550384521484,
+      "endpoint_abs": 0.9996851502634049,
+      "product_abs": 0.9689004407931386,
+      "product": 0.9689004407931386,
+      "min_abs_overlap": 0.9985699134487388,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "single-step",
+      "n_points": 97,
+      "micro": 448,
+      "macro": 118,
+      "wall": 4.10491681098938,
+      "endpoint_abs": 0.9998585398837724,
+      "product_abs": 0.9791409082265438,
+      "product": 0.9791409082265438,
+      "min_abs_overlap": 0.999339346386631,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 9,
+      "micro": 581,
+      "macro": 158,
+      "wall": 13.854852199554443,
+      "endpoint_abs": 0.999999998629346,
+      "product_abs": 0.5226635994970465,
+      "product": -0.5226635994970465,
+      "min_abs_overlap": 0.8617258160074315,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 13,
+      "micro": 735,
+      "macro": 205,
+      "wall": 17.03636407852173,
+      "endpoint_abs": 0.9999999986686525,
+      "product_abs": 0.6398771618510993,
+      "product": -0.6398771618510993,
+      "min_abs_overlap": 0.9301800476309601,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 17,
+      "micro": 851,
+      "macro": 234,
+      "wall": 19.650667905807495,
+      "endpoint_abs": 0.9999999988804897,
+      "product_abs": 0.7113108349133919,
+      "product": -0.7113108349133919,
+      "min_abs_overlap": 0.9562062554693734,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 25,
+      "micro": 1090,
+      "macro": 309,
+      "wall": 24.61846899986267,
+      "endpoint_abs": 0.9999999988622374,
+      "product_abs": 0.793547663659611,
+      "product": -0.793547663659611,
+      "min_abs_overlap": 0.9782031245463034,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 33,
+      "micro": 1321,
+      "macro": 376,
+      "wall": 29.602898836135864,
+      "endpoint_abs": 0.999999999103663,
+      "product_abs": 0.8393934593889151,
+      "product": -0.8393934593889151,
+      "min_abs_overlap": 0.9873627976870608,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 49,
+      "micro": 1768,
+      "macro": 513,
+      "wall": 39.620935916900635,
+      "endpoint_abs": 0.9999999990297914,
+      "product_abs": 0.8888253140824128,
+      "product": -0.8888253140824128,
+      "min_abs_overlap": 0.9942556482763047,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 65,
+      "micro": 2193,
+      "macro": 645,
+      "wall": 46.588298082351685,
+      "endpoint_abs": 0.9999999986885177,
+      "product_abs": 0.9150013181988526,
+      "product": -0.9150013181988526,
+      "min_abs_overlap": 0.9967179923000062,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 97,
+      "micro": 2987,
+      "macro": 891,
+      "wall": 62.919069051742554,
+      "endpoint_abs": 0.9999999990111093,
+      "product_abs": 0.9422184341941152,
+      "product": -0.9422184341941152,
+      "min_abs_overlap": 0.9985231966554713,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 9,
+      "micro": 296,
+      "macro": 75,
+      "wall": 6.545114040374756,
+      "endpoint_abs": 0.9849979086967011,
+      "product_abs": 0.5185296488962933,
+      "product": -0.5185296488962933,
+      "min_abs_overlap": 0.869853438107048,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 13,
+      "micro": 328,
+      "macro": 83,
+      "wall": 7.462666034698486,
+      "endpoint_abs": 0.9922315202984702,
+      "product_abs": 0.636110166361894,
+      "product": -0.636110166361894,
+      "min_abs_overlap": 0.9331559744372766,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 17,
+      "micro": 360,
+      "macro": 91,
+      "wall": 8.460357904434204,
+      "endpoint_abs": 0.9996029514674467,
+      "product_abs": 0.7084155929485789,
+      "product": -0.7084155929485789,
+      "min_abs_overlap": 0.957541762925065,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 25,
+      "micro": 424,
+      "macro": 107,
+      "wall": 10.228228092193604,
+      "endpoint_abs": 0.9999748645677555,
+      "product_abs": 0.7922952621535746,
+      "product": -0.7922952621535746,
+      "min_abs_overlap": 0.9790422029556338,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 33,
+      "micro": 488,
+      "macro": 123,
+      "wall": 12.053972959518433,
+      "endpoint_abs": 0.9999972183123313,
+      "product_abs": 0.8397574160662266,
+      "product": -0.8397574160662266,
+      "min_abs_overlap": 0.9880368866110876,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 49,
+      "micro": 616,
+      "macro": 155,
+      "wall": 15.732324838638306,
+      "endpoint_abs": 0.9999980514144999,
+      "product_abs": 0.8889267199836715,
+      "product": -0.8889267199836715,
+      "min_abs_overlap": 0.9943270100513797,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 65,
+      "micro": 744,
+      "macro": 187,
+      "wall": 19.284449100494385,
+      "endpoint_abs": 0.9999995097309122,
+      "product_abs": 0.9150527230790951,
+      "product": -0.9150527230790951,
+      "min_abs_overlap": 0.9967612129730206,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 97,
+      "micro": 1000,
+      "macro": 251,
+      "wall": 26.819231033325195,
+      "endpoint_abs": 0.9999999455502301,
+      "product_abs": 0.9422361481475918,
+      "product": -0.9422361481475918,
+      "min_abs_overlap": 0.9985314101807264,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 9,
+      "micro": 264,
+      "macro": 67,
+      "wall": 5.986877202987671,
+      "endpoint_abs": 0.394762757704236,
+      "product_abs": 0.19600113760545224,
+      "product": -0.19600113760545224,
+      "min_abs_overlap": 0.9453672586507217,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 13,
+      "micro": 280,
+      "macro": 71,
+      "wall": 6.663363695144653,
+      "endpoint_abs": 0.9147584750662155,
+      "product_abs": 0.585267034483704,
+      "product": -0.585267034483704,
+      "min_abs_overlap": 0.9477062070392794,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 17,
+      "micro": 296,
+      "macro": 75,
+      "wall": 7.348130941390991,
+      "endpoint_abs": 0.9722616262654891,
+      "product_abs": 0.6902564705113701,
+      "product": -0.6902564705113701,
+      "min_abs_overlap": 0.9622340330034932,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 25,
+      "micro": 328,
+      "macro": 83,
+      "wall": 8.682523250579834,
+      "endpoint_abs": 0.9946027131963385,
+      "product_abs": 0.7848014532569365,
+      "product": -0.7848014532569365,
+      "min_abs_overlap": 0.981403262423069,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 33,
+      "micro": 360,
+      "macro": 91,
+      "wall": 9.835499048233032,
+      "endpoint_abs": 0.9991026083061934,
+      "product_abs": 0.8356947961748131,
+      "product": -0.8356947961748131,
+      "min_abs_overlap": 0.9872888499095225,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 49,
+      "micro": 424,
+      "macro": 107,
+      "wall": 12.421295166015625,
+      "endpoint_abs": 0.9996826281069752,
+      "product_abs": 0.8888814032362623,
+      "product": -0.8888814032362623,
+      "min_abs_overlap": 0.9946542112749442,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 65,
+      "micro": 488,
+      "macro": 123,
+      "wall": 14.805304050445557,
+      "endpoint_abs": 0.9999164160061221,
+      "product_abs": 0.9150773744020215,
+      "product": -0.9150773744020215,
+      "min_abs_overlap": 0.9968431082176933,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 97,
+      "micro": 616,
+      "macro": 155,
+      "wall": 19.697309017181396,
+      "endpoint_abs": 0.9999844857758735,
+      "product_abs": 0.9422499313124698,
+      "product": -0.9422499313124698,
+      "min_abs_overlap": 0.9985520035864661,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 9,
+      "micro": 403,
+      "macro": 111,
+      "wall": 9.754179954528809,
+      "endpoint_abs": 0.9999999999405391,
+      "product_abs": 0.7520961288392618,
+      "product": 0.7520961288392618,
+      "min_abs_overlap": 0.9553251573234635,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 13,
+      "micro": 524,
+      "macro": 145,
+      "wall": 12.52269697189331,
+      "endpoint_abs": 0.9999999999981155,
+      "product_abs": 0.8165301031260483,
+      "product": 0.8165301031260483,
+      "min_abs_overlap": 0.9704226438144792,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 17,
+      "micro": 652,
+      "macro": 185,
+      "wall": 15.262898921966553,
+      "endpoint_abs": 0.9999999999528846,
+      "product_abs": 0.8551913563932438,
+      "product": 0.8551913563932438,
+      "min_abs_overlap": 0.9794718579117322,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 25,
+      "micro": 873,
+      "macro": 249,
+      "wall": 19.986037015914917,
+      "endpoint_abs": 0.9999999998941095,
+      "product_abs": 0.8983990503551674,
+      "product": 0.8983990503551674,
+      "min_abs_overlap": 0.9872870972546454,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 33,
+      "micro": 1083,
+      "macro": 310,
+      "wall": 23.932835817337036,
+      "endpoint_abs": 0.9999999999249984,
+      "product_abs": 0.921838542479079,
+      "product": 0.921838542479079,
+      "min_abs_overlap": 0.9912820046572665,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 49,
+      "micro": 1495,
+      "macro": 436,
+      "wall": 32.74241089820862,
+      "endpoint_abs": 0.9999999999436489,
+      "product_abs": 0.9465599418019074,
+      "product": 0.9465599418019074,
+      "min_abs_overlap": 0.9956317199750954,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 65,
+      "micro": 1916,
+      "macro": 572,
+      "wall": 41.449788331985474,
+      "endpoint_abs": 0.9999999999109981,
+      "product_abs": 0.9594159199296781,
+      "product": 0.9594159199296781,
+      "min_abs_overlap": 0.997483849895185,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "converged",
+      "n_points": 97,
+      "micro": 2650,
+      "macro": 800,
+      "wall": 57.04833483695984,
+      "endpoint_abs": 0.9999999999801348,
+      "product_abs": 0.9726048916744859,
+      "product": 0.9726048916744859,
+      "min_abs_overlap": 0.9988681709493862,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 9,
+      "micro": 212,
+      "macro": 56,
+      "wall": 4.903409957885742,
+      "endpoint_abs": 0.9894648658806695,
+      "product_abs": 0.7570449313130201,
+      "product": 0.7570449313130201,
+      "min_abs_overlap": 0.9579089410143522,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 13,
+      "micro": 244,
+      "macro": 64,
+      "wall": 5.904635190963745,
+      "endpoint_abs": 0.9930250242702525,
+      "product_abs": 0.8145887879519195,
+      "product": 0.8145887879519195,
+      "min_abs_overlap": 0.9790644452208808,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 17,
+      "micro": 276,
+      "macro": 72,
+      "wall": 6.79996395111084,
+      "endpoint_abs": 0.9952390295893804,
+      "product_abs": 0.851833518622868,
+      "product": 0.851833518622868,
+      "min_abs_overlap": 0.9868351640140569,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 25,
+      "micro": 340,
+      "macro": 88,
+      "wall": 8.608332872390747,
+      "endpoint_abs": 0.9973163579221864,
+      "product_abs": 0.895360375318501,
+      "product": 0.895360375318501,
+      "min_abs_overlap": 0.9911128588011419,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 33,
+      "micro": 404,
+      "macro": 104,
+      "wall": 10.444867849349976,
+      "endpoint_abs": 0.9983226382718833,
+      "product_abs": 0.9196464558564219,
+      "product": 0.9196464558564219,
+      "min_abs_overlap": 0.9931653772078556,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 49,
+      "micro": 532,
+      "macro": 136,
+      "wall": 14.066331148147583,
+      "endpoint_abs": 0.9991896870457321,
+      "product_abs": 0.9453791843539693,
+      "product": 0.9453791843539693,
+      "min_abs_overlap": 0.9960881875020009,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 65,
+      "micro": 660,
+      "macro": 168,
+      "wall": 17.662595987319946,
+      "endpoint_abs": 0.9995332968865035,
+      "product_abs": 0.9587143343830244,
+      "product": 0.9587143343830244,
+      "min_abs_overlap": 0.997596447289538,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "two-step",
+      "n_points": 97,
+      "micro": 916,
+      "macro": 232,
+      "wall": 24.849431037902832,
+      "endpoint_abs": 0.9997925879162729,
+      "product_abs": 0.972287381817242,
+      "product": 0.972287381817242,
+      "min_abs_overlap": 0.9988827615368846,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 9,
+      "micro": 180,
+      "macro": 48,
+      "wall": 4.256407976150513,
+      "endpoint_abs": 0.9718244633935977,
+      "product_abs": 0.7725020833574602,
+      "product": 0.7725020833574602,
+      "min_abs_overlap": 0.9601323273615023,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 13,
+      "micro": 196,
+      "macro": 52,
+      "wall": 4.940288066864014,
+      "endpoint_abs": 0.9749457327385231,
+      "product_abs": 0.8156145101192148,
+      "product": 0.8156145101192148,
+      "min_abs_overlap": 0.9789333939330793,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 17,
+      "micro": 212,
+      "macro": 56,
+      "wall": 5.640136003494263,
+      "endpoint_abs": 0.9799761810924419,
+      "product_abs": 0.8470966736416666,
+      "product": 0.8470966736416666,
+      "min_abs_overlap": 0.9878159672044018,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 25,
+      "micro": 244,
+      "macro": 64,
+      "wall": 6.7929041385650635,
+      "endpoint_abs": 0.9867953215583797,
+      "product_abs": 0.8882243619915564,
+      "product": 0.8882243619915564,
+      "min_abs_overlap": 0.9941003454519484,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 33,
+      "micro": 276,
+      "macro": 72,
+      "wall": 7.911911964416504,
+      "endpoint_abs": 0.9908037591403488,
+      "product_abs": 0.9130508600460607,
+      "product": 0.9130508600460607,
+      "min_abs_overlap": 0.99517881862612,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 49,
+      "micro": 340,
+      "macro": 88,
+      "wall": 10.501415967941284,
+      "endpoint_abs": 0.9948718036375038,
+      "product_abs": 0.9409013222254913,
+      "product": 0.9409013222254913,
+      "min_abs_overlap": 0.9968788410762758,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 65,
+      "micro": 404,
+      "macro": 104,
+      "wall": 12.896802186965942,
+      "endpoint_abs": 0.9968122903071602,
+      "product_abs": 0.9556691775949473,
+      "product": 0.9556691775949473,
+      "min_abs_overlap": 0.9979152010175271,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_1",
+      "cas": [
+        6,
+        6
+      ],
+      "mode": "single-step",
+      "n_points": 97,
+      "micro": 532,
+      "macro": 136,
+      "wall": 18.041308879852295,
+      "endpoint_abs": 0.9984663252868805,
+      "product_abs": 0.9707268248503557,
+      "product": 0.9707268248503557,
+      "min_abs_overlap": 0.998944094174701,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "all_converged": false
     }
   ]
 }

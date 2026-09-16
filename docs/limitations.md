@@ -27,11 +27,13 @@
   state-specific orbitals within the tracked active space and exists only to warn about root
   flipping during continuation. In CAS(2,2) it is around 1 Ha because the second root there is a
   doubly-excited configuration. Use the SA scan for physical gaps.
-* **Single-Newton-step mode is not implemented.** The auto_oo tutorial deliberately takes one
-  damped Newton step per loop point to mimic a quantum-device budget; this package converges
-  CASSCF at every point instead. That makes "the tracked state is *the* state-specific CASSCF
-  ground state" well defined, but it does not reproduce the paper's convergence analysis, and
-  the package cannot currently be used to study the single-step regime.
+* ~~Single-Newton-step mode is not implemented.~~ **Now implemented and measured.** Setting
+  `CasConfig.max_cycle_macro` with `ContinuationConfig(require_converged=False,
+  use_fallback=False)` reproduces the single-update regime of arXiv:2304.06070, and
+  `docs/findings.md` §7 quantifies the trade-off against converged continuation. The remaining
+  difference from the paper is that the update is a CASSCF macro-iteration rather than a damped
+  Newton step on a combined (theta, kappa) parameter vector, so the *cost per update* is not
+  identical even though the regime is.
 
 ## Numerical limitations
 
