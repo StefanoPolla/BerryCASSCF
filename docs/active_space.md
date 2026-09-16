@@ -100,7 +100,23 @@ precisely where the 2D map was corrupted and where the reported observable does 
 
 **Remaining limitations.** The symmetry test is necessary, not sufficient: a solver that lands on
 the same *wrong* branch at both mirror points passes it. It catches inconsistency, not consistent
-error. And it is a symmetry ethylene happens to possess; formaldimine's grid is centred at
+error.
+
+This is sharper than it first appears. A cold start should *automatically* respect the symmetry:
+mirror-image geometries give integral matrices related by a signed permutation, PySCF's `minao`
+initial guess is built from atomic densities and transforms the same way, and everything after
+that is deterministic — so the two solves are the same calculation in different coordinates.
+The measured cold asymmetries (1e-11 to 3e-05 mHa, i.e. at or just above the 1e-09 Ha
+convergence threshold) are consistent with exact equivariance limited only by convergence, not
+with any real asymmetry.
+
+So **for a cold-started scan the mirror test is close to vacuous** — it is guaranteed to pass by
+construction and mostly re-confirms determinism. Its diagnostic power was against the *warm*
+sweep, where chaining guesses along the path breaks the equivariance. Treating
+"mirror-symmetric" as evidence of solution *quality* would be a mistake: cold is symmetric and
+still lands 1.3e-03 Ha above the best solution found at CAS(4,4). The places it could genuinely
+fail are where the argument's premises break — a near-degenerate orbital ordering flipping which
+orbitals enter the active space, or a symmetry-broken SCF solution. And it is a symmetry ethylene happens to possess; formaldimine's grid is centred at
 `phi = 89.9` and so does not sample exact mirror pairs, which is why that system was checked a
 different way (cold against warm at identical geometries, agreeing to 2.5e-06 Ha).
 
