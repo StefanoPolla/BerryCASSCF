@@ -42,9 +42,19 @@ Butadiene, from fine 1-deg cuts refined with the cone model (no reference exists
 
 | CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
 |---|---|---|---|---|---|---|
-| pyr (deg) | 105.86 | 109.68 | 114.46 | 120.87 | 105.07 | 102.17 |
+| pyr (deg) | 105.86 | 109.68 | 114.46 † | 120.87 | 105.07 | 102.17 |
 | shift | — | +3.83 | +4.78 | +6.41 | **−15.80** | −2.90 |
-| closest approach (mHa) | 0.67 | 0.92 | **3.13** | 0.00 | 0.66 | 2.94 |
+| closest approach (mHa), 1-deg cut | 0.67 | 0.92 | 3.13 † | 0.00 | 0.66 | 2.94 |
+
+† The CAS(6,6) cut is **not a V**: it falls smoothly 6.53 → 0.85 mHa and then jumps to 4.18 mHa at
+the next point. That is a solution discontinuity, so its fitted position and closest approach are
+unreliable and the cone model does not apply there (residual 0.18, far above the ~0.05 of the
+clean rungs).
+
+The "closest approach" column must also be read with care: on a 1-deg grid it is dominated by
+resolution, not by how near the cut passes. Re-sampling at 0.25 deg drops CAS(4,4) from 0.92 to
+**0.098 mHa** and CAS(10,10) from 0.66 to **0.237 mHa**, both with cone-fit residuals near 1e-02 —
+so those cuts do pass essentially through a genuine intersection.
 
 Spread **18.7 deg**, and the top two rungs still differ by **2.90 deg** — above the 2-deg
 tolerance ethylene met at CAS(10,10), so the sequence has not settled even at the largest
@@ -84,7 +94,17 @@ four rungs: accurate from CAS(2,2), stable only from CAS(10,10).
 |---|---|---|
 | formaldimine | CAS(2,2) | correct (π on the enclosing loop, 0 on both controls) |
 | ethylene | CAS(2,2) | correct |
-| butadiene | CAS(2,2) | correct at every rung tested |
+| butadiene | CAS(2,2) | correct at every rung, CAS(2,2) through CAS(10,10) |
+
+Butadiene's CAS(2,2) is the sharpest version of this. It is **below the pi space** and not a
+chemically defensible active space for the molecule, yet loop transport returns π on the
+enclosing loop and 0 on both controls, with *higher* adjacent overlaps (0.92 at N=13, 0.96 at
+N=21) than any larger rung. The topological answer survived an active space that cannot represent
+the pi system.
+
+That cuts both ways, and the second reading matters: if an active space this poor still gives the
+same answer, the answer is either very robust or insensitive to something it ought to be sensitive
+to. Nothing in the present data separates those.
 
 The cost asymmetry is large: loop transport at the smallest active space is seconds, against hours
 for the gap scan ladder.
@@ -224,5 +244,13 @@ compared unrelated geometries. Both facts are locked in by tests.
 3. **Solution discontinuities in the gap maps.** The butadiene CAS(8,8) cut jumps 2.84 → 27.35 mHa
    between pyr 125 and 130, and the CAS(12,12) cut drops 28.72 → 7.04 between 130 and 135. These
    are branch changes, not cone structure, and they sit near the region the control loops occupy.
-4. **Does the intersection really sit at tw = 90 for every rung?** Assumed from a five-point grid
-   with no symmetry argument for butadiene; being tested directly.
+4. ~~Does the intersection really sit at tw = 90 for every rung?~~ **Tested and it holds.** Fine
+   1-deg cuts in `tw` give 89.982 (CAS(6,6)), 89.992 (CAS(8,8)) and 89.958 (CAS(12,12)) against an
+   assumed 90. Butadiene has no symmetry forcing this, so it is an empirical result rather than a
+   consequence — and CAS(6,6), which looked like the most likely exception, is not one.
+5. **Does the gap actually reach zero in this plane, for every rung?** Sub-degree cuts say yes
+   where they have been run: CAS(4,4) reaches 0.098 mHa and CAS(10,10) 0.237 mHa, with cone-fit
+   residuals near 1e-02. On a 1-deg grid the same rungs looked like they bottomed out near 1-3 mHa,
+   so **the apparent "closest approach" is a resolution artifact** unless the cut is fine enough.
+   CAS(6,6) and CAS(12,12) are being checked at sub-degree resolution; until then their positions
+   carry that caveat.

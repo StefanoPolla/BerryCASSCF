@@ -476,7 +476,7 @@ Full account: `docs/butadiene.md`.
 
 code(r"""
 BUTA = os.path.join(ROOT, "results", "butadiene")
-BUTA_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
+BUTA_LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 
 def load_buta(ne, ncas):
     hits = sorted(glob.glob(os.path.join(BUTA, f"butadiene_scan_cas{ne}-{ncas}_*.npz")))
@@ -646,6 +646,165 @@ if buta_rows:
 else:
     print("\nNo butadiene Berry records yet "
           "(python examples/run_butadiene_study.py berry).")
+""")
+
+md(r"""
+## Drift of the intersection position with active space
+
+The picture the study comes down to. Positions come from fitting `gap`&sup2;, which is exactly a
+parabola for any cut through a cone, rather than fitting a parabola to the gap itself &mdash; the
+gap is a V near an intersection, and a parabola through three points of a V is dragged toward the
+grid minimum. Faint markers are the old, biased estimates, so the size of that correction is
+visible rather than asserted.
+
+For butadiene the shaded band is the extent of the enclosing loop `B_x` in `pyr`. A rung whose
+marker falls outside the band places its **gap-scan** intersection outside the loop it is being
+asked about.
+""")
+
+code(r"""
+from berrycasscf.refine import cone_apex, parabolic_apex
+
+def fine_position(ne, ncas):
+    p = os.path.join(BUTA, f"butadiene_refinepyr_cas{ne}-{ncas}.npz")
+    if os.path.exists(p):
+        r = ScanResult.load(p)
+        if np.isfinite(r.e_states).all():
+            return cone_apex(r.phis, r.gap[0] * 1e3, window=None)
+    return None
+
+def coarse_positions(scan):
+    i = int(np.unravel_index(np.nanargmin(scan.gap), scan.gap.shape)[0])
+    x, g = scan.phis, scan.gap[i] * 1e3
+    return cone_apex(x, g, window=3), parabolic_apex(x, g)
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.0))
+
+ax = axes[0]
+xs, cone_y, para_y = [], [], []
+for k, cas in enumerate(LADDER):
+    r = scans.get(cas)
+    if r is None:
+        continue
+    c, pp = coarse_positions(r)
+    xs.append(k); cone_y.append(c.position); para_y.append(pp.position)
+if xs:
+    ax.axhline(cone_y[-1], color="k", ls="--", lw=1.2,
+               label=f"CAS(12,12) reference ({cone_y[-1]:.1f})")
+    ax.plot(xs, para_y, "o", ms=5, mfc="none", color="grey", label="parabola on gap (biased)")
+    ax.plot(xs, cone_y, "o-", ms=7, color="tab:purple", label="cone fit")
+ax.set_xticks(range(len(LADDER)))
+ax.set_xticklabels([f"({a},{b})" for a, b in LADDER], rotation=30)
+ax.set_xlabel("active space"); ax.set_ylabel(r"intersection $\phi$ (deg)")
+ax.set_title("ethylene — exact reference available"); ax.legend(fontsize=7.5)
+
+ax = axes[1]
+xs, cone_y, para_y, fine_y = [], [], [], []
+for k, cas in enumerate(BUTA_LADDER):
+    r = buta.get(cas)
+    if r is None:
+        continue
+    c, pp = coarse_positions(r)
+    f = fine_position(*cas)
+    xs.append(k); cone_y.append(c.position); para_y.append(pp.position)
+    fine_y.append(f.position if f is not None else np.nan)
+if xs:
+    lo, hi = 101.85 - 18.0, 101.85 + 18.0
+    ax.axhspan(lo, hi, color="tab:red", alpha=0.10)
+    ax.axhline(101.85, color="tab:red", ls="--", lw=1.2, label="B$_x$ centre")
+    for edge in (lo, hi):
+        ax.axhline(edge, color="tab:red", ls=":", lw=1.4)
+    ax.text(0.02, hi + 0.6, "outside B$_x$", color="tab:red", fontsize=8,
+            transform=ax.get_yaxis_transform(), va="bottom")
+    ax.plot(xs, para_y, "o", ms=5, mfc="none", color="grey", label="parabola on gap (biased)")
+    ax.plot(xs, cone_y, "o-", ms=6, color="tab:orange", alpha=0.7, label="cone fit, coarse grid")
+    if np.isfinite(fine_y).any():
+        ax.plot(xs, fine_y, "s-", ms=7, color="tab:blue", label="cone fit, fine 1 deg cut")
+ax.set_xticks(range(len(BUTA_LADDER)))
+ax.set_xticklabels([f"({a},{b})" for a, b in BUTA_LADDER], rotation=30)
+ax.set_xlabel("active space"); ax.set_ylabel("intersection pyr (deg)")
+ax.set_title("butadiene — no reference exists"); ax.legend(fontsize=7.5)
+
+plt.tight_layout(); plt.show()
+""")
+
+md(r"""
+## Does it fail loudly?
+
+A method that returns a wrong answer confidently is worse than one that refuses. This probes the
+refusal behaviour at CAS(8,8), shrinking the loop toward the degeneracy and varying the
+discretization independently.
+
+The figure is built so it *can* embarrass the method. Hollow markers were **refused**; the
+annotation records what the worst of them would have reported. A refused run whose sign agrees
+with the well-resolved ones is a **cost** of the conservatism, not a save, and is counted as such.
+""")
+
+code(r"""
+fm_path = os.path.join(BUTA, "failure_modes.json")
+if os.path.exists(fm_path):
+    fm = json.load(open(fm_path))
+    runs = [r for r in fm["runs"] if r["kind"] == "enclosing"]
+    fig, ax = plt.subplots(figsize=(7.0, 4.2))
+    for n, mk, col in [(15, "o", "tab:red"), (31, "s", "tab:orange"), (61, "^", "tab:green")]:
+        sub = sorted([r for r in runs if r["n_points"] == n], key=lambda d: d["radius_pyr"])
+        if not sub:
+            continue
+        xr = [r["radius_pyr"] for r in sub]
+        yo = [r["min_abs_overlap"] for r in sub]
+        ok = [r["status"] == "OK" for r in sub]
+        ax.plot(xr, yo, "-", color=col, lw=1.2, alpha=0.7, label=f"N = {n}")
+        ax.scatter([x for x, o in zip(xr, ok) if o], [y for y, o in zip(yo, ok) if o],
+                   marker=mk, s=60, color=col, zorder=5)
+        ax.scatter([x for x, o in zip(xr, ok) if not o], [y for y, o in zip(yo, ok) if not o],
+                   marker=mk, s=60, facecolors="none", edgecolors=col, linewidths=1.9, zorder=5)
+    ax.axhline(0.80, color="crimson", ls="--", lw=1.4, label="continuity threshold")
+    worst = min(runs, key=lambda r: r["min_abs_overlap"])
+    ax.annotate(f"would have reported {worst['would_have_said']}"
+                f"  (product {worst['product']:+.3f})",
+                (worst["radius_pyr"], worst["min_abs_overlap"]),
+                xytext=(20, 25), textcoords="offset points", fontsize=8,
+                arrowprops=dict(arrowstyle="->", lw=1))
+    ax.set_xlabel("loop radius in pyr (deg)")
+    ax.set_ylabel(r"min $|\langle\Psi_{k-1}|\Psi_k\rangle|$")
+    ax.set_title("Filled = reported; hollow = refused by the continuity check")
+    ax.legend(fontsize=8); plt.tight_layout(); plt.show()
+
+    print(f"{'radius':>7} {'N':>4} {'min|ovl|':>9} {'product':>9}  outcome")
+    print("-" * 56)
+    for r in sorted(fm["runs"], key=lambda d: (d["kind"], d["radius_pyr"], d["n_points"])):
+        tag = "control" if r["kind"] != "enclosing" else f"{r['radius_pyr']:.0f}"
+        out = ("reported " + r["phase"].split()[0]) if r["status"] == "OK" \
+              else f"REFUSED (would say {r['would_have_said']})"
+        print(f"{tag:>7} {r['n_points']:>4} {r['min_abs_overlap']:9.3f} "
+              f"{r['product']:+9.4f}  {out}")
+
+    refused = [r for r in fm["runs"] if r["status"] != "OK"]
+    same = [r for r in refused if r["would_have_said"] == "pi"]
+    print(f"\n{len(refused)} of {len(fm['runs'])} refused; {len(same)} of those would have given "
+          "the same sign as the well-resolved runs — the price of erring toward refusal.")
+else:
+    print("Run: python examples/run_failure_modes.py")
+""")
+
+md(r"""
+Three things this establishes, and one it undermines.
+
+* **It catches wrong answers, not just imprecise ones.** Radius 6 at N=15 would have reported a
+  confident **trivial** verdict (+0.328), the opposite of every well-resolved loop. Refused.
+* **It separates "too coarse" from "too close".** Radius 8 is refused at N=15 and N=31, but its
+  sign never wavers (&minus;0.18, &minus;0.52, &minus;0.66) and it passes at N=61 &mdash; a pure
+  discretization problem. Radius 6's sign *flips* (+0.33, &minus;0.55, +0.57) and it never passes
+  twice.
+* **It refuses lost continuity, not proximity.** The displaced control encloses nothing but runs
+  close to the seam, and sails through at overlaps 0.95&ndash;0.99 with the correct trivial phase.
+
+And the undermining: **radius 6 at N=31 passed every per-run check and is probably wrong.** It
+reported &pi; at overlap 0.844; its neighbours at N=15 and N=61 both say 0. Since radius 8 reports
+&pi; reliably and radius 6 does not, the degeneracy most likely lies between their reaches, making
+0 the right answer there. No single run's checks caught this &mdash; what rejects it is the
+**stability criterion** demanding two discretizations that agree, which radius 6 never satisfies.
+The protocol is safe because the checks are layered, not because any one of them is sound.
 """)
 
 md(r"""
