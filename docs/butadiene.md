@@ -95,7 +95,12 @@ plane-reflection check at **exactly 0.0 mHa**.
 | CAS(6,6) | 114.81 | 6.162 mHa | +4.98 |
 | CAS(8,8) | 121.05 | 0.906 mHa | +6.24 |
 | CAS(10,10) | 105.04 | 0.255 mHa | **−16.01** |
-| CAS(12,12) | *(see notebook)* | | |
+| CAS(12,12) | 101.85 | 4.555 mHa | −3.19 |
+
+**Total spread: 19.2 degrees. The top two rungs still differ by 3.2 degrees** — above the 2-degree
+tolerance used for ethylene, so the sequence has not settled even at the largest affordable
+active space. Every rung sits at `tw = 90` and passes the plane-reflection check at exactly
+0.0 mHa, so this is the physics of truncation, not solver noise.
 
 CAS(12,12) is run on the single `tw = 90` row rather than the full grid: a cold solve there
 measured at **over 2.4 minutes per point** (853k determinants on 68 basis functions), so a
@@ -114,6 +119,28 @@ falls back by 16, spanning **16 degrees** in total with no sign of settling.
 
 This is a qualitatively worse situation than either earlier system. Formaldimine converged by
 CAS(4,4); ethylene was unstable until CAS(10,10) but had a full-valence reference to prove it.
-Butadiene is **still moving at CAS(10,10), with no exact reference available to say which rung
-(if any) is right**. On the evidence, the honest statement is that the state-averaged comparator
-is *not converged anywhere on the affordable ladder for this system*.
+Butadiene is **still moving at the top of the ladder, with no exact reference available to say
+which rung (if any) is right**. The honest statement is that the state-averaged comparator is
+*not converged anywhere on the affordable ladder for this system* — which is the clearest
+possible answer to "is there a system needing more than CAS(4,4)?": here even CAS(12,12) is not
+demonstrably enough.
+
+### A consequence for the Berry phase
+
+The loops are centred on the CAS(12,12) intersection at `pyr = 101.85`, with radius 18 degrees in
+`pyr`. Measuring each rung's own intersection against that centre:
+
+| CAS | displacement from loop centre | inside the 18 deg loop? |
+|---|---|---|
+| CAS(4,4) | 7.98 | yes |
+| CAS(6,6) | 12.96 | yes |
+| CAS(8,8) | **19.20** | **no — just outside** |
+| CAS(10,10) | 3.19 | yes |
+| CAS(12,12) | 0 | yes |
+
+On the first two systems the Berry phase was immune to the errors that defeated the comparator,
+because every active space still enclosed the intersection. Butadiene is the first case where
+that protection is lost: CAS(8,8) places the intersection *outside* the loop it is being asked
+about. If the Berry phase is honest, that rung should report a **trivial** phase while the others
+report pi — not because the method failed, but because at that active space the loop genuinely
+does not enclose anything. The Berry stage tests exactly this.
