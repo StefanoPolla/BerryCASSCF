@@ -28,6 +28,13 @@ The formaldimine benchmark (see `formaldimine_benchmark.ipynb`) settled on **CAS
 that is a property of the methods or just of an easy molecule, by running the same two
 workflows over a ladder of active spaces on a harder system.
 
+**Naming.** The two workflows are **SS-CASSCF Berry-phase loop transport** (continuation of a
+*state-specific* CASSCF ground state around a closed loop, with the Z2 Berry phase read from the
+sign of the initial&ndash;final nonorthogonal overlap) and the **SA-CASSCF gap scan** (equal-weight
+*state-averaged* CASSCF on a grid over the enclosed region). After this paragraph they are called
+**loop transport** and **gap scan**; "Berry phase" means the quantity loop transport returns, not
+the method.
+
 **System: ethylene**, at its twisted-pyramidalized S<sub>1</sub>/S<sub>0</sub> conical
 intersection &mdash; the textbook case in nonadiabatic photochemistry. Two rigid coordinates:
 
@@ -422,10 +429,21 @@ So the honest requirement here is set by stability, not by the smallest space th
 """)
 
 md(r"""
-## 7. Conclusions
+## 7. Conclusions for ethylene
 
-*Filled in from the numbers above once the full ladder has run &mdash; see
-`docs/active_space.md` for the written-up version.*
+* **The intersection position drifts non-monotonically:** +0.18, +5.50, &minus;8.26, &minus;7.00,
+  +0.03 deg across the ladder. Enlarging the active space made the answer *worse* at the
+  intermediate rungs, which breaks the heuristic everyone actually uses.
+* **Accurate and stable are different questions, and here they differ by four rungs.** CAS(2,2) is
+  accurate to 0.18&deg;, but nothing available at that level says so &mdash; the next rung moves
+  the intersection by 5.5&deg;. The test a practitioner can actually apply, "does enlarging the
+  space change the answer", is satisfied only from CAS(10,10).
+* **Loop transport is correct at every rung**, CAS(2,2) included. What grows with the active space
+  is not the error but the *discretization* needed: the minimum adjacent overlap at N = 13 falls
+  from 0.895 to ~0.67, so the larger rungs fail continuity at N = 13 and pass at N = 21. That is
+  loop resolution, not a failure to describe the physics.
+* **The gap scan is both the expensive method and the unstable one** &mdash; hours against seconds,
+  and it is the one that has to be converged.
 """)
 
 md(r"""
@@ -820,6 +838,68 @@ That does not make it right by default: with no exact reference, "&pi; at every 
 four consistent errors. But it is consistent, it passes every internal check, and it costs a
 fraction of the comparator.
 
+## What could have broken this, and what happened when it was checked
+
+Every result above rests on assumptions that were cheap to state and easy to leave untested. These
+were tested; three broke.
+
+**Does the intersection really sit at `tw` = 90?** Assumed from a five-row grid, with *no symmetry
+forcing it* for butadiene. Fine 1&deg; cuts say yes &mdash; 89.982 at CAS(6,6), 89.992 at CAS(8,8),
+89.958 at CAS(12,12). The assumption survived.
+
+**Is the CAS(6,6) cut a cone at all?** No. Re-sampled at 0.25&deg; it falls to 0.847 mHa at
+pyr = 114.75 then *jumps* to 4.05 mHa one step later: a state-averaged CASSCF solution switch, not
+cone structure. Its quoted position is a grid minimum, not a fit, and that rung is not evidence
+about where a cone sits. The cone fit declines to model it rather than returning a number.
+
+**Is the fitted "closest approach" meaningful?** Only if the cut is fine enough. On a 1&deg; grid
+it is dominated by resolution: re-sampling at 0.25&deg; drops CAS(4,4) from 0.92 to **0.098 mHa**
+and CAS(10,10) from 0.66 to **0.237 mHa**.
+
+**Does loop transport agree with the gap scan at the reference rung?** Loop transport at
+CAS(12,12) returns **&pi;**, stable at N = 13 and N = 21 (overlaps 0.83 and 0.88, endpoint
+&minus;1.000000), while the gap scan finds no degeneracy on the cut it sampled (branches meeting
+at ~1.7 mHa, against ~0.1&ndash;0.2 for CAS(4,4) and CAS(10,10)).
+
+Read naively that is the two methods disagreeing about *whether anything is enclosed*. It does not
+survive checking: **CAS(12,12) was only ever sampled along a cross** &mdash; one row at `tw` = 90,
+one column at `pyr` = 102.2 &mdash; while the loop spans `tw` 78&ndash;102 and `pyr`
+83.9&ndash;119.9. An intersection anywhere off that cross produces exactly what is observed. A scan
+over the loop's *area* settles it.
+""")
+
+code(r"""
+ls_path = sorted(glob.glob(os.path.join(BUTA, "butadiene_loopscan_cas12-12_*.npz")))
+if ls_path:
+    r = ScanResult.load(ls_path[-1])
+    finished = bool(np.isfinite(r.e_states).all())
+    if finished:
+        t, pyr, g = r.min_gap_point()
+        inside = (abs(t - 90.0) <= 12.0) and (abs(pyr - 101.85) <= 18.0)
+        print(f"CAS(12,12) over the loop area ({r.alphas.size}x{r.phis.size} points):")
+        print(f"  minimum gap {g*1e3:.3f} mHa at (tw = {t:.2f}, pyr = {pyr:.2f}); "
+              f"inside B_x: {inside}\n")
+        print("  gap (mHa), rows = tw, cols = pyr:")
+        print("        " + " ".join(f"{v:7.1f}" for v in r.phis))
+        for i, a_ in enumerate(r.alphas):
+            print(f"  {a_:5.1f} " + " ".join(f"{v:7.3f}" for v in r.gap[i] * 1e3))
+        print()
+        if g * 1e3 < 1.0 and inside:
+            print("  -> a degeneracy IS present inside the loop, off the sampled cross;")
+            print("     loop transport's pi is consistent with the gap scan after all.")
+        elif inside:
+            print(f"  -> the smallest gap anywhere in the loop area is still {g*1e3:.2f} mHa,")
+            print("     so no clear degeneracy was found inside the loop. That would leave the")
+            print("     two methods genuinely at odds, and is the open question.")
+    else:
+        done = int(np.isfinite(r.e_states).all(axis=2).sum())
+        print(f"loop-area scan in progress: {done}/{r.converged.size} points "
+              "(tail -f logs/butadiene_loopscan_cas12-12.log)")
+else:
+    print("Not yet run:  python examples/run_butadiene_study.py loopscan --cas 12,12 --grid 5 5")
+""")
+
+md(r"""
 ## Verdict across all three systems
 """)
 

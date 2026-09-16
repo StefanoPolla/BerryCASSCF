@@ -234,6 +234,48 @@ def do_berry(args) -> int:
     return 0
 
 
+def loopscan_path(ne: int, ncas: int, nx: int, ny: int) -> str:
+    return os.path.join(RESULT_DIR, f"butadiene_loopscan_cas{ne}-{ncas}_{nx}x{ny}.npz")
+
+
+def do_loopscan(args) -> int:
+    """Scan the *area* the enclosing loop covers, not just a cross through it.
+
+    The ladder scans CAS(12,12) on a single tw = 90 row to bound its cost, which leaves the
+    question of whether its intersection sits off that row unanswerable -- and that is exactly
+    what would reconcile a pi from loop transport with a gap scan that finds no degeneracy.
+    This stage covers B_x's bounding box so the question can be settled rather than argued.
+    """
+    os.makedirs(RESULT_DIR, exist_ok=True)
+    fn = geom_fn()
+    nx, ny = args.grid
+    for spec in args.cas:
+        ne, ncas = (int(v) for v in spec.split(","))
+        path = loopscan_path(ne, ncas, nx, ny)
+        if os.path.exists(path) and not args.force:
+            res = ScanResult.load(path)
+            if np.isfinite(res.e_states).all():
+                t, pyr, g = res.min_gap_point()
+                print(f"[skip] CAS({ne},{ncas}) loop scan: min {g*1e3:.3f} mHa at "
+                      f"(tw={t:.2f}, pyr={pyr:.2f})")
+                continue
+        region = Loop("B_x_area", (90.0, 101.85), LOOP_RADIUS)
+        lo_t, hi_t, lo_p, hi_p = region.bounding_box()
+        print(f"\n=== loop-area scan CAS({ne},{ncas})/{args.basis}  {nx}x{ny} "
+              f"over tw [{lo_t:.0f}, {hi_t:.0f}], pyr [{lo_p:.1f}, {hi_p:.1f}] ===")
+        log = JobLog(f"butadiene_loopscan_cas{ne}-{ncas}", total=nx * ny + nx,
+                     echo=not args.quiet)
+        res = scan_gap(region, cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
+                       scan=ScanConfig(n_alpha=nx, n_phi=ny, margin=0.0),
+                       geom_fn=fn, progress=log, checkpoint=path)
+        res.save(path)
+        log.done()
+        t, pyr, g = res.min_gap_point()
+        inside = region.encloses(t, pyr)
+        print(f"  min {g*1e3:.3f} mHa at (tw={t:.2f}, pyr={pyr:.2f}); inside B_x: {inside}")
+    return 0
+
+
 def refine_path(ne: int, ncas: int, axis: str) -> str:
     return os.path.join(RESULT_DIR, f"butadiene_refine{axis}_cas{ne}-{ncas}.npz")
 
@@ -304,7 +346,11 @@ def do_refine(args) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", choices=["scan", "refine", "berry"])
+    ap.add_argument("stage", choices=["scan", "refine", "berry", "loopscan"])
+    ap.add_argument("--cas", nargs="*", default=["12,12"],
+                    help="active spaces for the loopscan stage, as 'nelec,norb'")
+    ap.add_argument("--grid", nargs=2, type=int, default=[5, 5], metavar=("N_TW", "N_PYR"),
+                    help="grid for the loopscan stage")
     ap.add_argument("--tw-check", nargs="*", default=["8,8", "12,12"],
                     help="active spaces for which to also scan tw (default: 8,8 and 12,12)")
     ap.add_argument("--basis", default=DEFAULT_BASIS)
@@ -317,6 +363,8 @@ def main() -> int:
         return do_scans(args)
     if args.stage == "refine":
         return do_refine(args)
+    if args.stage == "loopscan":
+        return do_loopscan(args)
     return do_berry(args)
 
 
