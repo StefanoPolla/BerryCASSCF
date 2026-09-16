@@ -22,6 +22,9 @@ STO-3G, PySCF 2.14:
 | One SA-CASSCF point, ethylene CAS(8,8)/6-31G\* | 0.9 s warm, ~4 s with `strategy="best"` |
 | One SA-CASSCF point, ethylene CAS(10,10)/6-31G\* | 4.5 s |
 | One SA-CASSCF point, ethylene CAS(12,12)/6-31G\* | 28 s |
+| One SA-CASSCF point, butadiene CAS(4,4)/6-31G\* | ~2 s |
+| One SA-CASSCF point, butadiene CAS(10,10)/6-31G\* | ~14 s |
+| One SA-CASSCF point, butadiene CAS(12,12)/6-31G\* | **>144 s** (853k determinants, 68 AOs) |
 | Test suite (`pytest -q`) | ~15 s |
 
 Overlaps are three to four orders of magnitude cheaper than the CASSCF solve they compare,
@@ -106,6 +109,25 @@ resume on re-submission.
 
 *Outputs.* `results/fulvene/fulvene_scan_*.npz` and `results/fulvene/fulvene_<loop>_*.json`,
 both inside the repository. Full detail in `docs/followup.md`.
+
+### The third system: butadiene
+
+All local, in three stages (`docs/butadiene.md`):
+
+```bash
+python examples/search_butadiene_ci.py              # 3 candidate planes, ~45 min
+python examples/run_butadiene_study.py scan         # CAS(4,4)..(12,12), ~1.5 h
+python examples/run_butadiene_study.py berry        # CAS(4,4)..(10,10), ~1 h
+```
+
+Two deliberate cost caps, both documented where they bite:
+
+* **CAS(12,12) is scanned on one row** (`tw = 90`, 13 points) rather than the 5x13 grid. At
+  >2.4 min per cold point a full grid is ~2.6 h for a single rung, and every other rung's
+  two-dimensional minimum lies on that row anyway. The cost is that its `tw` is assumed.
+* **The Berry ladder stops at CAS(10,10).** A state-specific CAS(12,12) solve costs minutes, so
+  three loops at two discretizations would run to several hours without changing a conclusion
+  already established over four rungs.
 
 ### Threading note
 

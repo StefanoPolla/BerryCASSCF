@@ -118,8 +118,32 @@ system rather than reusing a recipe.
 The Berry phase needs only CAS(2,2) on both systems and is unbothered by an 8° misplacement that
 defeats the comparator — a loop of radius 12° encloses the intersection either way.
 
-Results and interpretation: [notebooks/active_space.ipynb](notebooks/active_space.ipynb) and
-[docs/active_space.md](docs/active_space.md).
+### Butadiene: a system where nothing on the ladder converges
+
+Ethylene's failure was subtle (CAS(2,2) accidentally exact). Butadiene fails outright, because
+its 2¹A_g state carries a large **doubly-excited** component. The plane was *searched for*, not
+assumed — three candidate planes of four rigid coordinates, only one containing an intersection:
+
+```bash
+python examples/search_butadiene_ci.py         # 3 planes; only tw_pyr has a CI
+python examples/run_butadiene_study.py scan
+python examples/run_butadiene_study.py berry
+```
+
+| CAS | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|
+| pyr | 109.83 | 114.81 | 121.05 | 105.04 | 101.85 |
+| shift | — | +4.98 | +6.24 | −16.01 | −3.19 |
+
+**Spread 19.2°, and the top two rungs still differ by 3.2°** — the comparator is not converged
+anywhere on the affordable ladder, and butadiene's full valence space is CAS(22,22), so no exact
+reference exists to adjudicate. Every rung passes the plane-reflection symmetry check at exactly
+0.0 mHa, so this is truncation physics, not solver noise.
+
+Full account: [docs/butadiene.md](docs/butadiene.md).
+
+Results and interpretation: [notebooks/active_space.ipynb](notebooks/active_space.ipynb),
+[docs/active_space.md](docs/active_space.md) and [docs/butadiene.md](docs/butadiene.md).
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
 gap scans additionally checkpoint after each grid row.
@@ -184,6 +208,7 @@ berrycasscf/
   berry.py         the two estimators and the pass/fail verdict
   scan.py          SA-CASSCF and FCI gap scans
   ethylene.py      twisted-pyramidalized CI; the active-space convergence study
+  butadiene.py     four rigid coordinates; the system where no rung converges
   fulvene.py       prepared for the cluster: reference geometry and its two coordinates
   toy.py           2x2 linear Jahn-Teller validation model
   config.py        every scientific choice, as dataclass fields
@@ -236,6 +261,7 @@ sbatch --export=ALL,BASIS="6-31g*",CAS="6,6",NPOINTS="17 25" slurm/fulvene_berry
 | [docs/limitations.md](docs/limitations.md) | what this does not do, and open questions |
 | [docs/compute.md](docs/compute.md) | measured costs, cluster jobs, scaling guidance |
 | [docs/active_space.md](docs/active_space.md) | how large an active space each method needs |
+| [docs/butadiene.md](docs/butadiene.md) | the third system, its CI search, and why nothing converges |
 | [docs/followup.md](docs/followup.md) | fulvene: status and how to run it |
 | [docs/progress.md](docs/progress.md) | dated progress log |
 
