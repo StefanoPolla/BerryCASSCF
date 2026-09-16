@@ -205,18 +205,23 @@ interpolation through the grid minimum and its neighbours (grid step 4 deg).
 
 | active space | own minimum gap | phi (refined) | error vs reference | mirror asymmetry |
 |---|---|---|---|---|
-| CAS(2,2) | 0.175 mHa | 110.02 | **+0.02 deg** | 2.8e-11 |
-| CAS(4,4) | 1.362 mHa | 114.85 | **+4.85 deg** | 1.1e-07 |
-| CAS(6,6) | 0.155 mHa | 102.09 | **−7.91 deg** | 2.8e-05 |
-| CAS(8,8) | 2.033 mHa | 103.11 | **−6.90 deg** | 1.1e-06 |
-| CAS(10,10) | 1.850 mHa | 109.10 | −0.90 deg | 3.5e-09 |
-| **CAS(12,12)** | **0.189 mHa** | **110.00** | reference | 4.3e-11 |
+| CAS(2,2) | 0.175 mHa | 111.08 | **+0.18 deg** | 2.8e-11 |
+| CAS(4,4) | 1.362 mHa | 116.41 | **+5.50 deg** | 1.1e-07 |
+| CAS(6,6) | 0.155 mHa | 102.64 | **−8.26 deg** | 2.8e-05 |
+| CAS(8,8) | 2.033 mHa | 103.90 | **−7.00 deg** | 1.1e-06 |
+| CAS(10,10) | 1.850 mHa | 110.93 | +0.03 deg | 3.5e-09 |
+| **CAS(12,12)** | **0.189 mHa** | **110.90** | reference | 4.3e-11 |
+
+Positions come from the cone model (a parabola fitted to `gap`&sup2;, exact for any cut through a
+cone). An earlier version fitted a parabola to the gap itself, which is a V near an intersection;
+that shifted every position by up to ~1.8 deg, the reference included, without changing the
+verdict.
 
 Every scan passes the mirror-symmetry test (asymmetries 1e-11 to 1e-5 mHa), so these
 differences are the physics of the truncation, not numerical noise.
 
 **Convergence with active space is not monotonic.** The error runs
-+0.02, +4.85, −7.91, −6.90, −0.90, 0 degrees. The minimal pi space is essentially exact;
++0.18, +5.50, −8.26, −7.00, +0.03, 0 degrees. The minimal pi space is essentially exact;
 CAS(4,4), (6,6) and (8,8) are displaced by 5–8 degrees *in both directions*; the reference is
 recovered only from CAS(10,10). An intermediate active space here is markedly **worse** than the
 smallest one.
@@ -267,7 +272,7 @@ shrinks as the active space grows.
 **Is there a system for which larger active spaces are needed?** For the state-averaged
 resolver, **yes — ethylene**, and the way it fails is instructive.
 
-* **Smallest active space that gets the right answer: CAS(2,2)** (error 0.02 deg).
+* **Smallest active space that gets the right answer: CAS(2,2)** (error 0.18 deg).
 * **Smallest active space you could *trust* without already knowing the answer: CAS(10,10)–(12,12)**,
   because only there does enlarging the space stop changing the result.
 

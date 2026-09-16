@@ -118,20 +118,13 @@ def gap_at(r, tau, phi):
     return r.gap[i, j] * 1e3
 
 def refined_phi(r):
-    # Sub-grid intersection position along phi at tau = 90, by parabolic interpolation
-    # through the grid minimum and its two neighbours. The grid step is 4 deg, so without
-    # this the comparison between active spaces is quantised far too coarsely.
+    # Sub-grid intersection position along phi at tau = 90, from the cone model: a parabola
+    # fitted to gap**2, which is exact for any cut through a cone. Fitting a parabola to the
+    # gap itself is the wrong model -- the gap is a V near an intersection -- and biases the
+    # apex toward the grid minimum by up to ~2 deg on these grids.
+    from berrycasscf.refine import cone_apex
     i = int(np.argmin(np.abs(r.alphas - 90.0)))
-    row = r.gap[i]
-    j = int(np.nanargmin(row))
-    if j == 0 or j == len(row) - 1:
-        return float(r.phis[j])
-    y0, y1, y2 = row[j - 1], row[j], row[j + 1]
-    denom = y0 - 2 * y1 + y2
-    if abs(denom) < 1e-18:
-        return float(r.phis[j])
-    step = float(r.phis[1] - r.phis[0])
-    return float(r.phis[j] + 0.5 * (y0 - y2) / denom * step)
+    return float(cone_apex(r.phis, r.gap[i] * 1e3, window=3).position)
 
 ref_phi = refined_phi(ref) if ref is not None else None
 
@@ -759,12 +752,22 @@ if os.path.exists(fm_path):
         ax.scatter([x for x, o in zip(xr, ok) if not o], [y for y, o in zip(yo, ok) if not o],
                    marker=mk, s=60, facecolors="none", edgecolors=col, linewidths=1.9, zorder=5)
     ax.axhline(0.80, color="crimson", ls="--", lw=1.4, label="continuity threshold")
+    # Annotate the refused run that would have given the WRONG sign -- more telling than the
+    # one with the lowest overlap, which would merely have been imprecise.
+    consensus = "pi"
+    wrong = [r for r in runs if r["status"] != "OK" and r["would_have_said"] != consensus]
+    if wrong:
+        w = min(wrong, key=lambda r: r["min_abs_overlap"])
+        ax.annotate(f"refused — would have reported {w['would_have_said']},\n"
+                    f"the opposite sign (product {w['product']:+.3f})",
+                    (w["radius_pyr"], w["min_abs_overlap"]),
+                    xytext=(30, -5), textcoords="offset points", fontsize=8,
+                    arrowprops=dict(arrowstyle="->", lw=1))
     worst = min(runs, key=lambda r: r["min_abs_overlap"])
-    ax.annotate(f"would have reported {worst['would_have_said']}"
-                f"  (product {worst['product']:+.3f})",
+    ax.annotate(f"worst continuity ({worst['min_abs_overlap']:.2f})",
                 (worst["radius_pyr"], worst["min_abs_overlap"]),
-                xytext=(20, 25), textcoords="offset points", fontsize=8,
-                arrowprops=dict(arrowstyle="->", lw=1))
+                xytext=(25, 22), textcoords="offset points", fontsize=8,
+                arrowprops=dict(arrowstyle="->", lw=1, ls=":"))
     ax.set_xlabel("loop radius in pyr (deg)")
     ax.set_ylabel(r"min $|\langle\Psi_{k-1}|\Psi_k\rangle|$")
     ax.set_title("Filled = reported; hollow = refused by the continuity check")

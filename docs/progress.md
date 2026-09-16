@@ -298,3 +298,48 @@ and costs a fraction of the comparator.
 enough discretization to keep continuity, and compare it against the state-averaged seam. That
 would turn the `pyr < 113.9` bound into a measurement and test directly whether state-specific
 transport is less truncation-sensitive than the state-averaged surface.
+
+
+---
+
+## 2026-09-16 — Refinement fixed, CAS(2,2) added, assumptions attacked
+
+**The apex estimator was wrong and is fixed.** It fitted a parabola to the gap, but near a
+conical intersection the gap is linear, so a cut is a V and the fit is dragged toward the grid
+minimum. For an ideal cone a cut at perpendicular offset satisfies `gap² = a²(x−x₀)² + b²` —
+exactly a parabola in `gap²` — so fitting that recovers the apex without bias and also returns the
+cut's closest approach. Exact on synthetics; shifts real positions by up to ~1.8 deg, **including
+the ethylene reference itself** (110.00 → 110.90). Every verdict is unchanged, which is worth
+recording: the correction matters for the numbers, not for the conclusions.
+
+**CAS(2,2) on butadiene** — deliberately below the π manifold — returns π on the enclosing loop and
+0 on both controls, with *higher* overlaps than any larger rung. Loop transport now succeeds at the
+smallest active space on all three systems.
+
+**Assumptions attacked, three claims overturned:**
+
+1. **The loop-shrinking bound.** Withdrawn: it rested on one passing run at radius 6, and N=61
+   flipped its sign.
+2. **A per-run check passed a probably-wrong answer** (radius 6, N=31: overlap 0.844, endpoint
+   0.984, reported π, while N=15 and N=61 both say 0). Only the multi-N stability criterion
+   rejects it. The protocol is safe because the checks are layered, not because any one is sound.
+3. **"The seam misses the plane at CAS(12,12)."** Withdrawn. Loop transport returns π there
+   (stable at N=13 and N=21) while the gap scan shows no degeneracy — but CAS(12,12) was only
+   sampled along a **cross** through the loop, never over its area, and an intersection off that
+   cross explains both observations. The honest claim is "none found on the sampled cross".
+
+**Assumptions that survived:** the intersection sits at tw = 90 for every rung tested (89.982,
+89.992, 89.958), with no symmetry forcing it.
+
+**Also found:** the CAS(6,6) cut is a *solution discontinuity*, not a cone (0.85 mHa then a jump to
+4.1 mHa over 0.25 deg), so its position is not a fit; and the fitted "closest approach" on a 1-deg
+grid is a resolution artifact — sub-degree cuts drop CAS(4,4) from 0.92 to 0.098 mHa.
+
+**Infrastructure.** Runs now log to `logs/<job>.log` in the repository, one line per completed
+point with elapsed time and ETA, so a slow job is distinguishable from a dead one; previously the
+scan logged per grid row, which meant half an hour of silence at CAS(12,12). Notebooks renamed to
+`formaldimine_benchmark.ipynb` and `active_space_study.ipynb`.
+
+**Next step.** A genuine 2D scan at CAS(12,12) over the loop interior (~1 h for a coarse 5×5) to
+settle whether the intersection is off the sampled cross. Until then that rung's position is a
+point on a cross, not a located intersection.

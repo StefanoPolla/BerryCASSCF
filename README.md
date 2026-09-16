@@ -100,12 +100,12 @@ jupyter nbconvert --to notebook --execute --inplace notebooks/active_space_study
 ```
 
 Where each active space puts ethylene's intersection (reference is CAS(12,12), the full valence
-space, at φ = 110.00°):
+space, at φ = 110.90°):
 
 | CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
 |---|---|---|---|---|---|---|
-| φ | 110.02 | 114.85 | 102.09 | 103.11 | 109.10 | 110.00 |
-| error | **+0.02°** | +4.85° | −7.91° | −6.90° | −0.90° | ref |
+| φ | 111.08 | 116.41 | 102.64 | 103.90 | 110.93 | 110.90 |
+| error | **+0.18°** | +5.50° | −8.26° | −7.00° | +0.03° | ref |
 
 Convergence is **not monotonic**: the minimal π space is essentially exact, the intermediate
 spaces are displaced by 5–8° in *both* directions, and the reference is recovered only from

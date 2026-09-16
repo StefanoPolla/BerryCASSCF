@@ -32,11 +32,19 @@ short forms are used thereafter.
 This is the central result, and "it drifts" understates it: on two of three systems, **enlarging
 the active space made the answer worse** at intermediate rungs.
 
-Ethylene, error in the intersection position against the CAS(12,12) reference:
+Ethylene, error in the intersection position against the CAS(12,12) reference (cone model;
+the reference itself sits at φ = 110.90):
 
 | CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
 |---|---|---|---|---|---|---|
-| error (deg) | **+0.02** | +4.85 | −7.91 | −6.90 | −0.90 | ref |
+| φ (deg) | 111.08 | 116.41 | 102.64 | 103.90 | 110.93 | 110.90 |
+| error (deg) | **+0.18** | +5.50 | −8.26 | −7.00 | +0.03 | ref |
+
+These are the cone-model values. The earlier parabola-on-gap estimates gave +0.02, +4.85, −7.91,
+−6.90, −0.90 against a reference at 110.00 — shifted by up to ~1.8 deg, including the reference
+itself. **The verdict is unchanged either way** (accurate from CAS(2,2), stable only from
+CAS(10,10)), which is worth stating: the model correction matters for the numbers but not for the
+conclusion they support.
 
 Butadiene, from fine 1-deg cuts refined with the cone model (no reference exists):
 
