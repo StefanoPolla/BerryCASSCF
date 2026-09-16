@@ -95,8 +95,8 @@ ladder of active spaces, and — critically — the **same loops throughout**:
 ```bash
 python examples/run_active_space_study.py scan     # SA-CASSCF gap maps, CAS(2,2) .. (12,12)
 python examples/run_active_space_study.py berry    # Berry phase on three fixed loops
-python notebooks/build_active_space_study_notebook.py
-jupyter nbconvert --to notebook --execute --inplace notebooks/active_space_study.ipynb
+python notebooks/build_ethylene_ladder_notebook.py
+jupyter nbconvert --to notebook --execute --inplace notebooks/ethylene_ladder.ipynb
 ```
 
 Where each active space puts ethylene's intersection (reference is CAS(12,12), the full valence
@@ -142,8 +142,34 @@ reference exists to adjudicate. Every rung passes the plane-reflection symmetry 
 
 Full account: [docs/butadiene.md](docs/butadiene.md).
 
-Results and interpretation: [notebooks/active_space_study.ipynb](notebooks/active_space_study.ipynb),
+Results and interpretation: [notebooks/ethylene_ladder.ipynb](notebooks/ethylene_ladder.ipynb),
+[notebooks/butadiene_ladder.ipynb](notebooks/butadiene_ladder.ipynb),
 [docs/active_space.md](docs/active_space.md) and [docs/butadiene.md](docs/butadiene.md).
+
+### Method studies
+
+Three methodological questions, each with its own notebook and each explained from first
+principles with figures rather than only reported:
+
+```bash
+# Adaptive step control: let the loop choose its own discretization   (~10 min)
+python examples/run_adaptive_stepping.py formaldimine
+python notebooks/build_adaptive_stepping_notebook.py
+
+# Locating an intersection from one bit per loop                      (~10 min at CAS(2,2))
+python examples/run_localization.py formaldimine --cas 2 2
+python notebooks/build_locating_intersections_notebook.py
+
+# Which acceptance thresholds are safe? (reads saved runs only)       (seconds)
+python examples/calibrate_thresholds.py
+```
+
+| notebook | question |
+|---|---|
+| [adaptive_stepping.ipynb](notebooks/adaptive_stepping.ipynb) | how should a loop be discretized, and does adapting it pay? |
+| [locating_intersections.ipynb](notebooks/locating_intersections.ipynb) | can a method returning one bit per loop return a *position*? |
+| [stepping_comparison.ipynb](notebooks/stepping_comparison.ipynb) | one update per point, or optimize each point to convergence? |
+| [summary.ipynb](notebooks/summary.ipynb) | the cross-system verdict, short |
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
 gap scans additionally checkpoint after each grid row.
@@ -211,12 +237,16 @@ berrycasscf/
   butadiene.py     four rigid coordinates; the system where no rung converges
   fulvene.py       prepared for the cluster: reference geometry and its two coordinates
   toy.py           2x2 linear Jahn-Teller validation model
+  adaptive.py      step control driven by the measured continuity
+  localize.py      bisection and triangulation from Berry phases alone
   config.py        every scientific choice, as dataclass fields
   store.py         JSON/NPZ records
   report.py        result tables and stability verdicts
 examples/          experiment drivers (see "Running the benchmark")
-notebooks/         formaldimine_benchmark.ipynb, active_space_study.ipynb,
-                   stepping_comparison.ipynb
+notebooks/         formaldimine_benchmark.ipynb, ethylene_ladder.ipynb,
+                   butadiene_ladder.ipynb, adaptive_stepping.ipynb,
+                   locating_intersections.ipynb, stepping_comparison.ipynb,
+                   summary.ipynb
 slurm/             batch templates for the cluster
 docs/              plan, provenance, results, limitations, compute, progress, follow-up
 tests/             pytest suite

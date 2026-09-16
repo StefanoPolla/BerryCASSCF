@@ -415,6 +415,75 @@ path-independent by construction; the measured price is that cold occasionally c
 worse solution (one formaldimine grid corner, 0.115 Ha high). Details and the alternatives
 considered are in `docs/active_space.md`.
 
+**Adaptive step control is cost-neutral, and useful for other reasons.** Steering the step size by
+the measured continuity (`berrycasscf/adaptive.py`) was expected to save 1.3x on formaldimine and
+up to 4.7x on the harder loops, estimated from the spread of adjacent overlaps on saved runs.
+Measured at *matched quality*, against a swept family of uniform N, it runs **0.60x–1.23x on
+formaldimine and 0.67x–1.15x on butadiene CAS(2,2)** — a wash, occasionally worse. The formaldimine
+figure confirms the prediction; both systems' loops have fairly uniform difficulty, so there is
+nothing for step control to exploit.
+
+Its value is elsewhere, and is not a speed-up:
+
+* **it walks loops that uniform discretization cannot walk at any affordable N.** On the
+  Jahn–Teller model the trustworthy range extends from a closest approach of ~0.1 of the loop
+  radius to ~0.007, using 16–23 points where uniform would need N ≈ 1000. That is the difference
+  between an answer and a refusal, and it is what makes bisection possible at all;
+* **the resolution limit is predictable rather than empirical**: a loop of radius `R` passing at
+  distance `eps` needs a step `~ eps*dtheta_max/(2*pi*R)`, so the walk gives up below
+  `eps_min ~ 2*pi*R*d_min/dtheta_max` = 0.0070 of the radius with the defaults. Measured: closes at
+  0.007, floors at 0.005;
+* **N no longer has to be guessed** before anything is known about the loop;
+* **failures are diagnosed**: shrinking the step either restores continuity (it was undersampling)
+  or does not (the loop passes through something).
+
+The same experiment restates a distinction this document keeps insisting on. Uniform N=24 returns
+the **correct sign at every closest approach tested**, including ones where its worst adjacent
+overlap has collapsed to 0.66 — and fails its own continuity check from 0.1 inwards. Being right is
+not the same as being trustworthy.
+
+**A method returning one bit per loop can still return a position.** Scaling a loop about a fixed
+centre by `s` encloses a point `x` exactly when `s > rho(x; c)`, the distance to `x` in units of
+the loop's own semi-axes. Bisecting on `s` therefore *measures* that distance, and intersecting the
+ellipses from several centres gives a position — two centres leaving a mirror pair, three resolving
+it (`berrycasscf/localize.py`). Three properties earn it trust:
+
+* the answer is a **bracket with a refusal band**, because exactly at `s = rho` the loop runs
+  through the degeneracy and cannot be walked at any step size. The band's width is the resolution,
+  measured rather than assumed;
+* with three or more centres the construction is **over-determined**, so its residual is a
+  consistency check that refuses to produce a position from data no single degeneracy explains;
+* the geometry is validated **exactly**, on synthetic radii from a known position, separately from
+  the physics — so a failure can be attributed to one or the other.
+
+On formaldimine CAS(2,2) the individual brackets are tight (rho = 0.3968 ± 0.0046 from one centre)
+but the **residual is 0.197 in units of the semi-axes, about 2 deg**: the three ellipses do not meet
+at a point. That is the check firing, and it fires where it should. CAS(2,2) is independently known
+to be pathological for formaldimine — the gap scan there finds no minimum in the region at all —
+and a direct map of the state-specific in-CAS S1/S0 gap over the region **never falls below 321
+mHa**. That map is also exactly symmetric about phi = 90, so any off-axis degeneracy must have a
+mirror partner, and a loop centred on the line would enclose both and report 0.
+
+**A check that is never wired to a verdict is not a check.** Two of this project's diagnostics were
+printed for most of its life and never acted on: "continuation chain broken", and — worse — nothing
+at all tested `|<Psi_last|Psi_0>|`, the single overlap whose sign *is* the Berry phase. An adaptive
+walk that stopped a fifth of the way round consequently reported `status OK`, phase `trivial (0)`,
+because the endpoint checks are skipped when there is no endpoint and every *accepted* step was
+continuous. Both are now checks. The general lesson is cheap to state and was expensive to learn:
+**a diagnostic that cannot cause a refusal will eventually be ignored at exactly the moment it
+matters.**
+
+**Convergence failures and continuity failures need different responses.** The adaptive controller
+originally rejected a step when CASSCF failed to converge, then shrank it — which is the wrong
+lever, because a smaller step makes the *warm start better*, not the solver happier. The walk shrank
+forever: steps with a mismatch of 0.011, far inside any threshold, rejected as unconverged. The
+underlying solver issue was also mis-diagnosed for most of this project as a `conv_tol_grad`
+problem. It is not: at formaldimine CAS(2,2) (130.86, 91.96) PySCF reaches `|grad[o]|` = 8.8e-06,
+*inside* the 1e-5 threshold, while `dE` = 4.4e-10 refuses to fall below `conv_tol` = 1e-10 within
+200 macro iterations — the optimizer crawling along a flat direction. It converges at 239 macro
+iterations to the same energy to 1e-8. The fallback ladder could not fix it because every rung
+relaxed the *gradient* threshold and none raised the *iteration budget*.
+
 **Symmetry checks do not transfer between systems.** Ethylene's τ → 180 − τ check does not apply
 to butadiene, whose two methylene hydrogens are inequivalent; its exact symmetry is reflection
 through the molecular plane, `(tw, pyr) → (−tw, −pyr)`. Reusing the ethylene check would have

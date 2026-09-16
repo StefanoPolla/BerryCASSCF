@@ -349,3 +349,121 @@ scan logged per grid row, which meant half an hour of silence at CAS(12,12). Not
 **Next step.** A genuine 2D scan at CAS(12,12) over the loop interior (~1 h for a coarse 5×5) to
 settle whether the intersection is off the sampled cross. Until then that rung's position is a
 point on a cross, not a located intersection.
+
+---
+
+## 2026-09-17 — Adaptive stepping, loop localization, and three checks that should have existed
+
+Implements `docs/todo.md` §1–§5. Two of this session's most useful results are bugs the new code
+found in the old code, and one is a negative result about the new code itself.
+
+### §5 — the continuation-chain check, calibrated rather than guessed
+
+`examples/calibrate_thresholds.py` re-decides all **116** saved Berry records under candidate
+thresholds and scores them by *self-consistency*: runs of the same loop and active space at
+different N form a "question", and physics forbids them to disagree. Two failure modes are counted
+— a **contradiction** (two passing runs disagree) and a **lone dissenter** (one run passes while a
+refused run of the same question says the opposite, so the multi-N criterion cannot fire).
+
+| chain check | min overlap | decidable | contradictions | lone dissenters |
+|---|---|---|---|---|
+| off | 0.70 | 42 | **1** | 0 |
+| off | 0.80 | 40 | 0 | **1** |
+| off | 0.86 | 35 | 0 | 0 |
+| **on** | **0.80** | **39** | **0** | **0** |
+
+**The overlap threshold was never the danger.** With the chain check on, *no* threshold from 0.70
+to 0.92 admits either failure mode. Without it, 0.80 has to rise to 0.86 to be safe, costing five
+decidable questions against the chain check's one. The earlier suspicion that 0.80 was too
+permissive (`docs/findings.md` §5) is therefore **withdrawn**: 0.80 stays, and
+`require_unbroken_chain` defaults to True.
+
+The one run in the corpus with a broken chain that the check now refuses is butadiene `B_x`
+CAS(4,4) N=21, which reports π consistently with its ladder — so the cost is real and is a *lost
+confirmation*, not a lost answer.
+
+### §1 — adaptive step control (`berrycasscf/adaptive.py`)
+
+Step size steered by the measured continuity, `d_new = d*sqrt(m_target/m)`, clipped, with the final
+step clipped so the walk lands exactly on `t = 1` and the endpoint estimator stays exact. Validated
+first on the Jahn–Teller model, where a **resolution limit can be predicted and then measured**:
+
+    eps_min ~ 2*pi*R*d_min/dtheta_max  =  0.0070 of the loop radius
+
+The walk closes at eps = 0.007 and hits the floor at 0.005. Uniform N=24 returns the *correct sign*
+at every eps tested and fails its own continuity check from eps = 0.1 inwards — right, but not
+trustworthy.
+
+**Negative result, reported as one: adaptive stepping is cost-neutral.** At matched quality it runs
+0.60x–1.23x against uniform on formaldimine and 0.67x–1.15x on butadiene CAS(2,2). Both are loops
+of fairly uniform difficulty, so there is nothing for step control to exploit — consistent with the
+1.3x predicted for formaldimine beforehand. Ethylene CAS(8,8), the loop with the largest predicted
+saving (4.7x), is running.
+
+Where it *does* pay is not cost: it walks loops uniform discretization cannot walk at any
+affordable N (an order of magnitude closer to a degeneracy), removes the need to guess N, and
+diagnoses whether a failure was undersampling or proximity.
+
+### §2 — bisection and triangulation (`berrycasscf/localize.py`)
+
+Shrinking a loop about a fixed centre measures the **elliptical distance** to the degeneracy;
+intersecting the ellipses from several centres gives a position. Two centres leave a mirror pair,
+three resolve it, and with three or more the construction is over-determined so its **residual is a
+built-in consistency check**. The geometry is validated exactly on synthetic input.
+
+Plain bisection was useless here: the first midpoint lands in the refusal band around the
+transition and the search gives up. It now tracks `lo`, `hi` *and* the refusal band, narrowing the
+two usable gaps alternately, so every probe either classifies or shrinks the next target interval.
+
+**Formaldimine CAS(2,2) result, and why it is not a validation.** Individual brackets are tight
+(rho = 0.3968 ± 0.0046 from one centre), but the **residual is 0.197 in units of the semi-axes,
+about 2 deg**: the three ellipses do not meet at a point, so no single degeneracy explains them.
+That is the check working. CAS(2,2) is independently known to be pathological for formaldimine —
+the gap scan there finds no minimum in the region at all — and a direct map of the state-specific
+in-CAS S1/S0 gap over this region **never falls below 321 mHa**. That map is also exactly symmetric
+about phi = 90, so any off-axis degeneracy has a mirror partner and a loop centred on the line
+would enclose both. CAS(4,4) and CAS(6,6) are running; the test is whether the residual collapses.
+
+### Bugs found, all of them ours
+
+1. **Fail-loudly hole.** An adaptive walk that stopped a fifth of the way round reported
+   `status OK`, phase `trivial (0)`. The endpoint checks are skipped when there is no endpoint,
+   every *accepted* step was continuous, the chain was intact — and `|<Psi_last|Psi_0>|`, the
+   single factor carrying the sign of the product estimator, **was never checked at all**. Now two
+   checks (`loop_closed`, `closing_step_continuous`), regression-tested. A uniform walk closes by
+   construction and pays nothing. Found by looking at a figure, not by reading the code.
+2. **The controller pulled the wrong lever.** It rejected a step when CASSCF failed to converge and
+   then shrank — but a smaller step makes the warm start *better*, not the solver happier, so the
+   walk shrank forever. Measured: steps with a mismatch of 0.011 rejected as unconverged, one probe
+   running over ten minutes. Acceptance now depends on continuity alone; convergence is the
+   fallback ladder's job and then `analyse`'s.
+3. **The fallback ladder had a blind spot.** Every rung relaxed the *gradient* threshold; none
+   raised the *iteration budget*. Measured at formaldimine CAS(2,2) (130.86, 91.96): `|grad[o]|` =
+   8.8e-06 is inside the 1e-5 threshold, but `dE` = 4.4e-10 will not reach `conv_tol` = 1e-10 in
+   200 macro iterations. It converges at 239, to the same energy to 1e-8. New rung
+   `warm-mo+warm-ci-long`.
+4. **Adaptive event indexing** slipped by one per rejection, once attributing an overlap of 0.79 to
+   a chain whose accepted steps were all above 0.90.
+5. **`run_gap_minimum_search.py` overwrote its result file** instead of merging, so a CAS(12,12)
+   re-run silently destroyed five rungs; they survived only in git. Now merges; rungs restored.
+
+### A claim of ours corrected
+
+"The CAS(12,12) gap search converged in 29 evaluations" was **wrong**. *No* rung's search
+converged — every one stopped on its evaluation budget (40 for the five light rungs, 30 for
+CAS(12,12)). The comparison is between comparable *efforts*, not converged minima. A
+60-evaluation CAS(12,12) run is under way to equalise the budgets.
+
+### Notebooks (§3, §4)
+
+`active_space_study.ipynb` split into `ethylene_ladder.ipynb` (with an exact reference) and
+`butadiene_ladder.ipynb` (without one). New: `adaptive_stepping.ipynb`,
+`locating_intersections.ipynb`, `summary.ipynb`. The butadiene notebook gains the direct
+gap-minimum search, which existed in `results/` and `docs/` but in no notebook.
+
+### Next step
+
+Finish the ethylene CAS(8,8) adaptive run (the largest predicted saving), the formaldimine
+CAS(4,4)/CAS(6,6) localization (does the residual collapse at a sane active space?), and the
+60-evaluation CAS(12,12) gap search. Then butadiene localization, which is the one that bears on
+the open question in `docs/findings.md` §3.

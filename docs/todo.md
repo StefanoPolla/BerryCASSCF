@@ -31,143 +31,28 @@ notebooks are the only place where the reasoning and the figures sit together. T
 
 ---
 
-## 1. Adaptive step size around the loop
+## Done — §1 to §5, implemented 2026-09-17
 
-**What.** Replace uniform discretization with step control driven by the adjacent overlap:
+Kept here in one paragraph each so the plan reads as a record rather than a wish list. Detail is in
+`docs/progress.md` (2026-09-17) and `docs/findings.md` §8.
 
-1. start at `d = dmax` (say 1/10 of the loop);
-2. step by `d`, solve, measure `s = |<Psi_prev|Psi_new>|`;
-3. if `s` is below the accept threshold, **reject**: restore the previous accepted state,
-   shrink `d -> alpha*d`, retry;
-4. otherwise accept and grow `d -> beta*d`, clipped at `dmax`.
-
-**Why.** The per-step difficulty is very non-uniform, so uniform stepping sizes the whole loop for
-its worst arc. Measured spread of adjacent overlaps, and the resulting estimate of how many fewer
-points an equal-margin schedule would need:
-
-| loop | min overlap | median | est. fewer points |
-|---|---|---|---|
-| formaldimine C_x CAS(2,2) | 0.9863 | 0.9910 | 1.3x |
-| formaldimine C_x CAS(6,6) | 0.9782 | 0.9920 | 1.6x |
-| butadiene B_x CAS(8,8) | 0.8897 | 0.9882 | 3.1x |
-| butadiene B_x CAS(12,12) | 0.8807 | 0.9896 | 3.2x |
-| ethylene E_x CAS(8,8) | 0.8550 | 0.9936 | **4.7x** |
-
-It is also **complementary to single-update stepping** (`docs/findings.md` §7): adaptivity reduces
-the *number of points*, which attacks the fixed per-point overhead that single-stepping cannot
-touch, while single-stepping reduces updates *per* point. On the harder loops the two should
-multiply to roughly 6x in wall time.
-
-Two further reasons it suits this problem: the error indicator (`|<Psi_prev|Psi_new>|`) already
-exists and costs ~0.1 ms against a solve of 30 ms to 3 min; and unequal spacing costs nothing,
-because a topological readout needs the chain to be continuous and closed, not evenly sampled.
-
-**Design points that matter.**
-
-* **Control toward a target, do not merely reject at a floor.** A hard accept/reject at 0.80
-  oscillates and wastes solves. Steer toward ~0.98 using `d_new = d * sqrt(m_target/m_achieved)`
-  with `m = 1 - s` (since `1 - s ~ d^2`), clipped to `[dmin, dmax]` with a growth cap
-  (`beta <= 2`). A rejection costs a full solve and there is no cheap predictor, so feedback
-  control is what keeps rejections rare.
-* **Land exactly on `t = 1`.** Clip the final step so the closing geometry is identical to the
-  start; otherwise the endpoint estimator stops being exact, which is its whole value.
-* **`dmin` plus a hard failure at it.** This is a feature, not a safeguard: if shrinking restores
-  continuity the problem was discretization; if it does not, the loop is passing through something.
-  That is exactly the radius-8 versus radius-6 distinction found by hand in
-  `docs/findings.md` §5, and an adaptive scheme would discover it automatically.
-* **Rejection must restore the previous accepted `(mo_coeff, ci)`**, not the trial. Easy to get
-  subtly wrong, and the failure mode is silent.
-
-**Reporting consequence.** Adaptive point sets make "at fixed N" comparisons meaningless; the
-metric becomes cost-to-target (updates or wall time to reach a given `1 - |Pi|`), which is what
-`notebooks/stepping_comparison.ipynb` already uses.
-
----
-
-## 2. Bisection and triangulation to locate what loop transport encircles
-
-**What.** Two related experiments, neither yet implemented:
-
-* **Bisection on radius.** Shrink the loop about a fixed centre until the Berry phase flips, and
-  bisect to converge on the radius at which it does. That radius locates the enclosed degeneracy
-  along the centre-to-edge direction.
-* **Triangulation from two centres.** Repeat from a second centre displaced along `pyr`. Each
-  bisection gives a circle on which the degeneracy lies; two circles intersect in points, which
-  pins the position independently of any gap scan. For butadiene the intersection is expected on
-  the `tw = 90` line, so two centres suffice to reduce it to a point ("biangulation").
-
-**Why it is now more valuable than when first discussed.** The direct gap search places the
-**state-averaged** CAS(8,8) intersection at `pyr = 121.08` (gap 0.0026 mHa), while the radius
-sweep bounds whatever **loop transport** encircles to `pyr < 109.85`. Those differ by ~11 deg.
-Bisection plus triangulation would measure the second position directly, instead of bounding it,
-and so test the central claim of `docs/findings.md` §3 — that the two methods are sensing
-different objects — rather than inferring it.
-
-**What would make it fail.** The radius sweep already showed that a loop close to the degeneracy
-can be non-monotonic in `N` (radius 6 flipped sign between N = 31 and N = 61). A bisection that
-trusts a single run per radius would converge on noise. Each bisection step must therefore require
-the phase to be stable across at least two discretizations, which makes the procedure several
-times more expensive than a naive bisection and must be budgeted for.
-
----
-
-## 3. Reporting gaps in the notebooks
-
-Results that exist in `results/` and are written up in `docs/`, but are not shown in any notebook:
-
-* the **direct gap-minimum search** (`results/butadiene/gap_minimum_search.json`) — including the
-  finding that the fitted closest approach overestimates by ~100x, and that CAS(6,6)'s
-  intersection sits at `tw = 89.11`, off the line the cuts were taken along;
-* the **CAS(12,12) exception** to that search (searched gap 1.496 mHa against ~0.005 at every
-  other rung) together with the **5 x 5 loop-area scan** that rules out an intersection hiding off
-  the sampled cross — this is the evidence behind the project's sharpest open question and appears
-  in no notebook at all;
-* the **localisation conclusion** from the radius sweep — the sweep itself appears, but framed only
-  as a failure-mode study, not as evidence about where the encircled degeneracy is.
-
-See §4 for the structural fix.
-
----
-
-## 4. Split `active_space_study.ipynb`
-
-At 36 cells covering two systems and several sub-studies it is doing too much, and the reporting
-gaps in §3 are a symptom. Proposed split, with the per-system notebooks each self-contained:
-
-| notebook | contents |
-|---|---|
-| `formaldimine_benchmark.ipynb` | unchanged — the primary benchmark |
-| `ethylene_ladder.ipynb` | active-space convergence *with* an exact reference |
-| `butadiene_ladder.ipynb` | no reference; drift, Berry ladder, gap search, localisation, assumption checks |
-| `stepping_comparison.ipynb` | unchanged — single update vs converged |
-| `summary.ipynb` (new, short) | the cross-system verdict table and the two headline figures |
-
----
-
-## 5. Make the continuity diagnostics binding
-
-**What.** Two changes to how loop transport decides a run is trustworthy:
-
-* **Promote "continuation chain broken" from a message to a check.** When the solver's fallback
-  ladder falls through to a cold start, that point was not reached by continuation at all. It is
-  currently reported and then ignored by the pass/fail logic in `berry.analyse`.
-* **Revisit the 0.80 adjacent-overlap threshold.** It is too permissive: the clearest suspect run
-  in the whole study passed at 0.844.
-
-**Why.** `docs/findings.md` §5 documents a run (butadiene radius 6, N=31) that passed every per-run
-check and reported a phase its neighbours contradict — and it carried *both* warning signs. Gauge
-fixing repairs a cold start's arbitrary sign but not a change of branch, so a broken chain is a
-concrete mechanism for a wrong answer, and 0.844 is exactly the regime where a branch change hides.
-Either change alone would have refused that run on its own evidence, without appeal to the
-multi-discretization criterion. Layered checks are good, but a layer that never fires is not one.
-
-**What would make it fail.** Both changes trade false positives for false negatives. Runs that are
-in fact correct will start being refused — the CAS(12,12) loops report weaker warm starts at
-several points and may not survive a stricter rule, which would cost the project its reference
-rung. The threshold must therefore be *calibrated*, not guessed: sweep it against the runs already
-in `results/` and find where it separates the stable-across-N answers from the unstable ones. If no
-such value exists, that is itself worth knowing, and adaptive stepping (§1) becomes the fix instead
-— it removes the failures rather than detecting them.
+* **§1 adaptive step size** — `berrycasscf/adaptive.py`, explained in
+  `notebooks/adaptive_stepping.ipynb`. The predicted cost saving did **not** materialise: measured
+  at matched quality it is 0.60x–1.23x, a wash. Its real value is that it walks loops uniform
+  discretization cannot walk at any affordable N, with a resolution limit that is predicted and
+  then measured.
+* **§2 bisection and triangulation** — `berrycasscf/localize.py`, explained in
+  `notebooks/locating_intersections.ipynb`. Works; the residual from three or more centres is a
+  built-in consistency check and it correctly refuses to produce a position at formaldimine
+  CAS(2,2).
+* **§3 reporting gaps** — the direct gap search is now in `butadiene_ladder.ipynb`. The radius
+  sweep is reframed there as evidence about the checks rather than only as a failure-mode study.
+* **§4 notebook split** — `active_space_study.ipynb` became `ethylene_ladder.ipynb` and
+  `butadiene_ladder.ipynb`; `summary.ipynb` added.
+* **§5 binding checks** — `require_unbroken_chain` plus two checks the session's own bugs revealed
+  (`loop_closed`, `closing_step_continuous`). Calibrated against all 116 saved runs. **The
+  suspicion that the 0.80 overlap threshold was too permissive is withdrawn**: with the chain check
+  on, no threshold from 0.70 to 0.92 admits a contradiction or a lone dissenter.
 
 ---
 
@@ -248,3 +133,57 @@ converge over six.
 **Practical form.** Queue it when the cluster is free, take whatever it returns, and let the
 conclusions stand or fall on the local work. If it arrives, it goes into `butadiene_ladder.ipynb`
 as an extra rung; if it does not, nothing in the write-up depends on it.
+
+---
+
+## 9. Butadiene localization — the experiment the open question needs
+
+**What.** Bisection and triangulation (§2, now built) applied to butadiene, at CAS(2,2) first and
+then at the rungs where the two methods disagree.
+
+**Why.** `docs/findings.md` §3 is the sharpest open question in the project: at CAS(12,12) a direct
+2D search finds no gap below 1.5 mHa anywhere in the loop, while loop transport returns pi on that
+same loop at two discretizations. Every objection to reading that as a disagreement has now been
+tested and answered. What remains is to **measure** the position of whatever loop transport is
+encircling instead of inferring it, which is exactly what bisection does — and it is the only
+available way to interrogate the state-specific object directly.
+
+**What would make it fail.** Cost: a CAS(12,12) adaptive walk is minutes per point and a bisection
+needs ~10 probes at two settings per centre, so the reference rung is a cluster job, not a laptop
+one. And §10 below: if the loop encloses an even number of degeneracies the phase is 0 and
+bisection measures the wrong boundary.
+
+---
+
+## 10. Mirror pairs: an even number of enclosed degeneracies reads as zero
+
+**What.** Handle the case where a symmetry plane forces degeneracies to come in pairs, so a loop
+enclosing both reports 0 and is indistinguishable from a loop enclosing none.
+
+**Why.** This is not hypothetical. A direct map of the state-specific in-CAS gap for formaldimine
+is **exactly symmetric about phi = 90**, so any degeneracy off that line has a mirror partner. A
+loop centred on the line grows to enclose both at nearly the same radius, and its Berry phase never
+flips — which would make bisection report "nothing here" for a region containing two intersections.
+It is a plausible contributor to the inconsistent triangulation measured at formaldimine CAS(2,2).
+
+**What would make it work.** Centres deliberately placed *off* the symmetry line break the tie,
+because the two partners are then enclosed at different radii and the phase flips twice. That is
+cheap to add — it is a choice of centres, not new machinery — but it needs the bisection to look
+for *two* transitions rather than stopping at the first.
+
+---
+
+## 11. Smaller items the session surfaced
+
+* **`d_min` is a resolution knob, not a safety knob.** It sets how close a loop may pass
+  (`eps_min ~ 2*pi*R*d_min/dtheta_max`). Bisection's precision is therefore bounded by it, and it
+  should probably be tightened for localization runs specifically, at a cost in rejected solves.
+  Worth measuring rather than guessing.
+* **The formaldimine FCI reference is a one-dimensional cut** (17 points in alpha at fixed phi), so
+  it fixes `alpha_x` along that line and does *not* establish that the minimum over `phi` is at 90.
+  Any claim comparing a triangulated position to it in two dimensions is weaker than it looks.
+* **Charge the rejected solves everywhere.** `LoopTraversal.total_micro` now includes rejected
+  adaptive trials. Any future cost comparison must keep doing so; hiding them flatters the method.
+* **Drivers must merge, not overwrite.** One single-rung re-run destroyed a five-rung result file,
+  recoverable only from git. `run_gap_minimum_search.py` is fixed; the other drivers that write a
+  single summary file should be audited for the same pattern.
