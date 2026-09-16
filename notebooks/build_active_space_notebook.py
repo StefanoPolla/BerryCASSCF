@@ -435,6 +435,141 @@ md(r"""
 `docs/active_space.md` for the written-up version.*
 """)
 
+md(r"""
+---
+
+# Part II &mdash; butadiene: a second opinion
+
+Ethylene answered the question with a quirk: CAS(2,2) was accidentally exact, so "smallest that
+works" and "smallest you can trust" came apart. Butadiene is the follow-up, picked because it
+should fail for a more fundamental reason &mdash; its 2<sup>1</sup>A<sub>g</sub> state carries a
+large **doubly-excited** component, which a small active space cannot represent at all.
+
+One structural difference changes what can be claimed. Formaldimine is reachable by FCI and
+ethylene's full valence space is CAS(12,12); butadiene's is **CAS(22,22)**, far out of reach.
+**There is no exact reference here** &mdash; "converged" can only mean "the answer stopped
+moving". If it is still moving at the top of the ladder, that is the finding.
+
+The plane was **searched for, not assumed**: three candidate planes of four rigid coordinates
+(methylene twist, umbrella pyramidalization, central torsion, skeletal bend) at
+SA-CASSCF(4,4)/6-31G\*. Only one contains an intersection.
+
+| plane | minimum gap | verdict |
+|---|---|---|
+| `tw_pyr` | **0.73 mHa** at (tw=90, pyr&asymp;110) | **contains a conical intersection** |
+| `tw_tc` | 99.49 mHa | none |
+| `tw_bend` | 36.21 mHa | none |
+
+Two traps the search caught, both of which would otherwise have been silent:
+
+* The plane's *unrestricted* minimum is at `pyr = 180`, gap 0.19 mHa &mdash; but there the
+  methylene has folded back onto its own C1&ndash;C2 bond, **266 kcal/mol** up. Degenerate, and
+  chemically meaningless. The search reports strain beside the gap for this reason.
+* **Butadiene does not have ethylene's `tw` &rarr; `180 - tw` symmetry.** Its two methylene
+  hydrogens are inequivalent (one cis, one trans to C3=C4). Its exact symmetry is reflection
+  through the molecular plane, `(tw, pyr)` &rarr; `(-tw, -pyr)`, which maps outside the scanned
+  region &mdash; so the path-independence check costs a few extra solves instead of being free.
+  Reusing ethylene's check would have compared unrelated geometries.
+
+Full account: `docs/butadiene.md`.
+""")
+
+code(r"""
+BUTA = os.path.join(ROOT, "results", "butadiene")
+BUTA_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
+
+def load_buta(ne, ncas):
+    hits = sorted(glob.glob(os.path.join(BUTA, f"butadiene_scan_cas{ne}-{ncas}_*.npz")))
+    for p in hits:
+        r = ScanResult.load(p)
+        if np.isfinite(r.e_states).all():
+            return r
+    return None
+
+def buta_refined_pyr(r):
+    i = int(np.unravel_index(np.nanargmin(r.gap), r.gap.shape)[0])
+    row = r.gap[i]
+    j = int(np.nanargmin(row))
+    if j in (0, len(row) - 1):
+        return float(r.phis[j]), float(r.alphas[i])
+    y0, y1, y2 = row[j - 1], row[j], row[j + 1]
+    d = y0 - 2 * y1 + y2
+    if abs(d) < 1e-18:
+        return float(r.phis[j]), float(r.alphas[i])
+    return (float(r.phis[j] + 0.5 * (y0 - y2) / d * (r.phis[1] - r.phis[0])),
+            float(r.alphas[i]))
+
+buta = {c: load_buta(*c) for c in BUTA_LADDER}
+have = [c for c in BUTA_LADDER if buta[c] is not None]
+print("butadiene scans available:", ", ".join(f"CAS{c}" for c in have) or "(none)")
+""")
+
+code(r"""
+if have:
+    fig, ax = plt.subplots(figsize=(6.6, 3.8))
+    cmap = plt.get_cmap("plasma")
+    pos = {}
+    for k, cas in enumerate(have):
+        r = buta[cas]
+        i = int(np.unravel_index(np.nanargmin(r.gap), r.gap.shape)[0])
+        pos[cas] = buta_refined_pyr(r)
+        ax.plot(r.phis, r.gap[i] * 1e3, "o-", ms=4,
+                color=cmap(k / max(len(have) - 1, 1)), label=f"CAS{cas}")
+    ax.set_xlabel(r"pyramidalization $\phi$ (deg), at tw = 90$^\circ$")
+    ax.set_ylabel(r"$E_1 - E_0$  (mHa)")
+    ax.set_title("Butadiene: gap through the intersection, by active space")
+    ax.legend(fontsize=8); plt.tight_layout(); plt.show()
+
+    largest = have[-1]
+    ref_pyr = pos[largest][0]
+    print(f"{'active space':>13} {'pyr (refined)':>14} {'tw':>6} "
+          f"{'vs largest rung':>16} {'grid min (mHa)':>15}")
+    print("-" * 70)
+    for cas in have:
+        pyr, tw = pos[cas]
+        print(f"{'CAS%s' % (cas,):>13} {pyr:14.2f} {tw:6.0f} {pyr - ref_pyr:+16.2f} "
+              f"{buta[cas].min_gap_point()[2]*1e3:15.3f}")
+    print(f"\nLargest rung available: CAS{largest}. With no exact reference, the only")
+    print("meaningful question is whether successive rungs still disagree.")
+""")
+
+md(r"""
+## Verdict across all three systems
+""")
+
+code(r"""
+rows_out = [
+    ("formaldimine", "CAS(2,2)", "CAS(4,4)", "CAS(4,4)",
+     "FCI in-basis (alpha_x = 132.6 deg)"),
+    ("ethylene", "CAS(2,2)", "CAS(2,2)", "CAS(10,10)",
+     "CAS(12,12) full valence (phi_x = 110.0 deg)"),
+]
+if len(have) >= 2:
+    pyrs = [buta_refined_pyr(buta[c])[0] for c in have]
+    settled = [have[k] for k in range(len(have) - 1)
+               if all(abs(pyrs[k] - q) <= 2.0 for q in pyrs[k + 1:])]
+    buta_stable = f"CAS{min(settled)}" if settled else "none tested"
+    rows_out.append(("butadiene", "see below", "n/a (no reference)", buta_stable,
+                     f"largest rung CAS{have[-1]}, no exact reference"))
+
+print(f"{'system':>13} {'Berry needs':>12} {'SA accurate':>20} {'SA stable':>14}   reference")
+print("-" * 92)
+for r_ in rows_out:
+    print(f"{r_[0]:>13} {r_[1]:>12} {r_[2]:>20} {r_[3]:>14}   {r_[4]}")
+""")
+
+md(r"""
+The pattern across the three systems is that **no active-space recipe transfers**. Formaldimine's
+comparator is qualitatively wrong at CAS(2,2) and converged at CAS(4,4); ethylene's is accurate at
+CAS(2,2) but not stable until CAS(10,10); butadiene has no reachable reference at all. What does
+transfer is the *procedure*: enlarge the space until the answer stops moving, and check an exact
+symmetry of the system to confirm the solver is not the thing that moved.
+
+The Berry phase, on all systems tested, needs only the minimal active space &mdash; because it
+asks a topological question, which tolerates a badly misplaced intersection as long as the loop
+still encloses it.
+""")
+
 nb = nbf.v4.new_notebook(cells=CELLS)
 nb.metadata = {
     "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
