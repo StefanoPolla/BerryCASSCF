@@ -147,7 +147,48 @@ def analyse(trav: LoopTraversal, cont: ContinuationConfig | None = None) -> Berr
                 "same state, so its sign is not interpretable"
             )
 
-    # 4. the two estimators must agree in sign
+    # 4. the loop must actually be closed, and the step that closes it must be continuous.
+    #    Neither was checked before, and an adaptive walk that stopped a fifth of the way
+    #    round once passed every other check and reported "trivial (0)": the endpoint checks
+    #    are skipped when there is no endpoint, and |closing_overlap| -- the single factor
+    #    carrying the sign of the product estimator -- was never tested at all. A uniform
+    #    walk closes by construction, so this costs it nothing.
+    meta = trav.adaptive or {}
+    closed = bool(meta.get("closed", True))
+    checks["loop_closed"] = closed
+    if not closed:
+        messages.append(
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry "
+            "phase is defined for it"
+        )
+
+    mag_close = abs(float(trav.closing_overlap))
+    checks["closing_step_continuous"] = bool(mag_close >= cont.min_abs_overlap)
+    if not checks["closing_step_continuous"]:
+        messages.append(
+            f"the closing step is discontinuous: |<Psi_last|Psi_0>| = {mag_close:.3f} < "
+            f"{cont.min_abs_overlap}. This overlap alone carries the sign of the product "
+            "estimator, so its sign is not interpretable"
+        )
+
+    # 5. the continuation chain must be unbroken: no point after the first may have been
+    #    solved cold. Such a point was not reached by continuation at all, and gauge fixing
+    #    cannot repair a change of branch. Calibrated in examples/calibrate_thresholds.py.
+    broken = [p.index for p in trav.points
+              if p.strategy in ("cold", "none-converged") and p.index != 0]
+    if cont.require_unbroken_chain:
+        checks["continuation_chain_intact"] = not broken
+        if broken:
+            messages.append(
+                f"continuation chain broken at point(s) {broken}: the warm start was "
+                "abandoned there, so those points were not reached by continuation. "
+                "Gauge fixing repairs an arbitrary sign but not a change of branch, so "
+                "the phase is not interpretable."
+            )
+    else:
+        checks["continuation_chain_intact"] = True
+
+    # 6. the two estimators must agree in sign
     if trav.endpoint_overlap is None:
         checks["estimators_agree"] = True
     else:

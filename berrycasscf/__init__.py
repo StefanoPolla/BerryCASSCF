@@ -25,10 +25,11 @@ from .geometry import (
     OVERVIEW_REGION,
     SCAN_REGIONS,
 )
-from .config import CasConfig, ContinuationConfig, ScanConfig
+from .config import CasConfig, ContinuationConfig, ScanConfig, AdaptiveConfig
 from .overlap import CasWavefunction, cas_overlap, brute_force_cas_overlap
 from .casscf import build_mol, run_casscf, transfer_mo
 from .continuation import traverse_loop, LoopTraversal
+from .adaptive import traverse_loop_adaptive, walk_adaptive, AdaptiveWalk
 from .berry import analyse, run_loop, BerryResult, TRIVIAL, NONTRIVIAL, UNDETERMINED
 from .scan import scan_gap, ScanResult
 from .toy import jt_loop_berry_phase
@@ -39,10 +40,11 @@ __version__ = "0.1.0"
 __all__ = [
     "Loop", "formaldimine_geom", "LOOP_CI", "LOOP_CONTROL_LOWER", "LOOP_CONTROL_UPPER",
     "BENCHMARK_LOOPS", "REFERENCE_CI_ALPHA_PHI", "OVERVIEW_REGION", "SCAN_REGIONS",
-    "CasConfig", "ContinuationConfig", "ScanConfig",
+    "CasConfig", "ContinuationConfig", "ScanConfig", "AdaptiveConfig",
     "CasWavefunction", "cas_overlap", "brute_force_cas_overlap",
     "build_mol", "run_casscf", "transfer_mo",
     "traverse_loop", "LoopTraversal",
+    "traverse_loop_adaptive", "walk_adaptive", "AdaptiveWalk",
     "analyse", "run_loop", "BerryResult", "TRIVIAL", "NONTRIVIAL", "UNDETERMINED",
     "scan_gap", "ScanResult",
     "jt_loop_berry_phase",

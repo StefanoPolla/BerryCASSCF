@@ -80,6 +80,14 @@ class LoopTraversal:
     endpoint_converged: bool | None
     wall_time: float
     warnings: list[str] = field(default_factory=list)
+    # Populated only by berrycasscf.adaptive.traverse_loop_adaptive: the step-size history,
+    # the rejected trials and whether the walk closed. None for a uniform traversal.
+    adaptive: dict | None = None
+    # Solver work spent on REJECTED trial steps. Uniform walks never reject, so this is 0
+    # for them; an adaptive walk that rejected ten steps really did ten extra solves, and a
+    # cost comparison that hid them would flatter the method.
+    rejected_macro: int = 0
+    rejected_micro: int = 0
 
     @property
     def adjacent_abs_overlaps(self) -> np.ndarray:
@@ -93,13 +101,17 @@ class LoopTraversal:
 
     @property
     def total_macro(self) -> int:
-        """Total CASSCF macro-iterations spent on the loop: a machine-independent cost."""
-        return sum(p.n_macro for p in self.points)
+        """All CASSCF macro-iterations spent on the loop, rejected trials included.
+
+        Machine-independent, unlike wall time. Rejected work is charged here on purpose:
+        it is work the method had to do to produce this answer.
+        """
+        return sum(p.n_macro for p in self.points) + self.rejected_macro
 
     @property
     def total_micro(self) -> int:
-        """Total micro-iterations: the closest analogue of the paper's parameter updates."""
-        return sum(p.n_micro for p in self.points)
+        """All micro-iterations: the closest analogue of the paper's parameter updates."""
+        return sum(p.n_micro for p in self.points) + self.rejected_micro
 
     @property
     def all_converged(self) -> bool:
@@ -119,12 +131,21 @@ class LoopTraversal:
 # because it breaks the continuation chain. Every rung is still overlap-checked afterwards,
 # so a fallback that lands on a different branch is caught by the continuity test rather
 # than silently accepted.
-SOLVE_STRATEGIES: tuple[tuple[str, bool, bool, float], ...] = (
-    #  name                 warm MO  warm CI  conv_tol_grad multiplier
-    ("warm-mo+warm-ci",     True,    True,    1.0),
-    ("warm-mo",             True,    False,   1.0),
-    ("warm-mo-loose",       True,    False,   20.0),
-    ("cold",                False,   False,   1.0),
+# The second rung exists because the ladder used to have a blind spot: every rung relaxed the
+# *gradient* threshold, none raised the iteration budget, so a point that simply needed more
+# macro iterations fell all the way through to a cold start and broke the continuation chain.
+# Measured on formaldimine CAS(2,2) at (alpha, phi) = (130.86, 91.96): PySCF reaches
+# |grad[o]| = 8.8e-06 (inside the 1e-5 threshold) but a per-iteration dE of 4.4e-10 that will
+# not fall below conv_tol = 1e-10 within 200 macro iterations. It converges at 239. The energy
+# is the same to 1e-8 either way -- the optimizer is crawling along a flat direction, not
+# sitting somewhere wrong.
+SOLVE_STRATEGIES: tuple[tuple[str, bool, bool, float, float], ...] = (
+    #  name                  warm MO  warm CI  grad mult  macro mult
+    ("warm-mo+warm-ci",      True,    True,    1.0,       1.0),
+    ("warm-mo+warm-ci-long", True,    True,    1.0,       3.0),
+    ("warm-mo",              True,    False,   1.0,       1.0),
+    ("warm-mo-loose",        True,    False,   20.0,      2.0),
+    ("cold",                 False,   False,   1.0,       3.0),
 )
 
 
@@ -169,7 +190,7 @@ def _solve_point(
     attempted: list[str] = []
     wfn = None
     strategies = SOLVE_STRATEGIES if use_fallback else SOLVE_STRATEGIES[:1]
-    for name, warm_mo, warm_ci, grad_mult in strategies:
+    for name, warm_mo, warm_ci, grad_mult, macro_mult in strategies:
         attempted.append(name)
         grad = None if cas.conv_tol_grad is None else cas.conv_tol_grad * grad_mult
         candidate = run_casscf(
@@ -177,7 +198,8 @@ def _solve_point(
             mo_guess=mo_guess if warm_mo else None,
             ci0=np.asarray(previous.ci) if warm_ci else None,
             conv_tol=cas.conv_tol, conv_tol_grad=grad,
-            max_cycle_macro=cas.max_cycle_macro, fix_spin=cas.fix_spin,
+            max_cycle_macro=int(cas.max_cycle_macro * macro_mult),
+            fix_spin=cas.fix_spin,
             label=label, mf=mf,
         )
         wfn = candidate if wfn is None else wfn
@@ -304,15 +326,11 @@ def traverse_loop(
                 f"< {cont.min_abs_overlap}"
             )
 
-    fallbacks = [p.index for p in records if p.strategy in ("cold", "none-converged")
-                 and p.index != 0]
-    if fallbacks:
-        warnings.append(
-            f"continuation chain broken at point(s) {fallbacks}: the warm start was "
-            "abandoned there, so those points were not reached by continuation. The "
-            "overlap checks still apply, but treat the result with suspicion."
-        )
-    degraded = [p.index for p in records if p.strategy in ("warm-mo", "warm-mo-loose")]
+    # A broken continuation chain (a cold solve after the first point) is no longer warned
+    # about here: berry.analyse turns it into a binding check, and duplicating the text
+    # would report it twice. The evidence is in the per-point `strategy` field either way.
+    degraded = [p.index for p in records
+                if p.strategy in ("warm-mo+warm-ci-long", "warm-mo", "warm-mo-loose")]
     if degraded:
         warnings.append(
             f"fell back to a weaker warm start at point(s) {degraded} "

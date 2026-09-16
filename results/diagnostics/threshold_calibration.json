@@ -1,0 +1,3158 @@
+{
+  "runs": [
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        6.0
+      ],
+      "n_points": 15,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": 1,
+      "endpoint": 0.999999987500852,
+      "min_adj": 0.4727922748457686,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        6.0
+      ],
+      "n_points": 31,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9840400283523889,
+      "min_adj": 0.8439082521832879,
+      "all_converged": true,
+      "n_broken": 1,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        8.0
+      ],
+      "n_points": 15,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999850419113,
+      "min_adj": 0.23745992930898951,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        8.0
+      ],
+      "n_points": 31,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999847952774,
+      "min_adj": 0.7649305968279299,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 15,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999845606842,
+      "min_adj": 0.5593324714416374,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 31,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999837283878,
+      "min_adj": 0.8736854131113719,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 15,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999984732851,
+      "min_adj": 0.8006228383842505,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 31,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999984764886,
+      "min_adj": 0.9480629465891293,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        6.0
+      ],
+      "n_points": 61,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": 1,
+      "endpoint": 0.9840399569750227,
+      "min_adj": 0.7341307127634402,
+      "all_converged": true,
+      "n_broken": 1,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-enclosing",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        8.0
+      ],
+      "n_points": 61,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999849701662,
+      "min_adj": 0.8213529436705221,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-displaced_control",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        10.0
+      ],
+      "n_points": 15,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999946794136,
+      "min_adj": 0.9459667942532526,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/failure_modes.json",
+      "system": "butadiene",
+      "loop": "sweep-displaced_control",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        10.0
+      ],
+      "n_points": 31,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999950233293,
+      "min_adj": 0.9870294052542686,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas2-2_N17.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999884905812,
+      "min_adj": 0.9855587262860347,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas2-2_N25.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999903379397,
+      "min_adj": 0.9917248254973288,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas2-2_N41.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999898648249,
+      "min_adj": 0.9963701627755869,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas2-2_N9.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999898560645,
+      "min_adj": 0.9653127672495775,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas4-4_N17.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999560172778,
+      "min_adj": 0.9750265192622827,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas4-4_N25.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999570839178,
+      "min_adj": 0.9834904834216309,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas4-4_N41.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999563231424,
+      "min_adj": 0.9916089735894743,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas4-4_N9.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999535971137,
+      "min_adj": 0.9496247726629762,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas6-6_N17.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999528846,
+      "min_adj": 0.9794718579117322,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas6-6_N25.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998941095,
+      "min_adj": 0.9872870972546454,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas6-6_N41.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999514442,
+      "min_adj": 0.9939368560681551,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_1_cas6-6_N9.json",
+      "system": "berry",
+      "loop": "C_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        110.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999405391,
+      "min_adj": 0.9553251573234635,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas2-2_N17.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.999999999999351,
+      "min_adj": 0.9924860507537312,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas2-2_N25.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999987887,
+      "min_adj": 0.996122740109838,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas2-2_N41.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999985609,
+      "min_adj": 0.9984769942064741,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas2-2_N9.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999993108,
+      "min_adj": 0.9764957675880718,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas4-4_N17.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999884153,
+      "min_adj": 0.9887949060281862,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas4-4_N25.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999872164,
+      "min_adj": 0.99403406806392,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas4-4_N41.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999855194,
+      "min_adj": 0.9976216011404259,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas4-4_N9.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999886877,
+      "min_adj": 0.965615687313111,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas6-6_N17.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999952864,
+      "min_adj": 0.9909127732005798,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas6-6_N25.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999561449,
+      "min_adj": 0.9954801213231348,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas6-6_N41.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.999999999997111,
+      "min_adj": 0.998255382149778,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_2_cas6-6_N9.json",
+      "system": "berry",
+      "loop": "C_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        150.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999991145,
+      "min_adj": 0.9709672580524897,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas2-2_N17.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999167442,
+      "min_adj": 0.9725433804716866,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas2-2_N25.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999140341,
+      "min_adj": 0.9862505701679153,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas2-2_N41.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999999927264,
+      "min_adj": 0.9948610439279284,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas2-2_N9.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999251044,
+      "min_adj": 0.9044427352719402,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas4-4_N17.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999999931013,
+      "min_adj": 0.9531770642408439,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas4-4_N25.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999997880233,
+      "min_adj": 0.9768027222180892,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas4-4_N41.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999994593,
+      "min_adj": 0.9911449533555967,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas4-4_N9.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999241762,
+      "min_adj": 0.8458475083344913,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas6-6_N17.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 17,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999988804897,
+      "min_adj": 0.9562062554693734,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas6-6_N25.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 25,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999988622374,
+      "min_adj": 0.9782031245463034,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas6-6_N41.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 41,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999991229289,
+      "min_adj": 0.9918487899651159,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/berry/C_x_cas6-6_N9.json",
+      "system": "berry",
+      "loop": "C_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        130.0,
+        89.9
+      ],
+      "radius": [
+        10.0,
+        10.0
+      ],
+      "n_points": 9,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999998629346,
+      "min_adj": 0.8617258160074315,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas10-10_N13.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(10,10)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999943681,
+      "min_adj": 0.9859837775889352,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas10-10_N21.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(10,10)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999958735,
+      "min_adj": 0.994533708719235,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas2-2_N13.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999979272799,
+      "min_adj": 0.9860189901753619,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas2-2_N21.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999979781318,
+      "min_adj": 0.9945494203074591,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas4-4_N13.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999977442426,
+      "min_adj": 0.9857200771450024,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas4-4_N21.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999979099955,
+      "min_adj": 0.9944312885301687,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas6-6_N13.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999970435,
+      "min_adj": 0.986287635229545,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas6-6_N21.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999926188,
+      "min_adj": 0.9946478396000629,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas8-8_N13.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(8,8)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999970417246,
+      "min_adj": 0.9860291657736926,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_1_cas8-8_N21.json",
+      "system": "butadiene",
+      "loop": "B_1",
+      "cas": "CAS(8,8)",
+      "centre": [
+        60.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.999999996793419,
+      "min_adj": 0.994552505764875,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas10-10_N13.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(10,10)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999137827,
+      "min_adj": 0.9856804087964589,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas10-10_N21.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(10,10)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999767244,
+      "min_adj": 0.9943876738280006,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas2-2_N13.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998924439,
+      "min_adj": 0.9859641577799562,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas2-2_N21.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999230093,
+      "min_adj": 0.9944959051766848,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas4-4_N13.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999744154,
+      "min_adj": 0.9856773634229785,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas4-4_N21.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999819505,
+      "min_adj": 0.9943879434710059,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas6-6_N13.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999990348,
+      "min_adj": 0.9862249970227961,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas6-6_N21.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999967293,
+      "min_adj": 0.9945953064610246,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas8-8_N13.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(8,8)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999997646738,
+      "min_adj": 0.9859750761760552,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_2_cas8-8_N21.json",
+      "system": "butadiene",
+      "loop": "B_2",
+      "cas": "CAS(8,8)",
+      "centre": [
+        120.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999996164488,
+      "min_adj": 0.9945005591635893,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas10-10_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(10,10)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999996478076,
+      "min_adj": 0.8196547305261039,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 3,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas10-10_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(10,10)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999997777947,
+      "min_adj": 0.8774092581921467,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas12-12_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(12,12)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999999720744,
+      "min_adj": 0.8267334636963221,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 5,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas12-12_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(12,12)",
+      "centre": [
+        90.0,
+        101.85
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999997406606,
+      "min_adj": 0.8806972767258091,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 2,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas2-2_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999907084286,
+      "min_adj": 0.9171563226704279,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas2-2_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999907347223,
+      "min_adj": 0.9578738988949631,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas4-4_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999903916088,
+      "min_adj": 0.8915937796412726,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas4-4_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999880577468,
+      "min_adj": 0.934795393371111,
+      "all_converged": true,
+      "n_broken": 1,
+      "n_degraded": 0,
+      "broken": [
+        6
+      ]
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas6-6_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999972031238,
+      "min_adj": 0.8545922031402424,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas6-6_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999961090265,
+      "min_adj": 0.9093989923110172,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas8-8_N13.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999853062637,
+      "min_adj": 0.8132311029189071,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/butadiene/butadiene_B_x_cas8-8_N21.json",
+      "system": "butadiene",
+      "loop": "B_x",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        101.8532
+      ],
+      "radius": [
+        12.0,
+        18.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.999999984817142,
+      "min_adj": 0.889717355625704,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas10-10_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(10,10)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999985688225,
+      "min_adj": 0.9864411503017736,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas10-10_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(10,10)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999980786782,
+      "min_adj": 0.9947127561575845,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas12-12_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(12,12)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999962281412,
+      "min_adj": 0.986138532609341,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas12-12_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(12,12)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999966392267,
+      "min_adj": 0.9945952810255373,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas2-2_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999987488553,
+      "min_adj": 0.9864883739332688,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas2-2_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(2,2)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999988489003,
+      "min_adj": 0.994732420036867,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas4-4_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999989239918,
+      "min_adj": 0.9868531648901164,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas4-4_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(4,4)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999990373813,
+      "min_adj": 0.9948736527793038,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas6-6_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999924711,
+      "min_adj": 0.9864818954864608,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas6-6_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(6,6)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.999999999987272,
+      "min_adj": 0.9947284966271478,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas8-8_N13.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(8,8)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999610076,
+      "min_adj": 0.9864601488077132,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_1_cas8-8_N21.json",
+      "system": "ethylene",
+      "loop": "E_1",
+      "cas": "CAS(8,8)",
+      "centre": [
+        60.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.99999999998745,
+      "min_adj": 0.9947203051373767,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas10-10_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(10,10)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998158193,
+      "min_adj": 0.9863987534814779,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas10-10_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(10,10)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998141555,
+      "min_adj": 0.9946763659435477,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas12-12_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(12,12)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999995005886,
+      "min_adj": 0.9860981196332784,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas12-12_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(12,12)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999994528248,
+      "min_adj": 0.9945605930671159,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas2-2_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999594192,
+      "min_adj": 0.9864407226874808,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas2-2_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(2,2)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999484697,
+      "min_adj": 0.9946915443853,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas4-4_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999987466,
+      "min_adj": 0.9868045893084199,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas4-4_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(4,4)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999986309,
+      "min_adj": 0.99483170211458,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas6-6_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999430527,
+      "min_adj": 0.9864365481363695,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas6-6_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(6,6)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999999401832,
+      "min_adj": 0.9946893949766202,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas8-8_N13.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(8,8)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998869253,
+      "min_adj": 0.9864147694915798,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_2_cas8-8_N21.json",
+      "system": "ethylene",
+      "loop": "E_2",
+      "cas": "CAS(8,8)",
+      "centre": [
+        120.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "trivial (0)",
+      "status": "OK",
+      "sign": 1,
+      "endpoint": 0.9999999998562379,
+      "min_adj": 0.9946810423638486,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas10-10_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(10,10)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9860326962379676,
+      "min_adj": 0.6922562169959977,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 4,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas10-10_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(10,10)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9860322462306267,
+      "min_adj": 0.8508581957453365,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 11,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas12-12_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(12,12)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.999999991263549,
+      "min_adj": 0.6859741010882074,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 1,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas12-12_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(12,12)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999913588152,
+      "min_adj": 0.84994848470436,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 4,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas2-2_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999952862849,
+      "min_adj": 0.8945608980668855,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas2-2_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(2,2)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999924890147,
+      "min_adj": 0.9485838112388308,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas4-4_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999964787623,
+      "min_adj": 0.7176363478614313,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas4-4_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(4,4)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999971635232,
+      "min_adj": 0.8885032920944793,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas6-6_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999999866667,
+      "min_adj": 0.6890269481805353,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas6-6_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(6,6)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999999902001,
+      "min_adj": 0.8671657022055342,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 0,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas8-8_N13.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 13,
+      "phase": "undetermined",
+      "status": "FAILED",
+      "sign": -1,
+      "endpoint": -0.9999999956003791,
+      "min_adj": 0.6731167921194299,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 4,
+      "broken": []
+    },
+    {
+      "path": "results/ethylene/ethylene_E_x_cas8-8_N21.json",
+      "system": "ethylene",
+      "loop": "E_x",
+      "cas": "CAS(8,8)",
+      "centre": [
+        90.0,
+        110.0
+      ],
+      "radius": [
+        12.0,
+        12.0
+      ],
+      "n_points": 21,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "sign": -1,
+      "endpoint": -0.9999999949415993,
+      "min_adj": 0.8549544315670843,
+      "all_converged": true,
+      "n_broken": 0,
+      "n_degraded": 6,
+      "broken": []
+    }
+  ],
+  "sweep": [
+    {
+      "min_abs_overlap": 0.7,
+      "require_chain": false,
+      "runs_passing": 109,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 1,
+      "lone_dissenters": 0,
+      "decidable": 42,
+      "singletons": 5,
+      "undecided": 0,
+      "contradicting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.72,
+      "require_chain": false,
+      "runs_passing": 108,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 1,
+      "lone_dissenters": 0,
+      "decidable": 41,
+      "singletons": 6,
+      "undecided": 0,
+      "contradicting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.74,
+      "require_chain": false,
+      "runs_passing": 107,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 41,
+      "singletons": 7,
+      "undecided": 0,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.76,
+      "require_chain": false,
+      "runs_passing": 107,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 41,
+      "singletons": 7,
+      "undecided": 0,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.78,
+      "require_chain": false,
+      "runs_passing": 106,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 40,
+      "singletons": 8,
+      "undecided": 0,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.8,
+      "require_chain": false,
+      "runs_passing": 106,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 40,
+      "singletons": 8,
+      "undecided": 0,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.82,
+      "require_chain": false,
+      "runs_passing": 103,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 37,
+      "singletons": 11,
+      "undecided": 0,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.84,
+      "require_chain": false,
+      "runs_passing": 101,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 1,
+      "decidable": 36,
+      "singletons": 11,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": [
+        "butadiene/sweep-enclosing/CAS(8,8) r=(12.0, 6.0)"
+      ]
+    },
+    {
+      "min_abs_overlap": 0.86,
+      "require_chain": false,
+      "runs_passing": 95,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 35,
+      "singletons": 8,
+      "undecided": 5,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.88,
+      "require_chain": false,
+      "runs_passing": 91,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 35,
+      "singletons": 5,
+      "undecided": 8,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.9,
+      "require_chain": false,
+      "runs_passing": 86,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 33,
+      "singletons": 4,
+      "undecided": 11,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.92,
+      "require_chain": false,
+      "runs_passing": 83,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 32,
+      "singletons": 4,
+      "undecided": 12,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.7,
+      "require_chain": true,
+      "runs_passing": 106,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 41,
+      "singletons": 6,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.72,
+      "require_chain": true,
+      "runs_passing": 105,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 40,
+      "singletons": 7,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.74,
+      "require_chain": true,
+      "runs_passing": 105,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 40,
+      "singletons": 7,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.76,
+      "require_chain": true,
+      "runs_passing": 105,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 40,
+      "singletons": 7,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.78,
+      "require_chain": true,
+      "runs_passing": 104,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 39,
+      "singletons": 8,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.8,
+      "require_chain": true,
+      "runs_passing": 104,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 39,
+      "singletons": 8,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.82,
+      "require_chain": true,
+      "runs_passing": 101,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 36,
+      "singletons": 11,
+      "undecided": 1,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.84,
+      "require_chain": true,
+      "runs_passing": 99,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 35,
+      "singletons": 11,
+      "undecided": 2,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.86,
+      "require_chain": true,
+      "runs_passing": 94,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 34,
+      "singletons": 9,
+      "undecided": 5,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.88,
+      "require_chain": true,
+      "runs_passing": 90,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 34,
+      "singletons": 6,
+      "undecided": 8,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.9,
+      "require_chain": true,
+      "runs_passing": 85,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 33,
+      "singletons": 3,
+      "undecided": 12,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    },
+    {
+      "min_abs_overlap": 0.92,
+      "require_chain": true,
+      "runs_passing": 82,
+      "runs_total": 116,
+      "questions": 48,
+      "contradictions": 0,
+      "lone_dissenters": 0,
+      "decidable": 32,
+      "singletons": 3,
+      "undecided": 13,
+      "contradicting_questions": [],
+      "dissenting_questions": []
+    }
+  ],
+  "best": {
+    "min_abs_overlap": 0.7,
+    "require_chain": true,
+    "runs_passing": 106,
+    "runs_total": 116,
+    "questions": 48,
+    "contradictions": 0,
+    "lone_dissenters": 0,
+    "decidable": 41,
+    "singletons": 6,
+    "undecided": 1,
+    "contradicting_questions": [],
+    "dissenting_questions": []
+  }
+}

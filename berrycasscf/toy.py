@@ -117,3 +117,59 @@ def jt_loop_berry_phase(
         encloses_origin=encloses,
         expected_nontrivial=encloses,
     )
+
+
+# --- adaptive stepping on the same model ------------------------------------------------
+# The controller in berrycasscf.adaptive is exercised here first, where the answer is known
+# in closed form and a step costs a 2x2 diagonalization. A failure seen only through CASSCF
+# could be a control bug or a solver bug; a failure seen here can only be a control bug.
+
+def jt_loop_adaptive(
+    centre: tuple[float, float] = (0.0, 0.0),
+    radius: float = 1.0,
+    cfg=None,
+    kappa: float = 1.0,
+    randomize_signs: bool = True,
+    seed: int = 0,
+):
+    """Adaptive-step Berry phase for the Jahn-Teller model.
+
+    Returns ``(ToyResult, AdaptiveWalk)``. The walk carries the step-size history, which is
+    what the notebook plots: the controller should visibly slow down on the arc nearest the
+    degeneracy and speed up on the far side.
+    """
+    from .adaptive import walk_adaptive
+
+    rng = np.random.default_rng(seed)
+
+    def solve(t, _previous):
+        ang = 2.0 * np.pi * t
+        x = centre[0] + radius * np.cos(ang)
+        y = centre[1] + radius * np.sin(ang)
+        v = jt_ground_state(x, y, kappa)
+        if randomize_signs:
+            v = v * rng.choice([-1.0, 1.0])
+        return v, {"converged": True, "x": x, "y": y}
+
+    walk = walk_adaptive(solve, lambda a, b: float(a @ b), cfg=cfg)
+
+    chain = walk.states[:-1] if walk.closed else walk.states
+    adjacent = [abs(e.raw_overlap) for e in walk.accepted_events][: len(chain) - 1]
+    closing = float(chain[-1] @ chain[0])
+    product = float(np.prod(adjacent) * closing) if adjacent else closing
+    endpoint = float(chain[0] @ walk.states[-1]) if walk.closed else float("nan")
+
+    encloses = bool(np.hypot(*centre) < radius)
+    return (
+        ToyResult(
+            centre=centre,
+            radius=radius,
+            n_points=len(chain),
+            product_estimator=product,
+            endpoint_estimator=endpoint,
+            min_abs_adjacent_overlap=float(min(adjacent)) if adjacent else float("nan"),
+            encloses_origin=encloses,
+            expected_nontrivial=encloses,
+        ),
+        walk,
+    )
