@@ -120,6 +120,28 @@ orbitals enter the active space, or a symmetry-broken SCF solution. And it is a 
 `phi = 89.9` and so does not sample exact mirror pairs, which is why that system was checked a
 different way (cold against warm at identical geometries, agreeing to 2.5e-06 Ha).
 
+### The price of cold, measured
+
+When the formaldimine scans were redone cold and compared against the committed warm-started
+ones, every minimum position and every inside/outside conclusion was unchanged. But the grids
+differ elsewhere, and **in every case it is warm that found the lower energy**:
+
+| scan | points differing > 1 mHa | worst | where | lower solution |
+|---|---|---|---|---|
+| `C_2` CAS(2,2) | 1 / 625 | 279 mHa | (161.0, 89.9), grid corner | warm, by **0.115 Ha** |
+| `C_1` CAS(6,6) | 17 / 625 | 3.9 mHa | (113.7, 97.2) | warm |
+| `C_x` CAS(6,6) | 24 / 625 | 3.7 mHa | (127.2, 89.0) | warm |
+
+That single corner point is a genuine cold-start failure: a fresh RHF guess there converges to a
+solution 0.115 Ha above the one a warm start reaches. It sits far from the intersection and
+changes nothing, but it is the concrete cost of choosing reproducibility over energy, and on a
+different system such a point could land somewhere that matters.
+
+The targeted fix is cheap and was not implemented: flag grid points whose state-averaged energy
+is an outlier against their neighbours, and retry only those from a neighbour's orbitals. That
+keeps the bulk of the grid deterministic while repairing isolated failures, and it is a better
+use of effort than multi-starting every point.
+
 **What would actually solve it** is a deterministic multi-start: some fixed number of seeded
 orbital perturbations at each geometry, keeping the lowest state-averaged energy. That is
 path-independent, embarrassingly parallel, and costs a constant factor. It is the obvious next

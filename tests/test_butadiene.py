@@ -146,3 +146,37 @@ def test_search_planes_are_well_formed():
         assert set(fixed) | {cx, cy} == {"tw", "pyr", "tc", "bend"}
         lo_x, hi_x, lo_y, hi_y = region.bounding_box()
         assert hi_x > lo_x and hi_y > lo_y
+
+
+def _spectrum(xyz):
+    d = np.linalg.norm(xyz[:, None, :] - xyz[None, :, :], axis=-1)
+    return np.sort(d.ravel())
+
+
+@pytest.mark.parametrize("tw,pyr", [(90.0, 110.0), (75.0, 60.0), (45.0, 135.0), (30.0, 0.0)])
+def test_reflection_through_the_molecular_plane_is_an_exact_symmetry(tw, pyr):
+    """(tw, pyr) -> (-tw, -pyr) is isometric at tc = 0. This is the check butadiene supports."""
+    from berrycasscf.butadiene import mirror_partner
+
+    a = butadiene_coords(tw=tw, pyr=pyr)
+    b = butadiene_coords(tw=mirror_partner(tw, pyr)[0], pyr=mirror_partner(tw, pyr)[1])
+    assert np.allclose(_spectrum(a), _spectrum(b), atol=1e-10)
+
+
+@pytest.mark.parametrize("tw,pyr", [(75.0, 0.0), (75.0, 105.0), (45.0, 90.0)])
+def test_ethylene_style_mirror_is_NOT_a_symmetry_here(tw, pyr):
+    """Guards against reusing ethylene's check.
+
+    Butadiene's two methylene hydrogens are inequivalent (one cis, one trans to C3=C4), so
+    tw and 180 - tw are genuinely different geometries. Applying ethylene's validation to this
+    system would silently compare unrelated points.
+    """
+    a = butadiene_coords(tw=tw, pyr=pyr)
+    b = butadiene_coords(tw=180.0 - tw, pyr=pyr)
+    assert not np.allclose(_spectrum(a), _spectrum(b), atol=1e-6)
+
+
+def test_reflection_symmetry_is_lost_once_the_molecule_is_non_planar():
+    a = butadiene_coords(tw=75.0, pyr=60.0, tc=90.0)
+    b = butadiene_coords(tw=-75.0, pyr=-60.0, tc=90.0)
+    assert not np.allclose(_spectrum(a), _spectrum(b), atol=1e-6)

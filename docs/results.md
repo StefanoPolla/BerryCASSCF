@@ -59,17 +59,19 @@ All nine (loop, CAS) combinations are stable by this criterion. It is implemente
 ## 2. State-averaged CASSCF comparator
 
 Equal-weight two-state SA-CASSCF, 25 × 25 grids over each loop's bounding box (+1° margin),
-resolution 0.917° in both coordinates.
+resolution 0.917° in both coordinates. All scans use the cold strategy
+(`ScanConfig.strategy = "cold"`); see `docs/active_space.md` for why, and for the audit
+confirming that redoing them cold left every minimum position and every conclusion unchanged.
 
 | Loop | CAS | min gap (Ha) | at (α, φ) | inside the loop? | agrees with Berry phase? |
 |---|---|---|---|---|---|
-| `C_1` | CAS(2,2) | 0.064347 | (121.00, 78.90) | no | yes |
-| `C_1` | CAS(4,4) | 0.018370 | (121.00, 89.90) | no | yes |
+| `C_1` | CAS(2,2) | 0.064351 | (121.00, 78.90) | no | yes |
+| `C_1` | CAS(4,4) | 0.018371 | (121.00, 89.90) | no | yes |
 | `C_1` | CAS(6,6) | 0.019873 | (121.00, 89.90) | no | yes |
 | `C_x` | CAS(2,2) | 0.020570 | (141.00, 89.90) | no | **NO** |
-| `C_x` | CAS(4,4) | **0.000882** | (130.00, 89.90) | **yes** | yes |
+| `C_x` | CAS(4,4) | **0.000881** | (130.00, 89.90) | **yes** | yes |
 | `C_x` | CAS(6,6) | **0.000905** | (130.92, 89.90) | **yes** | yes |
-| `C_2` | CAS(2,2) | **0.000342** | (150.92, 89.90) | **yes** | **NO** |
+| `C_2` | CAS(2,2) | **0.000341** | (150.92, 89.90) | **yes** | **NO** |
 | `C_2` | CAS(4,4) | 0.016808 | (139.00, 89.90) | no | yes |
 | `C_2` | CAS(6,6) | 0.015137 | (139.00, 89.90) | no | yes |
 

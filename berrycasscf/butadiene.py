@@ -27,6 +27,23 @@ are preserved exactly.
 
 The search phase (``examples/search_butadiene_ci.py``) scans pairs of these to locate an
 intersection before any ladder is run; nothing here assumes where it is.
+
+Symmetry
+--------
+Ethylene's gap maps could be validated against ``tau -> 180 - tau``, because its two methylene
+groups are equivalent. **Butadiene has no such symmetry**: the two hydrogens on C1 are
+inequivalent (one cis, one trans to the C3=C4 unit), so ``tw`` and ``180 - tw`` give genuinely
+different geometries -- their interatomic-distance spectra differ by ~3e-03 Angstrom, which is
+small but real, and the corresponding energies differ accordingly.
+
+The exact symmetry is reflection through the molecular plane,
+
+    (tw, pyr) -> (-tw, -pyr)     at tc = 0
+
+which is isometric to numerical precision and is what
+:func:`berrycasscf.butadiene.mirror_partner` returns. Any path-independence check on this system
+must use that pair, not the ethylene one. (With ``tc != 0`` the molecule is non-planar and even
+this symmetry is gone.)
 """
 
 from __future__ import annotations
@@ -130,6 +147,15 @@ def plane_geom_fn(coord_x: str, coord_y: str, **fixed):
 
     geom_fn.__name__ = f"butadiene_{coord_x}_{coord_y}"
     return geom_fn
+
+
+def mirror_partner(tw: float, pyr: float) -> tuple[float, float]:
+    """The geometry related to ``(tw, pyr)`` by reflection through the molecular plane.
+
+    Exact only at ``tc = 0``. Energies at a point and its partner must agree; any difference is
+    a solver inconsistency, not physics.
+    """
+    return (-float(tw), -float(pyr))
 
 
 def _to_string(xyz: np.ndarray) -> str:
