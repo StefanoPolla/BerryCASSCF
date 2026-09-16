@@ -48,7 +48,11 @@ RESULT_DIR = os.path.join(ROOT, "results", "butadiene")
 PLANE = "tw_pyr"
 CI_REGION = Loop("butadiene_ci", centre=(90.0, 110.0), radius=(20.0, 30.0))
 
-CAS_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
+# CAS(2,2) is below the pi space and is not a chemically defensible choice here; it is included
+# deliberately, to test whether the topological answer survives an active space that cannot even
+# represent the pi system. "CAS(2,2) is not well defined for this geometry" is a legitimate
+# outcome and is reported as such rather than forced.
+CAS_LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 REFERENCE_CAS = (12, 12)
 GRID = (5, 13)                 # tw in {70, 80, 90, 100, 110}; pyr in 5 deg steps, 80..140
 
@@ -58,12 +62,18 @@ GRID = (5, 13)                 # tw in {70, 80, 90, 100, 110}; pyr in 5 deg step
 # compared across the ladder -- the refined pyr position. The cost is that its tw is assumed
 # rather than resolved; see docs/butadiene.md.
 GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (1, 13)}
+
+# Local refinement: a fine cut in pyr around each rung's coarse estimate, on which the cone model
+# actually holds. The coarse grid is 5 deg and the surfaces stop being conical well before that,
+# so the coarse fits carry a model error the refinement removes.
+REFINE_STEP = 1.0
+REFINE_HALFWIDTH = 6.0
 REGION_OVERRIDE: dict[tuple[int, int], Loop] = {}
 
 # The Berry stage stops below CAS(12,12): a state-specific solve there costs minutes, so three
 # loops at two discretizations would run to several hours for no change in the conclusion, which
 # is already established over four rungs.
-BERRY_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10)]
+BERRY_LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10)]
 LOOP_RADIUS = (12.0, 18.0)     # degrees in (tw, pyr)
 NPOINTS = [13, 21]
 
@@ -217,16 +227,86 @@ def do_berry(args) -> int:
     return 0
 
 
+def refine_path(ne: int, ncas: int, axis: str) -> str:
+    return os.path.join(RESULT_DIR, f"butadiene_refine{axis}_cas{ne}-{ncas}.npz")
+
+
+def do_refine(args) -> int:
+    """Fine cuts around each rung's intersection, in pyr and (to test the assumption) in tw."""
+    from berrycasscf.refine import cone_apex
+
+    os.makedirs(RESULT_DIR, exist_ok=True)
+    fn = geom_fn()
+    for ne, ncas in CAS_LADDER:
+        coarse_p = scan_path(ne, ncas)
+        if not os.path.exists(coarse_p):
+            print(f"[skip] CAS({ne},{ncas}): no coarse scan")
+            continue
+        coarse = ScanResult.load(coarse_p)
+        if not np.isfinite(coarse.e_states).all():
+            print(f"[skip] CAS({ne},{ncas}): coarse scan incomplete")
+            continue
+        i = int(np.unravel_index(np.nanargmin(coarse.gap), coarse.gap.shape)[0])
+        tw0 = float(coarse.alphas[i])
+        seed = cone_apex(coarse.phis, coarse.gap[i] * 1e3, window=2).position
+
+        # --- fine cut in pyr, at the coarse row's tw -------------------------------
+        path = refine_path(ne, ncas, "pyr")
+        if os.path.exists(path) and not args.force:
+            print(f"[skip] {os.path.basename(path)}")
+        else:
+            region = Loop("refine", (tw0, seed), (0.0, REFINE_HALFWIDTH))
+            n = int(2 * REFINE_HALFWIDTH / REFINE_STEP) + 1
+            print(f"\n=== refine pyr CAS({ne},{ncas}) around {seed:.2f} "
+                  f"(+-{REFINE_HALFWIDTH:.0f} deg, {n} points, tw={tw0:.0f}) ===")
+            t0 = time.time()
+            res = scan_gap(region, cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
+                           scan=ScanConfig(n_alpha=1, n_phi=n, margin=0.0),
+                           geom_fn=fn, progress=None if args.quiet else print,
+                           checkpoint=path)
+            res.save(path)
+            fit = cone_apex(res.phis, res.gap[0] * 1e3, window=None)
+            print(f"  pyr = {fit.position:.3f}   closest approach {fit.closest_approach:.3f} mHa"
+                  f"   residual {fit.residual:.2e}   [{time.time()-t0:.0f} s]")
+
+        # --- fine cut in tw, testing the assumption that the apex sits at tw = 90 ---
+        if (ne, ncas) not in args.tw_check:
+            continue
+        path = refine_path(ne, ncas, "tw")
+        if os.path.exists(path) and not args.force:
+            print(f"[skip] {os.path.basename(path)}")
+            continue
+        fine = ScanResult.load(refine_path(ne, ncas, "pyr"))
+        pyr0 = cone_apex(fine.phis, fine.gap[0] * 1e3, window=None).position
+        region = Loop("refine_tw", (90.0, pyr0), (REFINE_HALFWIDTH, 0.0))
+        n = int(2 * REFINE_HALFWIDTH / REFINE_STEP) + 1
+        print(f"\n=== refine tw CAS({ne},{ncas}) at pyr={pyr0:.2f} ({n} points) ===")
+        res = scan_gap(region, cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
+                       scan=ScanConfig(n_alpha=n, n_phi=1, margin=0.0),
+                       geom_fn=fn, progress=None if args.quiet else print, checkpoint=path)
+        res.save(path)
+        fit = cone_apex(res.alphas, res.gap[:, 0] * 1e3, window=None)
+        print(f"  tw = {fit.position:.3f}  (assumed 90)   residual {fit.residual:.2e}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", choices=["scan", "berry"])
+    ap.add_argument("stage", choices=["scan", "refine", "berry"])
+    ap.add_argument("--tw-check", nargs="*", default=["8,8", "12,12"],
+                    help="active spaces for which to also scan tw (default: 8,8 and 12,12)")
     ap.add_argument("--basis", default=DEFAULT_BASIS)
     ap.add_argument("--centre", nargs=2, type=float, default=None, metavar=("TW", "PYR"))
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
-    return do_scans(args) if args.stage == "scan" else do_berry(args)
+    args.tw_check = {tuple(int(v) for v in spec.split(",")) for spec in args.tw_check}
+    if args.stage == "scan":
+        return do_scans(args)
+    if args.stage == "refine":
+        return do_refine(args)
+    return do_berry(args)
 
 
 if __name__ == "__main__":
