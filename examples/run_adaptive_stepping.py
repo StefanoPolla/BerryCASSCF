@@ -37,6 +37,7 @@ from berrycasscf.berry import analyse
 from berrycasscf.continuation import traverse_loop
 from berrycasscf.geometry import LOOP_CI, LOOP_CONTROL_UPPER, formaldimine_geom
 from berrycasscf.butadiene import butadiene_geom
+from berrycasscf.ethylene import ethylene_geom
 from berrycasscf.geometry import Loop
 from berrycasscf.runlog import JobLog
 from berrycasscf.store import save_json
@@ -53,7 +54,22 @@ ADAPTIVE_SETTINGS = [
     {"d_max": 0.05, "target_mismatch": 0.02},
 ]
 
+# The loops that matter for this question are the ones whose difficulty is *uneven*. Predicted
+# savings from the spread of adjacent overlaps on saved runs: formaldimine 1.3x, butadiene B_x at
+# CAS(8,8) 3.1x, ethylene E_x at CAS(8,8) 4.7x. Testing only the easy rungs would be a weak test of
+# that prediction, so the ladder rung with the largest predicted win is included even though it is
+# the most expensive.
 SYSTEMS = {
+    "ethylene": {
+        "geom_fn": ethylene_geom,
+        "basis": "6-31g*",
+        "cas": [(8, 8)],
+        "loops": {
+            "E_x": Loop("E_x", (90.0, 110.90), (12.0, 12.0)),
+            "E_2": Loop("E_2", (90.0 + 30.0, 110.90), (12.0, 12.0)),
+        },
+        "expected": {"E_x": "non-trivial (pi)", "E_2": "trivial (0)"},
+    },
     "formaldimine": {
         "geom_fn": formaldimine_geom,
         "basis": "sto-3g",

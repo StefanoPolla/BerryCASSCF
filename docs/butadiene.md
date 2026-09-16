@@ -145,9 +145,11 @@ artifact. The *gaps* are another matter: five of six rungs fall by about two ord
 confirming that those cuts pass essentially through a real intersection and that a fitted "closest
 approach" measured along a line means very little.
 
-**CAS(12,12) does not follow.** The same search, with the same settings, converged in 29
-evaluations (it stopped early because the simplex collapsed, not because it ran out of budget) and
-improved the gap by only 16%. Two follow-ups were run to see whether that is an artifact:
+**CAS(12,12) does not follow.** The same search improved the gap by only 16% in 29
+evaluations. **No rung's search converged** -- every one stopped on its evaluation budget, 40 for
+the five lighter rungs and 30 here, because a single CAS(12,12) evaluation costs ~2.2 minutes. The
+comparison is therefore between comparable efforts rather than between converged minima. Two
+follow-ups were run to see whether the difference is an artifact:
 
 * **Was the minimum off the sampled cross?** A 5 x 5 grid over the loop's bounding box
   (`tw` 78-102, `pyr` 83.9-119.9) puts its minimum at **(90.00, 101.85)** — the centre, on the row

@@ -18,6 +18,7 @@ guess over a few tens of solves. Expensive rungs are skipped by default for that
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 import time
@@ -67,7 +68,16 @@ def main() -> int:
     args = ap.parse_args()
 
     fn = plane_geom_fn("tw", "pyr", tc=0.0, bend=0.0)
+    # Merge with whatever is already on disk rather than overwriting it. A single-rung re-run
+    # once silently replaced a five-rung file, and the earlier results survived only in git.
     rows = []
+    if os.path.exists(OUT):
+        try:
+            rows = json.load(open(OUT)).get("runs", [])
+            print(f"[merge] {len(rows)} rung(s) already in "
+                  f"{os.path.relpath(OUT, ROOT)}; re-run rungs replace their entry")
+        except (json.JSONDecodeError, OSError):
+            rows = []
     print(f"{'CAS':>10} {'fitted (tw, pyr)':>22} {'fit gap':>9} "
           f"{'searched (tw, pyr)':>22} {'gap':>9} {'moved':>7} {'evals':>6}")
     print("-" * 92)
@@ -86,8 +96,10 @@ def main() -> int:
                            start=start, step=tuple(args.step),
                            max_evaluations=args.budget, progress=log)
         log.done()
+        rows = [r for r in rows if tuple(r["cas"]) != (ne, ncas)]
         rows.append({
             "cas": [ne, ncas], "start": list(res.start), "start_gap": res.start_gap,
+            "budget": args.budget,
             "fitted_closest_approach": fit_gap,
             "found": [res.x, res.y], "gap": res.gap, "moved": res.moved,
             "n_evaluations": res.n_evaluations, "converged": res.converged,
@@ -98,6 +110,7 @@ def main() -> int:
               f"{'(%.2f, %.2f)' % res.start:>22} {res.start_gap:9.4f} "
               f"{'(%.2f, %.2f)' % (res.x, res.y):>22} {res.gap:9.4f} "
               f"{res.moved:7.3f} {res.n_evaluations:6d}")
+        rows.sort(key=lambda r: r["cas"])
         save_json({"basis": args.basis, "budget": args.budget, "runs": rows}, OUT)
 
     if rows:

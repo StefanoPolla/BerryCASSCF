@@ -230,22 +230,45 @@ def bisect_radius(
     if lo is None and bottom.verdict == PI:
         say(f"  inner loop already reports pi: the degeneracy is inside scale {scale_lo}")
 
-    a, b = scale_lo, scale_hi
+    # Plain bisection gives up the moment a midpoint comes back undetermined, and that is
+    # exactly what the first midpoint tends to do: it lands in the refusal band around the
+    # transition. So the search tracks THREE things -- the largest scale reporting 0, the
+    # smallest reporting pi, and the band of refusals in between -- and narrows the two
+    # usable gaps alternately:
+    #
+    #     lo ....... [ undetermined band ] ....... hi
+    #        ^ raise this                ^ lower this
+    #
+    # Every probe therefore does something: it either classifies (moving lo up or hi down) or
+    # widens the refusal band, which shrinks the interval the next probe will target. The
+    # answer is the bracket (lo, hi); the band's width is the method's resolution, measured
+    # rather than assumed.
+    raise_lo = True
     while lo is not None and hi is not None and len(probes) < max_probes:
         if (hi - lo) / hi <= tol:
             break
+        band = [p.scale for p in probes if p.verdict == UNDETERMINED and lo < p.scale < hi]
+        gap_below = (lo, min(band) if band else hi)
+        gap_above = (max(band) if band else lo, hi)
+        widths = {"below": gap_below[1] / gap_below[0], "above": gap_above[1] / gap_above[0]}
+        # Alternate, but skip a side that is already tighter than the tolerance.
+        side = "below" if raise_lo else "above"
+        if widths[side] - 1.0 <= tol:
+            side = "above" if side == "below" else "below"
+            if widths[side] - 1.0 <= tol:
+                say("  both sides of the refusal band are inside tolerance; stopping")
+                break
+        raise_lo = not raise_lo
+
+        a, b = gap_below if side == "below" else gap_above
         mid = math.sqrt(a * b)
         p = probe(mid)
         if p.verdict == PI:
-            hi, b = mid, mid
+            hi = min(hi, mid)
         elif p.verdict == ZERO:
-            lo, a = mid, mid
+            lo = max(lo, mid)
         else:
-            # No information about the bracket. Probing the same place again would return
-            # the same refusal, so the search stops and reports what it has: the refusal
-            # band IS the resolution limit (see the module docstring).
-            say("  undetermined: the bracket cannot be narrowed further by bisection")
-            break
+            say("  refused: the band widens and the next probe targets the other side")
 
     result = BisectionResult(
         centre=tuple(float(c) for c in centre),
