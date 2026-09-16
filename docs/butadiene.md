@@ -125,6 +125,51 @@ which rung (if any) is right**. The honest statement is that the state-averaged 
 possible answer to "is there a system needing more than CAS(4,4)?": here even CAS(12,12) is not
 demonstrably enough.
 
+### Direct search: the fitted positions hold, the fitted gaps do not
+
+The positions above come from cone fits along a cut, which assume the cut passes through the apex.
+`examples/run_gap_minimum_search.py` tests that by seeding a derivative-free 2D minimization of the
+gap from each fitted position (cold SA-CASSCF evaluations, cached, hard budget):
+
+| CAS | fitted (tw, pyr) | fitted gap | searched (tw, pyr) | searched gap | moved | evals |
+|---|---|---|---|---|---|---|
+| (2,2) | (90.00, 105.86) | 0.276 mHa | (89.97, 105.67) | **0.003** | 0.19 | 40 |
+| (4,4) | (90.00, 109.68) | 0.341 | (89.98, 109.41) | **0.005** | 0.27 | 40 |
+| (6,6) | (90.00, 114.46) | 0.990 | (**89.11**, 114.61) | **0.006** | **0.91** | 40 |
+| (8,8) | (90.00, 120.87) | 0.201 | (89.98, 121.08) | **0.003** | 0.22 | 40 |
+| (10,10) | (90.00, 105.07) | 0.303 | (89.96, 104.90) | **0.006** | 0.18 | 40 |
+| (12,12) | (90.00, 102.17) | 1.776 | (90.00, 101.96) | **1.496** | 0.21 | 29 |
+
+The positions move by at most 0.91 degrees, so the ladder's 19.2-degree spread is not a fitting
+artifact. The *gaps* are another matter: five of six rungs fall by about two orders of magnitude,
+confirming that those cuts pass essentially through a real intersection and that a fitted "closest
+approach" measured along a line means very little.
+
+**CAS(12,12) does not follow.** The same search, with the same settings, converged in 29
+evaluations (it stopped early because the simplex collapsed, not because it ran out of budget) and
+improved the gap by only 16%. Two follow-ups were run to see whether that is an artifact:
+
+* **Was the minimum off the sampled cross?** A 5 x 5 grid over the loop's bounding box
+  (`tw` 78-102, `pyr` 83.9-119.9) puts its minimum at **(90.00, 101.85)** — the centre, on the row
+  already sampled — with a clean bowl around it. Nothing is hiding off-axis.
+* **Is 1.5 mHa near the model's numerical floor?** No: convergence noise is ~1e-06 mHa, and the
+  local cone slopes are ~1.3 mHa/deg.
+
+So at the reference rung the state-averaged gap does not drop below ~1.5 mHa anywhere in the loop,
+while every other rung is driven to ~0.005 mHa by the same procedure — a factor of ~300.
+
+**This is deliberately not reported as "CAS(12,12) has no intersection in this plane."** 1.5 mHa is
+0.04 eV, well inside the error of the model itself (6-31G\*, truncated active space, no dynamic
+correlation), so a surface that genuinely touches could plausibly present a floor that size.
+Calling it an absence would require a threshold for when a state-averaged minimum gap is compatible
+with a true crossing, and no such criterion has been established here (see `docs/todo.md` §6). What
+is established is the contrast between this rung and the others, which is large, reproducible, and
+not explained by fitting, sampling or convergence.
+
+It matters because loop transport returns **pi** on that same loop at CAS(12,12), stable at N=13
+and N=21 with endpoint overlap -1.000000. The two methods are hardest to reconcile exactly where
+the active space is largest.
+
 ### A consequence for the Berry phase
 
 The loops are centred on the CAS(12,12) intersection at `pyr = 101.85`, with radius 18 degrees in

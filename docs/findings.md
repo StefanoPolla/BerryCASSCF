@@ -88,22 +88,39 @@ Seeding a derivative-free minimization of the gap from each fitted position
 Three results, one of which corrects this document:
 
 1. **The fitted positions are good to ~0.2 deg.** The cone model does its job.
-2. **The fitted closest approach overestimates by about two orders of magnitude.** Every rung
-   reaches 0.003–0.006 mHa under direct search, against fitted values of 0.2–1.0 mHa. So **all of
-   these active spaces do contain a genuine conical intersection in this plane** — the earlier
-   reading of a large fitted closest approach as evidence of an avoided crossing was wrong. A fit
-   constrained to a line through an assumed position cannot do better than that line allows.
-3. **CAS(6,6)'s intersection is at `tw` = 89.11, not 90.** That is why its `pyr` cut at `tw` = 90
+2. **The fitted closest approach overestimates by about two orders of magnitude — wherever an
+   intersection exists.** CAS(2,2) through CAS(10,10) all reach 0.003–0.006 mHa under direct
+   search, against fitted values of 0.2–1.0 mHa. So **those active spaces do contain a genuine
+   conical intersection in this plane**, and the earlier reading of a large fitted closest approach
+   as evidence of an avoided crossing was wrong for them. A fit constrained to a line through an
+   assumed position cannot do better than that line allows.
+
+3. **CAS(12,12) behaves differently under the same search, and not because of the fit.** From its
+   fitted position, with the same budget, the search converged in 29 evaluations to
+   (90.00, 101.96) with a gap of **1.496 mHa** — a 16% improvement on the fitted 1.776, against the
+   ~100x collapse at every other rung. So the floor is not an artifact of fitting along a line: a
+   free 2D minimization confirms it. **What that floor means is a separate question** — see the
+   note on thresholds below.
+4. **CAS(6,6)'s intersection is at `tw` = 89.11, not 90.** That is why its `pyr` cut at `tw` = 90
    fitted badly and appeared to jump: the cut simply missed the apex. The one-dimensional `tw`
    check at the fitted `pyr` reported 89.982 and did not catch it, because that cut was taken at
    the wrong `pyr`. Two one-dimensional cuts through a two-dimensional surface are not a
    substitute for a search.
 
-This also weakens the CAS(12,12) reading below: its ~1.7 mHa "floor" was measured the same way,
-on a line through an assumed position, and every other rung's equivalent number turned out to be
-~100 times too large.
+**What counts as "a conical intersection" needs a threshold this work does not have.** It is
+tempting to read CAS(12,12)'s 1.5 mHa floor as "no intersection in the plane", and an earlier
+revision of this document did. That over-reads it. 1.5 mHa is 0.04 eV — comfortably inside the
+error of the model itself (basis set, active space, no dynamic correlation), so a surface that
+truly touches could easily present a floor of that size here. The statement that survives is
+**relative**: the search drives every other rung to 0.003–0.006 mHa and this one only to 1.5, some
+300x higher, so whatever the search is converging onto at CAS(12,12) is a different kind of object
+numerically. In absolute terms 1.5 mHa is still a near-degeneracy, and loop transport returning π
+there is not in contradiction with it. Deciding the question properly needs a criterion for when a
+state-averaged minimum gap is compatible with a true crossing — some combination of an absolute
+tolerance and the local cone slopes, which here are ~1.3 mHa/deg. For now the honest description is
+"reasonably small, and unusually large relative to the other rungs". See `docs/todo.md` §6.
 
-### Whether the plane contains an intersection at all is itself active-space dependent
+### How close the plane comes to an intersection is itself active-space dependent
 
 Re-sampling every rung at 0.25 deg gives a sharper and more awkward result:
 
@@ -113,26 +130,51 @@ Re-sampling every rung at 0.25 deg gives a sharper and more awkward result:
 | branches extrapolate to | ~0 | discontinuity | ~0 | **~1.7** |
 
 CAS(4,4) and CAS(10,10) close to within 0.1–0.2 mHa: the plane contains a genuine intersection for
-them. **On the sampled cut, CAS(12,12) does not** — its two branches have clean opposite slopes
-(−1.31 and +1.35 mHa/deg) meeting at ≈1.7 mHa, far above the 1e-06 mHa convergence noise.
+them. **CAS(12,12) stops an order of magnitude higher** — its two branches have clean opposite
+slopes (−1.31 and +1.35 mHa/deg) meeting at ≈1.7 mHa, far above the 1e-06 mHa convergence noise,
+and the free search below gets only to 1.496. Whether that counts as an intersection depends on a
+threshold this work has not fixed; what is certain is that it is not resolution or fit error.
 
 Loop transport at CAS(12,12) nonetheless returns **π**, stable across two discretizations
-(N=13 and N=21, min overlaps 0.83 and 0.88, endpoint −1.000000 exactly). At face value that is the
-two methods disagreeing about *whether* anything is enclosed rather than merely where.
+(N=13 and N=21, min overlaps 0.83 and 0.88, endpoint −1.000000 exactly).
 
-**That reading does not survive checking, and the check matters more than the claim.** First,
-the 1.7 mHa floor comes from a fit along a line, and the direct search above showed that such
-numbers run ~100x too high on every rung where it was tested. Second, CAS(12,12)
-was never scanned over the loop's area — only along a **cross** through it (one row at `tw` = 90
-over `pyr` 80–140, one column at `pyr` = 102.2 over `tw` 84–96). The enclosing loop spans
-`tw` 78–102 and `pyr` 83.9–119.9. An intersection sitting anywhere off that cross would produce
-exactly what is observed: no degeneracy on the sampled lines, and a π from a loop that encircles
-it. So the honest statement is **"no intersection was found on the sampled cross"**, which is much
-weaker than "the seam misses the plane", and the π is not evidence of a disagreement.
+**Two objections to reading that as a disagreement were raised and tested; both have now been
+answered, and the claim still should not be pushed as far as it first was.**
 
-Resolving it needs a genuine two-dimensional scan at CAS(12,12) over the loop interior, which at
->2.4 min per point is ~1 h for a coarse 5×5 and was not affordable alongside the rest. Until then
-this rung's "position" should be read as a point on a cross, not a located intersection.
+*Objection 1: the floor came from a fit along a line.* Fits of that kind run ~100x too high on
+every rung where a direct search was tried, so the 1.7 mHa could have been an artifact. It is not:
+a free 2D minimization from that position converged to **1.496 mHa**, only 16% below the fit. The
+floor is real in the sense that a derivative-free search cannot get under it.
+
+*Objection 2: only a cross through the loop had been sampled.* The scan covered one row at
+`tw` = 90 over `pyr` 80–140 and one column at `pyr` = 102.2 over `tw` 84–96, while the loop spans
+`tw` 78–102 and `pyr` 83.9–119.9 — so an intersection off that cross would have produced exactly
+what was seen. **A 5×5 grid over the loop's bounding box has since been run.** Its minimum is at
+(90.00, 101.85) — the centre, on the cross already sampled — with a clean bowl around it and
+nothing hiding off-axis.
+
+So both checks came back in favour of the original observation, which is the opposite of what
+happened to several other claims in this document. **But "the plane contains no intersection at
+CAS(12,12)" is still more than the data supports**, for the threshold reason given in §1: 1.5 mHa
+is 0.04 eV, within the model's own error, and a genuine crossing could present that floor.
+
+What can be stated is the contrast. At CAS(12,12) the gap scan finds nothing below 1.5 mHa
+anywhere in the loop's area, where every other rung is driven to ~0.005 mHa by the same search;
+and on that same loop, loop transport returns π with endpoint overlap −1.000000 at two
+discretizations. Whether that is a real disagreement about *what is enclosed*, or the two methods
+describing the same near-degeneracy with different resolution, is **the sharpest open question in
+the project**. Three readings are live:
+
+* the state-specific surfaces have a degeneracy the state-averaged ones do not — finding 3 in its
+  strongest form;
+* both methods see the same crossing, and 1.5 mHa is simply what this model's numerical floor
+  looks like at this rung; or
+* the loop-transport result is wrong here — both runs report falling back to a weaker warm start at
+  several points, which is the failure mode §5 discusses.
+
+Separating them needs the position of whatever loop transport encircles to be **measured** rather
+than inferred, which is what the bisection and triangulation experiment in `docs/todo.md` §2 is
+for: shrink the loop until the phase turns over, and repeat from a second centre.
 
 Spread **18.7 deg**, and the top two rungs still differ by **2.90 deg** — above the 2-deg
 tolerance ethylene met at CAS(10,10), so the sequence has not settled even at the largest
@@ -257,15 +299,32 @@ a seam.
 
 ### A single passing run is not enough — and this is where a per-run check fails
 
-Radius 6 at N=31 **passed** every per-run check (overlap 0.844, endpoint 0.984) and reported π.
-Its neighbours at N=15 and N=61 both say 0. Since radius 8 reports π reliably and radius 6 does
-not, the degeneracy most likely sits *between* their reaches — pyr between 107.8 and 109.8 —
-which would make **0 the correct answer at radius 6 and the passing run the wrong one**.
+Radius 6 at N=31 **passed** the per-run checks (overlap 0.844, endpoint 0.984) and reported π,
+while N=15 and N=61 both give the opposite sign — though both of those were themselves refused, so
+their signs carry little weight either.
 
-So the per-run checks are necessary but not sufficient: one of them accepted an answer that is
-probably wrong. What rejects it is the **stability criterion**, which demands at least two
-discretizations *all* passing with the same phase. Radius 6 has exactly one passing N, so no phase
-is claimed for it. The layering is what makes the protocol safe, not any individual check.
+**The defensible statement is that radius 6 is marginal: the Berry phase for that loop is not
+determined by these calculations.** An earlier version of this section went further and called the
+passing run wrong, arguing that since radius 8 reports π reliably and radius 6 does not, the
+degeneracy sits between their reaches. That inference is reasonable, but it rests on the signs of
+two refused runs, which this document elsewhere declines to trust. What can be said is that radius
+6 passes close enough to whatever is being encircled that the answer depends on the
+discretization.
+
+**A diagnostic was in fact present, and was not made binding.** The N=31 run carries the message
+*"continuation chain broken"* — the solver's fallback ladder fell through to a **cold start** at one
+point, so that point was not reached by continuation at all. Gauge fixing repairs a cold start's
+arbitrary *sign*, but not a change of *branch*, and a modest branch change still clears the 0.80
+overlap threshold (this run's worst overlap, 0.844, is barely above it). That is a concrete
+mechanism for a spurious sign, and it was reported as a warning rather than a failure. Promoting it
+to a check would have refused this run on its own evidence, without appeal to the multi-N
+criterion; so would a less permissive overlap threshold. Both are planned — `docs/todo.md` §5.
+
+So the per-run checks are necessary but not sufficient *as currently wired*: the information needed
+to refuse this run was there and simply not acted on. What rejects it today is the **stability
+criterion**, which demands at least two discretizations *all* passing with the same phase. Radius 6
+has exactly one passing N, so no phase is claimed for it. The layering is what makes the protocol
+safe, not any individual check.
 
 ## 6. The required loop discretization grows with the active space
 

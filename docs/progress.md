@@ -323,10 +323,16 @@ smallest active space on all three systems.
 2. **A per-run check passed a probably-wrong answer** (radius 6, N=31: overlap 0.844, endpoint
    0.984, reported π, while N=15 and N=61 both say 0). Only the multi-N stability criterion
    rejects it. The protocol is safe because the checks are layered, not because any one is sound.
-3. **"The seam misses the plane at CAS(12,12)."** Withdrawn. Loop transport returns π there
-   (stable at N=13 and N=21) while the gap scan shows no degeneracy — but CAS(12,12) was only
-   sampled along a **cross** through the loop, never over its area, and an intersection off that
-   cross explains both observations. The honest claim is "none found on the sampled cross".
+3. **"The seam misses the plane at CAS(12,12)."** Withdrawn as stated, twice over. The
+   observation was that loop transport returns π there (stable at N=13 and N=21) while the gap
+   scan finds no degeneracy. Two objections were raised and both have since been *tested and
+   answered*: the 1.7 mHa floor is not a line-fitting artifact (a free 2D search reaches only
+   1.496 mHa, against ~0.005 at every other rung), and it is not an intersection hiding off the
+   sampled cross (a 5×5 grid over the loop's area has its minimum at the centre). What remains
+   withdrawn is the *interpretation*: 1.5 mHa is 0.04 eV, inside this model's own error, so it
+   cannot be called an absence of an intersection without a threshold nobody has set. The claim
+   that survives is relative — the search behaves differently at this rung by ~300x — and the open
+   question is now sharper rather than closed.
 
 **Assumptions that survived:** the intersection sits at tw = 90 for every rung tested (89.982,
 89.992, 89.958), with no symmetry forcing it.
