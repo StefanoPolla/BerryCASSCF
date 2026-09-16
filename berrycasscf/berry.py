@@ -106,11 +106,23 @@ def analyse(trav: LoopTraversal, cont: ContinuationConfig | None = None) -> Berr
     messages: list[str] = list(trav.warnings)
     checks: dict[str, bool] = {}
 
-    # 1. every CASSCF point converged
-    checks["all_points_converged"] = bool(trav.all_converged)
-    if not checks["all_points_converged"]:
-        bad = [p.index for p in trav.points if not p.converged]
-        messages.append(f"CASSCF did not converge at point(s) {bad}")
+    # 1. every CASSCF point converged.
+    #    Skipped when the configuration says not to require it, which is the single-update
+    #    regime of arXiv:2304.06070: there a point is *deliberately* left unconverged and the
+    #    verdict must rest on continuity and the endpoint alone.
+    if cont.require_converged:
+        checks["all_points_converged"] = bool(trav.all_converged)
+        if not checks["all_points_converged"]:
+            bad = [p.index for p in trav.points if not p.converged]
+            messages.append(f"CASSCF did not converge at point(s) {bad}")
+    else:
+        checks["all_points_converged"] = True
+        unconverged = sum(1 for p in trav.points if not p.converged)
+        if unconverged:
+            messages.append(
+                f"{unconverged}/{len(trav.points)} points left unconverged by design "
+                "(convergence not required); the verdict rests on continuity and the endpoint"
+            )
 
     # 2. continuity: no adjacent overlap may collapse
     min_abs = float(adj.min()) if adj.size else float("nan")

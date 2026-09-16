@@ -1,0 +1,257 @@
+{
+  "basis": "sto-3g",
+  "modes": [
+    "converged",
+    "two-step",
+    "single-step"
+  ],
+  "runs": [
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 9,
+      "micro": 351,
+      "macro": 120,
+      "wall": 1.3406410217285156,
+      "endpoint_abs": 0.9999999999251044,
+      "product_abs": 0.5369432623858712,
+      "product": -0.5369432623858712,
+      "min_abs_overlap": 0.9044427352719402,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 13,
+      "micro": 482,
+      "macro": 178,
+      "wall": 1.6432321071624756,
+      "endpoint_abs": 0.9999999999295659,
+      "product_abs": 0.6518795922385909,
+      "product": -0.6518795922385909,
+      "min_abs_overlap": 0.9524831102250358,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 17,
+      "micro": 585,
+      "macro": 213,
+      "wall": 2.0613629817962646,
+      "endpoint_abs": 0.9999999999167442,
+      "product_abs": 0.7214036540903622,
+      "product": -0.7214036540903622,
+      "min_abs_overlap": 0.9725433804716866,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 25,
+      "micro": 797,
+      "macro": 290,
+      "wall": 2.709029197692871,
+      "endpoint_abs": 0.9999999999140341,
+      "product_abs": 0.801135613013667,
+      "product": -0.801135613013667,
+      "min_abs_overlap": 0.9862505701679153,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 33,
+      "micro": 1022,
+      "macro": 381,
+      "wall": 3.4603419303894043,
+      "endpoint_abs": 0.9999999999343003,
+      "product_abs": 0.8454536333535887,
+      "product": -0.8454536333535887,
+      "min_abs_overlap": 0.9920347513776259,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 49,
+      "micro": 1412,
+      "macro": 528,
+      "wall": 5.00179123878479,
+      "endpoint_abs": 0.9999999997415456,
+      "product_abs": 0.8931333061195502,
+      "product": -0.8931333061195502,
+      "min_abs_overlap": 0.9963533425862836,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 65,
+      "micro": 1787,
+      "macro": 675,
+      "wall": 6.299853801727295,
+      "endpoint_abs": 0.9999999998848002,
+      "product_abs": 0.9183405103745071,
+      "product": -0.9183405103745071,
+      "min_abs_overlap": 0.997927676066941,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "converged",
+      "n_points": 97,
+      "micro": 2504,
+      "macro": 958,
+      "wall": 9.06485104560852,
+      "endpoint_abs": 0.9999999999307596,
+      "product_abs": 0.9445199857648335,
+      "product": -0.9445199857648335,
+      "min_abs_overlap": 0.9990669753043734,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": true
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 9,
+      "micro": 102,
+      "macro": 26,
+      "wall": 0.6485519409179688,
+      "endpoint_abs": 0.9963152813119326,
+      "product_abs": 0.5358679125894222,
+      "product": -0.5358679125894222,
+      "min_abs_overlap": 0.9080545921066175,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 13,
+      "micro": 134,
+      "macro": 34,
+      "wall": 0.8729300498962402,
+      "endpoint_abs": 0.9999913069820064,
+      "product_abs": 0.6540287314964143,
+      "product": -0.6540287314964143,
+      "min_abs_overlap": 0.9555185391057321,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 17,
+      "micro": 166,
+      "macro": 42,
+      "wall": 1.0309817790985107,
+      "endpoint_abs": 0.999999867705986,
+      "product_abs": 0.7220474188492161,
+      "product": -0.7220474188492161,
+      "min_abs_overlap": 0.9714028414878781,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 25,
+      "micro": 230,
+      "macro": 58,
+      "wall": 1.471308946609497,
+      "endpoint_abs": 0.9999999682015465,
+      "product_abs": 0.8010170479715353,
+      "product": -0.8010170479715353,
+      "min_abs_overlap": 0.9857702007337844,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    },
+    {
+      "loop": "C_x",
+      "cas": [
+        2,
+        2
+      ],
+      "mode": "two-step",
+      "n_points": 33,
+      "micro": 294,
+      "macro": 74,
+      "wall": 1.864928960800171,
+      "endpoint_abs": 0.9999999926794553,
+      "product_abs": 0.8453547272939067,
+      "product": -0.8453547272939067,
+      "min_abs_overlap": 0.9917781383682117,
+      "phase": "non-trivial (pi)",
+      "status": "OK",
+      "all_converged": false
+    }
+  ]
+}

@@ -72,6 +72,37 @@ resolution, not by how near the cut passes. Re-sampling at 0.25 deg drops CAS(4,
 **0.098 mHa** and CAS(10,10) from 0.66 to **0.237 mHa**, both with cone-fit residuals near 1e-02 —
 so those cuts do pass essentially through a genuine intersection.
 
+### The fitted closest approach is unreliable, and a direct search says so
+
+Seeding a derivative-free minimization of the gap from each fitted position
+(`examples/run_gap_minimum_search.py`, 40 cold SA-CASSCF solves per rung) gives:
+
+| CAS | fitted position | fitted closest approach | search found | search gap | moved |
+|---|---|---|---|---|---|
+| (2,2) | (90.00, 105.86) | 0.276 mHa | (89.97, 105.67) | **0.003 mHa** | 0.19 deg |
+| (4,4) | (90.00, 109.68) | 0.341 | (89.98, 109.41) | **0.005** | 0.27 |
+| (6,6) | (90.00, 114.46) | 0.990 | (**89.11**, 114.61) | **0.006** | **0.91** |
+| (8,8) | (90.00, 120.87) | 0.201 | (89.98, 121.08) | **0.003** | 0.22 |
+| (10,10) | (90.00, 105.07) | 0.303 | (89.96, 104.90) | **0.006** | 0.18 |
+
+Three results, one of which corrects this document:
+
+1. **The fitted positions are good to ~0.2 deg.** The cone model does its job.
+2. **The fitted closest approach overestimates by about two orders of magnitude.** Every rung
+   reaches 0.003–0.006 mHa under direct search, against fitted values of 0.2–1.0 mHa. So **all of
+   these active spaces do contain a genuine conical intersection in this plane** — the earlier
+   reading of a large fitted closest approach as evidence of an avoided crossing was wrong. A fit
+   constrained to a line through an assumed position cannot do better than that line allows.
+3. **CAS(6,6)'s intersection is at `tw` = 89.11, not 90.** That is why its `pyr` cut at `tw` = 90
+   fitted badly and appeared to jump: the cut simply missed the apex. The one-dimensional `tw`
+   check at the fitted `pyr` reported 89.982 and did not catch it, because that cut was taken at
+   the wrong `pyr`. Two one-dimensional cuts through a two-dimensional surface are not a
+   substitute for a search.
+
+This also weakens the CAS(12,12) reading below: its ~1.7 mHa "floor" was measured the same way,
+on a line through an assumed position, and every other rung's equivalent number turned out to be
+~100 times too large.
+
 ### Whether the plane contains an intersection at all is itself active-space dependent
 
 Re-sampling every rung at 0.25 deg gives a sharper and more awkward result:
@@ -89,7 +120,9 @@ Loop transport at CAS(12,12) nonetheless returns **π**, stable across two discr
 (N=13 and N=21, min overlaps 0.83 and 0.88, endpoint −1.000000 exactly). At face value that is the
 two methods disagreeing about *whether* anything is enclosed rather than merely where.
 
-**That reading does not survive checking, and the check matters more than the claim.** CAS(12,12)
+**That reading does not survive checking, and the check matters more than the claim.** First,
+the 1.7 mHa floor comes from a fit along a line, and the direct search above showed that such
+numbers run ~100x too high on every rung where it was tested. Second, CAS(12,12)
 was never scanned over the loop's area — only along a **cross** through it (one row at `tw` = 90
 over `pyr` 80–140, one column at `pyr` = 102.2 over `tw` 84–96). The enclosing loop spans
 `tw` 78–102 and `pyr` 83.9–119.9. An intersection sitting anywhere off that cross would produce

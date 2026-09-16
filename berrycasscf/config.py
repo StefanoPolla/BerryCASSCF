@@ -62,6 +62,10 @@ class ContinuationConfig:
     min_endpoint_overlap_magnitude: float = 0.90
     # Every CASSCF point must report convergence.
     require_converged: bool = True
+    # Walk the solver fallback ladder when a warm start fails to converge. Turn this OFF to
+    # study the single-update regime of arXiv:2304.06070, where a point is *deliberately* not
+    # converged and retrying would defeat the point of the exercise.
+    use_fallback: bool = True
     # Record the spin-adapted CASCI S0/S1 gap *within the tracked active space* at the
     # state-specific orbitals. This is a root-flipping risk indicator, not the physical
     # S0/S1 gap -- see berrycasscf.casscf.casci_roots.

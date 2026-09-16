@@ -54,6 +54,8 @@ class PointRecord:
     guess_orthonormality_error: float | None
     max_mo_change: float | None
     strategy: str
+    n_macro: int
+    n_micro: int
     wall_time: float
 
     def to_dict(self) -> dict:
@@ -90,6 +92,16 @@ class LoopTraversal:
         return np.array([p.energy for p in self.points])
 
     @property
+    def total_macro(self) -> int:
+        """Total CASSCF macro-iterations spent on the loop: a machine-independent cost."""
+        return sum(p.n_macro for p in self.points)
+
+    @property
+    def total_micro(self) -> int:
+        """Total micro-iterations: the closest analogue of the paper's parameter updates."""
+        return sum(p.n_micro for p in self.points)
+
+    @property
     def all_converged(self) -> bool:
         conv = all(p.converged for p in self.points)
         if self.endpoint_converged is not None:
@@ -121,6 +133,7 @@ def _solve_point(
     cas: CasConfig,
     previous: CasWavefunction | None,
     label: str,
+    use_fallback: bool = True,
 ) -> tuple[CasWavefunction, dict]:
     """Solve CASSCF at one geometry, warm-started from ``previous`` when given.
 
@@ -131,13 +144,20 @@ def _solve_point(
                   "strategy": "initial"}
 
     if previous is None:
+        # The initial point is ALWAYS optimized to convergence, whatever budget later points are
+        # given. This matches arXiv:2304.06070, which performs an exact optimization at the first
+        # geometry precisely so that the single updates afterwards start from the solution
+        # manifold. Single-stepping the first point too would start the walk from an RHF guess and
+        # compare the method against a strawman.
         mf = run_rhf(mol)
         wfn = run_casscf(
             mol, cas.ncas, cas.nelecas,
             conv_tol=cas.conv_tol, conv_tol_grad=cas.conv_tol_grad,
-            max_cycle_macro=cas.max_cycle_macro, fix_spin=cas.fix_spin,
+            max_cycle_macro=max(cas.max_cycle_macro, 200), fix_spin=cas.fix_spin,
             label=label, mf=mf,
         )
+        info["n_macro"] = wfn.meta.get("n_macro", 0)
+        info["n_micro"] = wfn.meta.get("n_micro", 0)
         return wfn, info
 
     mo_guess = transfer_mo(previous.mol, previous.mo_coeff, mol)
@@ -148,7 +168,8 @@ def _solve_point(
 
     attempted: list[str] = []
     wfn = None
-    for name, warm_mo, warm_ci, grad_mult in SOLVE_STRATEGIES:
+    strategies = SOLVE_STRATEGIES if use_fallback else SOLVE_STRATEGIES[:1]
+    for name, warm_mo, warm_ci, grad_mult in strategies:
         attempted.append(name)
         grad = None if cas.conv_tol_grad is None else cas.conv_tol_grad * grad_mult
         candidate = run_casscf(
@@ -160,7 +181,7 @@ def _solve_point(
             label=label, mf=mf,
         )
         wfn = candidate if wfn is None else wfn
-        if candidate.converged:
+        if candidate.converged or not use_fallback:
             wfn = candidate
             info["strategy"] = name
             break
@@ -169,6 +190,8 @@ def _solve_point(
         info["strategy"] = "none-converged"
 
     info["strategies_tried"] = attempted
+    info["n_macro"] = wfn.meta.get("n_macro", 0)
+    info["n_micro"] = wfn.meta.get("n_micro", 0)
     nocc = wfn.ncore + wfn.ncas
     info["max_mo_change"] = float(
         np.abs(np.abs(mo_guess[:, :nocc]) - np.abs(wfn.mo_coeff[:, :nocc])).max()
@@ -208,7 +231,8 @@ def traverse_loop(
     previous: CasWavefunction | None = None
     for k, ((alpha, phi), t) in enumerate(zip(pts, t_vals)):
         tic = time.time()
-        wfn, info = _solve_point(geom_fn(alpha, phi), cas, previous, label=f"{loop.name}[{k}]")
+        wfn, info = _solve_point(geom_fn(alpha, phi), cas, previous,
+                                 label=f"{loop.name}[{k}]", use_fallback=cont.use_fallback)
 
         if previous is None:
             raw, gauge, absov = None, 1, None
@@ -240,6 +264,8 @@ def traverse_loop(
                 guess_orthonormality_error=info["guess_orthonormality_error"],
                 max_mo_change=info["max_mo_change"],
                 strategy=info.get("strategy", "initial"),
+                n_macro=int(info.get("n_macro", 0)),
+                n_micro=int(info.get("n_micro", 0)),
                 wall_time=time.time() - tic,
             )
         )
@@ -261,7 +287,8 @@ def traverse_loop(
     endpoint_converged = None
     if solve_endpoint:
         alpha_c, phi_c = loop.closing_point()
-        wfn_n, _ = _solve_point(geom_fn(alpha_c, phi_c), cas, wfns[-1], label=f"{loop.name}[close]")
+        wfn_n, _ = _solve_point(geom_fn(alpha_c, phi_c), cas, wfns[-1],
+                                label=f"{loop.name}[close]", use_fallback=cont.use_fallback)
         raw_n = float(cas_overlap(wfns[-1], wfn_n))
         if raw_n < 0.0:
             wfn_n = wfn_n.scaled(-1.0)

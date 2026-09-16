@@ -157,6 +157,18 @@ def run_casscf(
         # silent state change, which is exactly what the continuation must avoid.
         apply_singlet_constraint(mc)
 
+    # Count the optimizer's work. PySCF invokes the callback once per *micro* iteration and
+    # exposes the macro index, so both are available. The micro-iteration is the closer analogue
+    # of the parameter update that the quantum algorithm of arXiv:2304.06070 counts as its cost;
+    # the macro-iteration additionally contains a CI diagonalization.
+    counters = {"macro": 0, "micro": 0}
+
+    def _count(envs):
+        counters["micro"] += 1
+        counters["macro"] = max(counters["macro"], int(envs.get("imacro", 0) or 0))
+
+    mc.callback = _count
+
     mo = mf.mo_coeff if mo_guess is None else np.asarray(mo_guess)
     mc.kernel(mo, ci0=ci0)
 
@@ -171,7 +183,8 @@ def run_casscf(
         energy=float(mc.e_tot),
         converged=bool(mc.converged),
         label=label,
-        meta={"e_cas": float(mc.e_cas)},
+        meta={"e_cas": float(mc.e_cas),
+              "n_macro": counters["macro"], "n_micro": counters["micro"]},
     )
 
 
