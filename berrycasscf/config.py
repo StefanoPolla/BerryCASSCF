@@ -101,11 +101,24 @@ class ScanConfig:
     #            but inherits warm's path dependence -- measured 7.9 mHa mirror asymmetry for
     #            ethylene CAS(4,4).
     #   "anchor": cold, plus a warm start transferred from ONE fixed anchor geometry solved
-    #            cold at the centre of the region; keep the lower SA energy. Reaches the same
-    #            lower-energy branch as a warm sweep, but every point is computed from the same
-    #            two path-independent guesses, so the result cannot depend on the scan route.
-    #            This is the default: same cost as "best", without the path dependence.
-    strategy: str = "anchor"
+    #            cold at the centre of the region; keep the lower SA energy. Path-independent,
+    #            and reaches a lower SA energy than cold -- but the anchor generally does not sit
+    #            on a symmetry element, so the transferred guess is NOT equivariant.
+    #
+    # Default is "cold". It is the only strategy that respects molecular symmetry for free:
+    # mirror-image geometries give integrals related by a signed permutation and the minao guess
+    # transforms the same way, so the two solves are one calculation in different coordinates.
+    # Measured: cold reproduces ethylene's mirror symmetry to 1e-11 mHa against anchor's 4e-04.
+    # It is also the cheapest (one solve per point), embarrassingly parallel (no anchor to solve
+    # first), and defines the active space by the same prescription at every geometry rather than
+    # by whatever was carried in from elsewhere.
+    #
+    # The cost is that cold is not always the lowest-energy solution -- at ethylene CAS(4,4) a
+    # warm sweep reached 1.3e-03 Ha lower. That did not move the observable (the intersection
+    # position and gap agree across all three strategies at every rung tested), and a lower SA
+    # energy is not unambiguously better anyway: distinct minima can correspond to different
+    # active spaces, so the variationally lowest solution need not be the intended one.
+    strategy: str = "cold"
     warm_start: bool = True      # deprecated alias; ignored unless strategy is None
 
     def to_dict(self) -> dict[str, Any]:

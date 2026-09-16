@@ -54,9 +54,10 @@ GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (3, 11)}
 
 def grid_for(ne: int, ncas: int) -> tuple[int, int]:
     return GRID_OVERRIDE.get((ne, ncas), GRID)
-# One strategy for the whole ladder, so that rungs are directly comparable.
+# One strategy for the whole ladder, so that rungs are directly comparable. This now matches the
+# ScanConfig default and is stated explicitly so the record shows what was run.
 #
-# "cold" is used rather than the "anchor" default of ScanConfig. Both are path-independent --
+# Both "cold" and "anchor" are path-independent --
 # the mirror-symmetry check below confirms it for every rung -- but the anchor sits at the
 # intersection itself, and transferring those orbitals outward turns out to be a poor guess:
 # CAS(6,6) ran at 8.6 s/point with "anchor" against 0.65 s cold. For the same reliability at a

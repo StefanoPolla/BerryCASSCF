@@ -58,11 +58,11 @@ For CAS(4,4)/6-31G\* on an 11×11 grid:
 | **`anchor`** | **4.2e-04 mHa** | **−77.79468688** | deterministic *and* finds most of the improvement |
 
 So SA-CASSCF here has **more than one stationary point**, and a warm sweep reaches the lower one
-only from some directions. `anchor` (now the default in `ScanConfig`) solves once, cold, at the
+only from some directions. `anchor` solves once, cold, at the
 centre of the region, then gives every grid point the same two path-independent guesses: a cold
 start and that one anchor transferred in.
 
-**The ladder itself uses `cold`, not `anchor`.** Both are path-independent, but this region's
+**The ladder uses `cold`, which is also the `ScanConfig` default.** Both are path-independent, but this region's
 anchor sits at the intersection, and transferring those orbitals outward is a poor guess:
 CAS(6,6) ran at **8.6 s/point** with `anchor` against **0.65 s** cold, which would have put the
 full ladder beyond the compute budget. Cold's cost is that it can settle on a slightly higher
