@@ -75,6 +75,40 @@ one strategy for every rung also keeps the rungs directly comparable.
 criterion: a map that fails the symmetry test is path-dependent and not trustworthy, whatever
 number it reports.
 
+### What this does and does not fix
+
+None of this *solves* the multiple-minimum problem — nothing here searches for the global
+SA-CASSCF solution. What it does is make the ambiguity **detectable** (the symmetry check) and
+**reproducible** (no guess is chained along the scan path). Those are weaker claims than
+correctness, and the difference is measurable: on the `tau = 90` row at CAS(4,4) the three
+strategies reach mean state-averaged energies spanning 1.3e-03 Ha, with `warm` lowest. Cold is
+provably *not* always the best solution available; it is merely always the same one.
+
+The reason the conclusions survive is that the ambiguity does not reach the observable. On the
+`tau = 90` line — where the intersection sits and from which `phi` is measured:
+
+| CAS | strategy | refined phi | min gap | mean SA energy |
+|---|---|---|---|---|
+| (4,4) | cold / anchor / warm | 114.85 / 114.85 / 114.85 | 1.362 / 1.362 / 1.362 mHa | −77.79058 / −77.79101 / −77.79191 |
+| (6,6) | cold / anchor / warm | 102.09 / 102.09 / 102.09 | 0.155 / 0.155 / 0.156 mHa | identical |
+| (8,8) | cold / anchor / warm | 103.11 / 103.11 / 103.10 | 2.033 / 2.033 / 2.032 mHa | identical |
+
+All three strategies agree on `phi` to within 0.01 deg and on the gap to within 0.001 mHa, at
+every rung tested — at CAS(4,4) even while disagreeing about the energy. At CAS(6,6) and (8,8)
+they converge to the *same* solution on this line: there the ambiguity lives off-axis, which is
+precisely where the 2D map was corrupted and where the reported observable does not live.
+
+**Remaining limitations.** The symmetry test is necessary, not sufficient: a solver that lands on
+the same *wrong* branch at both mirror points passes it. It catches inconsistency, not consistent
+error. And it is a symmetry ethylene happens to possess; formaldimine's grid is centred at
+`phi = 89.9` and so does not sample exact mirror pairs, which is why that system was checked a
+different way (cold against warm at identical geometries, agreeing to 2.5e-06 Ha).
+
+**What would actually solve it** is a deterministic multi-start: some fixed number of seeded
+orbital perturbations at each geometry, keeping the lowest state-averaged energy. That is
+path-independent, embarrassingly parallel, and costs a constant factor. It is the obvious next
+step and was not done here.
+
 ### The formaldimine results are unaffected
 
 Since this defect was found after `docs/results.md` was written, the formaldimine headline scan
