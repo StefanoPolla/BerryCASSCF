@@ -83,6 +83,37 @@ Reusing ethylene's check here would have silently compared unrelated geometries.
 locked in by tests (`test_reflection_through_the_molecular_plane_is_an_exact_symmetry` and
 `test_ethylene_style_mirror_is_NOT_a_symmetry_here`).
 
-## Results
+## Results: the intersection position across the ladder
 
-*(filled in when the ladder completes)*
+Grid 5 x 13 over `tw` in [70, 110] and `pyr` in [80, 140]; sub-grid positions by parabolic
+interpolation along the row holding the two-dimensional minimum. Every rung passes the
+plane-reflection check at **exactly 0.0 mHa**.
+
+| active space | `pyr` (refined) | grid minimum | shift from previous rung |
+|---|---|---|---|
+| CAS(4,4) | 109.83 | 0.724 mHa | — |
+| CAS(6,6) | 114.81 | 6.162 mHa | +4.98 |
+| CAS(8,8) | 121.05 | 0.906 mHa | +6.24 |
+| CAS(10,10) | 105.04 | 0.255 mHa | **−16.01** |
+| CAS(12,12) | *(see notebook)* | | |
+
+CAS(12,12) is run on the single `tw = 90` row rather than the full grid: a cold solve there
+measured at **over 2.4 minutes per point** (853k determinants on 68 basis functions), so a
+5 x 13 grid would have taken ~2.6 h for one rung. Every other rung's two-dimensional minimum
+lies on `tw = 90`, and the refined `pyr` position is the only quantity compared across the
+ladder, so the row carries the comparison. The cost is that this rung's `tw` is assumed rather
+than resolved.
+
+The Berry stage stops at CAS(10,10) for the same reason: a state-specific solve at CAS(12,12)
+costs minutes, so three loops at two discretizations would run to several hours without changing
+a conclusion already established over four rungs.
+
+Each rung produces a clean, well-formed cone — these are genuine intersections, and it is their
+*position* that is active-space dependent. The sequence climbs by ~5 degrees a rung and then
+falls back by 16, spanning **16 degrees** in total with no sign of settling.
+
+This is a qualitatively worse situation than either earlier system. Formaldimine converged by
+CAS(4,4); ethylene was unstable until CAS(10,10) but had a full-valence reference to prove it.
+Butadiene is **still moving at CAS(10,10), with no exact reference available to say which rung
+(if any) is right**. On the evidence, the honest statement is that the state-averaged comparator
+is *not converged anywhere on the affordable ladder for this system*.

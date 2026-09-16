@@ -51,13 +51,37 @@ CI_REGION = Loop("butadiene_ci", centre=(90.0, 110.0), radius=(20.0, 30.0))
 CAS_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 REFERENCE_CAS = (12, 12)
 GRID = (5, 13)                 # tw in {70, 80, 90, 100, 110}; pyr in 5 deg steps, 80..140
+
+# CAS(12,12) measured out at >2.4 min per cold point (853k determinants on 68 AOs), so a full
+# 5 x 13 grid would be ~2.6 h for one rung. It is run instead on the single tw = 90 row, which
+# is where every other rung's two-dimensional minimum lies and which carries the only quantity
+# compared across the ladder -- the refined pyr position. The cost is that its tw is assumed
+# rather than resolved; see docs/butadiene.md.
+GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (1, 13)}
+REGION_OVERRIDE: dict[tuple[int, int], Loop] = {}
+
+# The Berry stage stops below CAS(12,12): a state-specific solve there costs minutes, so three
+# loops at two discretizations would run to several hours for no change in the conclusion, which
+# is already established over four rungs.
+BERRY_LADDER = [(4, 4), (6, 6), (8, 8), (10, 10)]
 LOOP_RADIUS = (12.0, 18.0)     # degrees in (tw, pyr)
 NPOINTS = [13, 21]
 
 
+def grid_for(ne: int, ncas: int) -> tuple[int, int]:
+    return GRID_OVERRIDE.get((ne, ncas), GRID)
+
+
+def region_for(ne: int, ncas: int) -> Loop:
+    """The scanned region; a one-row grid is centred on tw = 90 by giving it zero tw radius."""
+    if grid_for(ne, ncas)[0] == 1:
+        return Loop(CI_REGION.name, (90.0, CI_REGION.centre[1]), (0.0, CI_REGION.radius[1]))
+    return CI_REGION
+
+
 def scan_path(ne: int, ncas: int) -> str:
-    return os.path.join(RESULT_DIR,
-                        f"butadiene_scan_cas{ne}-{ncas}_{GRID[0]}x{GRID[1]}.npz")
+    g = grid_for(ne, ncas)
+    return os.path.join(RESULT_DIR, f"butadiene_scan_cas{ne}-{ncas}_{g[0]}x{g[1]}.npz")
 
 
 def berry_path(loop: str, ne: int, ncas: int, n: int) -> str:
@@ -123,12 +147,13 @@ def do_scans(args) -> int:
                 print(f"[skip] CAS({ne},{ncas}): pyr = {refined_pyr(res):7.2f}   "
                       f"min {res.min_gap_point()[2]*1e3:8.3f} mHa")
                 continue
-        print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {GRID[0]}x{GRID[1]} ===")
+        g = grid_for(ne, ncas)
+        print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {g[0]}x{g[1]} ===")
         t0 = time.time()
         res = scan_gap(
-            CI_REGION,
+            region_for(ne, ncas),
             cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
-            scan=ScanConfig(n_alpha=GRID[0], n_phi=GRID[1], margin=0.0),
+            scan=ScanConfig(n_alpha=g[0], n_phi=g[1], margin=0.0),
             geom_fn=fn,
             progress=None if args.quiet else print,
             checkpoint=path,
@@ -168,7 +193,7 @@ def do_berry(args) -> int:
         print(f"  {name}: centre ({lp.centre[0]:7.2f}, {lp.centre[1]:7.2f})  "
               f"encloses: {lp.encloses(*centre)}")
 
-    for ne, ncas in CAS_LADDER:
+    for ne, ncas in BERRY_LADDER:
         for name, loop in loops.items():
             for n in NPOINTS:
                 path = berry_path(name, ne, ncas, n)
