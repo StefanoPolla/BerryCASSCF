@@ -139,8 +139,70 @@ The loops are centred on the CAS(12,12) intersection at `pyr = 101.85`, with rad
 | CAS(12,12) | 0 | yes |
 
 On the first two systems the Berry phase was immune to the errors that defeated the comparator,
-because every active space still enclosed the intersection. Butadiene is the first case where
-that protection is lost: CAS(8,8) places the intersection *outside* the loop it is being asked
-about. If the Berry phase is honest, that rung should report a **trivial** phase while the others
-report pi — not because the method failed, but because at that active space the loop genuinely
-does not enclose anything. The Berry stage tests exactly this.
+because every active space still enclosed the intersection. CAS(8,8) appears to break that: it
+places its intersection *outside* the loop it is being asked about. The prediction was therefore
+that CAS(8,8) would report a **trivial** phase while the others report pi.
+
+**That prediction was wrong, and the way it failed is the most informative result in this file.**
+
+## Berry phase: pi at every rung
+
+| loop | CAS(4,4) | CAS(6,6) | CAS(8,8) | CAS(10,10) |
+|---|---|---|---|---|
+| `B_x` | **pi** | **pi** | **pi** | **pi** |
+| `B_1` (control) | 0 | 0 | 0 | 0 |
+| `B_2` (control) | 0 | 0 | 0 | 0 |
+
+All 24 runs report status `OK`, with endpoint overlaps of exactly +-1.000000 and minimum adjacent
+overlaps between 0.81 and 0.99. The two controls agree with each other to ~3e-04 in the product
+estimator. Nothing is marginal.
+
+### Why the prediction failed
+
+It was not a grid artifact. Refining the CAS(8,8) state-averaged minimum on a 2-degree grid
+confirms it at `pyr = 121.20` — a displacement of **19.35 degrees** from the loop centre, genuinely
+outside the 18-degree radius:
+
+| pyr | 112 | 114 | 116 | 118 | **120** | **122** | 124 | 126 | 128 |
+|---|---|---|---|---|---|---|---|---|---|
+| SA gap (mHa) | 8.88 | 6.69 | 4.62 | 2.69 | **0.90** | **0.74** | 2.20 | 3.47 | 4.56 |
+
+The prediction rested on an assumption that turns out to be false: **that the state-averaged gap
+minimum is the point the Berry phase encircles.** It is not. The Berry phase transports the
+*state-specific* CASSCF ground state, whose degeneracy with S1 sits wherever the state-specific
+surfaces touch; the scan minimum is computed with *state-averaged* orbitals, which are a
+different set. For a converged active space the two coincide. For a truncated one they need not,
+and for butadiene they evidently do not.
+
+Shrinking the loop about the same centre at CAS(8,8) bounds where that degeneracy actually is:
+
+| radius in `pyr` | `pyr` range | N | min adjacent overlap | product | status |
+|---|---|---|---|---|---|
+| 18 | [83.9, 119.9] | 15 | 0.89 | −0.537 | OK, **pi** |
+| 12 | [89.9, 113.9] | 31 | 0.87 | −0.654 | OK, **pi** |
+| 8 | [93.9, 109.9] | 31 | 0.77 | −0.519 | FAILED (continuity) |
+| 8 | [93.9, 109.9] | 15 | 0.24 | −0.176 | FAILED (continuity) |
+
+The 12-degree loop reaches only to `pyr = 113.9` and still returns a clean pi. **Whatever the
+Berry phase is encircling therefore lies below 113.9 — it is not the state-averaged minimum at
+121.2.** The 8-degree loops trend to the same sign but their adjacent overlaps collapse (0.24 at
+N=15, recovering to 0.77 at N=31), which is what a loop passing close to a degeneracy looks like;
+the continuity check refuses them rather than reporting a phase, which is the intended behaviour.
+
+Suggestively, the bound `pyr < 113.9` is much closer to where the two largest rungs put the
+intersection (105.04 and 101.85) than to CAS(8,8)'s own state-averaged estimate. The
+state-specific transport appears less distorted by the truncation than the state-averaged gap
+surface computed in the same active space — though with no exact reference this cannot be
+settled here.
+
+### The inversion worth noting
+
+The Berry phase returns the same answer — pi on the enclosing loop, 0 on both controls — at every
+active space tested, while the state-averaged estimate of *where the intersection is* scatters
+over 19 degrees and never settles. **The topological method is more stable across the ladder than
+the quantity that was supposed to validate it.** That is the same robustness seen on formaldimine
+and ethylene, but here it holds even though the comparator has given up entirely.
+
+It does not make the Berry phase right by default: with no exact reference, "pi at every rung"
+could in principle be four consistent errors. But it is consistent, it passes every internal
+check, and it costs a fraction of the comparator.

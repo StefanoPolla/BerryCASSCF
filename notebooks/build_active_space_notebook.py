@@ -534,6 +534,64 @@ if have:
 """)
 
 md(r"""
+### Does the Berry phase survive this?
+
+On formaldimine and ethylene the Berry phase was immune to the errors that defeated the
+comparator, because every active space still placed the intersection *inside* the loop. Butadiene
+looks like it should break that: the loops are centred on the CAS(12,12) intersection with an
+18&deg; radius in `pyr`, and CAS(8,8) puts its intersection 19.2&deg; away &mdash; outside. The
+natural prediction is that CAS(8,8) reports a **trivial** phase while the others report &pi;.
+
+**It does not. Every rung returns &pi;.** The prediction was wrong, and its failure is the most
+informative result here, so it is worth being explicit about what was assumed.
+
+The assumption was that *the state-averaged gap minimum is the point the Berry phase encircles*.
+It is not. The Berry phase transports the **state-specific** CASSCF ground state, whose
+degeneracy sits wherever the state-specific surfaces touch; the scan minimum is computed with
+**state-averaged** orbitals, a different set. For a converged active space the two coincide. For
+a truncated one they need not &mdash; and for butadiene they do not.
+
+This is not a grid artifact: refining CAS(8,8) on a 2&deg; grid puts its state-averaged minimum
+at `pyr = 121.20`, a displacement of 19.35&deg;, genuinely outside the loop.
+
+Shrinking the loop bounds the degeneracy the Berry phase *does* encircle. A 12&deg; loop reaching
+only to `pyr = 113.9` still returns a clean &pi; (min overlap 0.87), so whatever carries the phase
+lies **below 113.9, not at 121.2**. Loops of 8&deg; trend to the same sign but their adjacent
+overlaps collapse to 0.24&ndash;0.77 &mdash; what a loop passing close to a degeneracy looks like
+&mdash; and the continuity check refuses them rather than reporting a phase, which is the intended
+behaviour.
+""")
+
+code(r"""
+if have:
+    ref_pyr_b = buta_refined_pyr(buta[have[-1]])[0]
+    print(f"{'CAS':>11} {'its own pyr':>12} {'displacement':>13} {'inside 18 deg?':>15}")
+    print("-" * 56)
+    for cas in have:
+        pyr = buta_refined_pyr(buta[cas])[0]
+        d = abs(pyr - ref_pyr_b)
+        print(f"{'CAS%s' % (cas,):>11} {pyr:12.2f} {d:13.2f} {('yes' if d <= 18 else 'NO'):>15}")
+
+buta_rows = berry_table(load_berry_records(BUTA))
+if buta_rows:
+    print()
+    print(format_table(buta_rows, ["loop", "CAS", "N", "product", "endpoint",
+                                   "min|ovl|", "phase", "status"]))
+else:
+    print("\nNo butadiene Berry records yet "
+          "(python examples/run_butadiene_study.py berry).")
+""")
+
+md(r"""
+So the Berry phase returns the same answer &mdash; &pi; on the enclosing loop, 0 on both controls
+&mdash; at every active space tested, while the state-averaged estimate of *where* the
+intersection is scatters over 19&deg; and never settles. **The topological method is more stable
+across the ladder than the quantity meant to validate it.**
+
+That does not make it right by default: with no exact reference, "&pi; at every rung" could be
+four consistent errors. But it is consistent, it passes every internal check, and it costs a
+fraction of the comparator.
+
 ## Verdict across all three systems
 """)
 

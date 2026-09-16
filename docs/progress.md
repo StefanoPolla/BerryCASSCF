@@ -243,3 +243,58 @@ for the path-independence fix.
 butadiene or hexatriene) would test whether a case exists where *no* small active space is
 accurate, as opposed to ethylene's accidental-but-unverifiable CAS(2,2). That needs a CI search
 in a new coordinate plane and is cluster work.
+
+
+---
+
+## 2026-09-16 — Cold standard applied to all results; butadiene added
+
+**Audit (task 1).** All ten warm-started formaldimine SA scans were recomputed cold and compared
+against the committed ones. **Every minimum position and every inside/outside conclusion is
+unchanged**, so no documented conclusion moved. The grids do differ away from the minima, and in
+every case *warm* found the lower energy — at one `C_2` CAS(2,2) corner point a cold start
+converges **0.115 Ha above** the warm solution. That is the measured price of choosing
+reproducibility; it changes nothing here but could matter elsewhere. Berry records were untouched:
+they come from `traverse_loop`, whose warm start is the method rather than an optimization.
+
+**Butadiene (task 2).** Chosen because its 2¹Ag state carries a large doubly-excited component.
+Its full valence space is CAS(22,22), so unlike the first two systems **there is no exact
+reference**.
+
+The plane was searched for, not assumed: three candidate planes of four rigid coordinates, only
+`tw_pyr` containing an intersection (0.73 mHa; `tw_tc` bottoms out at 99.5 mHa, `tw_bend` at
+36.2). The search reports strain because the plane's *unrestricted* minimum (0.19 mHa) sits where
+the methylene has folded onto its own C–C bond, 266 kcal/mol up.
+
+**Butadiene has no `tw` → `180 − tw` symmetry** — its two methylene hydrogens are inequivalent.
+Reusing ethylene's validation would have compared unrelated geometries. The exact symmetry is
+`(tw, pyr)` → `(−tw, −pyr)`; every rung passes it at exactly 0.0 mHa. Both facts are locked in by
+tests.
+
+**Result — the comparator does not converge anywhere on the ladder:**
+
+| CAS | (4,4) | (6,6) | (8,8) | (10,10) | (12,12) |
+|---|---|---|---|---|---|
+| `pyr` | 109.83 | 114.81 | 121.05 | 105.04 | 101.85 |
+
+Spread 19.2°, top two rungs still 3.2° apart. This is the clearest answer to whether some system
+needs more than CAS(4,4): here even CAS(12,12) is not demonstrably enough.
+
+**A prediction that failed, instructively.** CAS(8,8) places its intersection 19.35° from the
+loop centre, outside the 18° radius, so it was predicted to report a trivial phase. **It reports
+π, as do all four rungs** (controls trivial throughout, all 24 runs `OK`). The assumption behind
+the prediction — that the state-averaged gap minimum is the point the Berry phase encircles — is
+false: the Berry phase transports the *state-specific* ground state, whose degeneracy need not
+coincide with a state-averaged gap minimum when the active space is truncated. Shrinking the loop
+bounds the degeneracy it actually encircles to `pyr < 113.9`, not 121.2.
+
+**The inversion.** The Berry phase gives the same answer at every rung while the comparator's CI
+estimate scatters over 19° and never settles — the topological method is more stable than the
+quantity meant to validate it. That does not make it right by default (with no reference, "π at
+every rung" could be four consistent errors), but it is consistent, passes every internal check,
+and costs a fraction of the comparator.
+
+**Next step.** Localize the degeneracy the state-specific transport senses, by loop-shrinking with
+enough discretization to keep continuity, and compare it against the state-averaged seam. That
+would turn the `pyr < 113.9` bound into a measurement and test directly whether state-specific
+transport is less truncation-sensitive than the state-averaged surface.
