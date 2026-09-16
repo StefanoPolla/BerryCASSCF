@@ -46,15 +46,52 @@ Butadiene, from fine 1-deg cuts refined with the cone model (no reference exists
 | shift | — | +3.83 | +4.78 | +6.41 | **−15.80** | −2.90 |
 | closest approach (mHa), 1-deg cut | 0.67 | 0.92 | 3.13 † | 0.00 | 0.66 | 2.94 |
 
-† The CAS(6,6) cut is **not a V**: it falls smoothly 6.53 → 0.85 mHa and then jumps to 4.18 mHa at
-the next point. That is a solution discontinuity, so its fitted position and closest approach are
-unreliable and the cone model does not apply there (residual 0.18, far above the ~0.05 of the
-clean rungs).
+† The CAS(6,6) cut is **not a V**. Re-sampled at 0.25 deg it reads
+
+| pyr | 114.50 | 114.75 | 115.00 | 115.25 | 115.50 | ... | 116.50 |
+|---|---|---|---|---|---|---|---|
+| gap (mHa) | 0.955 | **0.847** | 1.706 | 4.049 | 4.118 | | 4.534 |
+
+so there is a genuine near-degeneracy at **pyr ≈ 114.75, gap 0.85 mHa**, and then a hard jump at
+115.1 onto a much shallower branch near 4 mHa. That is a state-averaged CASSCF **solution switch**,
+not cone structure: the scan is following two different stationary points either side of it. The
+cone fit correctly declines to model it (`nan` residual) rather than returning a number. The
+position quoted for this rung is the grid minimum, not a fit, and the rung should not be read as
+evidence about where a cone sits.
 
 The "closest approach" column must also be read with care: on a 1-deg grid it is dominated by
 resolution, not by how near the cut passes. Re-sampling at 0.25 deg drops CAS(4,4) from 0.92 to
 **0.098 mHa** and CAS(10,10) from 0.66 to **0.237 mHa**, both with cone-fit residuals near 1e-02 —
 so those cuts do pass essentially through a genuine intersection.
+
+### Whether the plane contains an intersection at all is itself active-space dependent
+
+Re-sampling every rung at 0.25 deg gives a sharper and more awkward result:
+
+| CAS | (4,4) | (6,6) | (10,10) | (12,12) |
+|---|---|---|---|---|
+| minimum gap at 0.25 deg (mHa) | **0.098** | 0.847 † | **0.237** | **1.479** |
+| branches extrapolate to | ~0 | discontinuity | ~0 | **~1.7** |
+
+CAS(4,4) and CAS(10,10) close to within 0.1–0.2 mHa: the plane contains a genuine intersection for
+them. **On the sampled cut, CAS(12,12) does not** — its two branches have clean opposite slopes
+(−1.31 and +1.35 mHa/deg) meeting at ≈1.7 mHa, far above the 1e-06 mHa convergence noise.
+
+Loop transport at CAS(12,12) nonetheless returns **π**, stable across two discretizations
+(N=13 and N=21, min overlaps 0.83 and 0.88, endpoint −1.000000 exactly). At face value that is the
+two methods disagreeing about *whether* anything is enclosed rather than merely where.
+
+**That reading does not survive checking, and the check matters more than the claim.** CAS(12,12)
+was never scanned over the loop's area — only along a **cross** through it (one row at `tw` = 90
+over `pyr` 80–140, one column at `pyr` = 102.2 over `tw` 84–96). The enclosing loop spans
+`tw` 78–102 and `pyr` 83.9–119.9. An intersection sitting anywhere off that cross would produce
+exactly what is observed: no degeneracy on the sampled lines, and a π from a loop that encircles
+it. So the honest statement is **"no intersection was found on the sampled cross"**, which is much
+weaker than "the seam misses the plane", and the π is not evidence of a disagreement.
+
+Resolving it needs a genuine two-dimensional scan at CAS(12,12) over the loop interior, which at
+>2.4 min per point is ~1 h for a coarse 5×5 and was not affordable alongside the rest. Until then
+this rung's "position" should be read as a point on a cross, not a located intersection.
 
 Spread **18.7 deg**, and the top two rungs still differ by **2.90 deg** — above the 2-deg
 tolerance ethylene met at CAS(10,10), so the sequence has not settled even at the largest

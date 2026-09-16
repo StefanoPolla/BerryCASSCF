@@ -40,6 +40,7 @@ from berrycasscf.casscf import apply_singlet_constraint, build_mol, run_rhf
 from berrycasscf.geometry import Loop
 from berrycasscf.scan import ScanResult
 from berrycasscf.store import berry_record_exists, save_berry_run
+from berrycasscf.runlog import JobLog
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULT_DIR = os.path.join(ROOT, "results", "butadiene")
@@ -160,14 +161,17 @@ def do_scans(args) -> int:
         g = grid_for(ne, ncas)
         print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {g[0]}x{g[1]} ===")
         t0 = time.time()
+        log = JobLog(f"butadiene_scan_cas{ne}-{ncas}", total=g[0] * g[1] + g[0],
+                     echo=not args.quiet)
         res = scan_gap(
             region_for(ne, ncas),
             cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
             scan=ScanConfig(n_alpha=g[0], n_phi=g[1], margin=0.0),
             geom_fn=fn,
-            progress=None if args.quiet else print,
+            progress=log,
             checkpoint=path,
         )
+        log.done()
         res.save(path)
         sym = symmetry_spot_check(ne, ncas, args.basis,
                                   [(90.0, 100.0), (90.0, 120.0)], fn)
@@ -212,13 +216,16 @@ def do_berry(args) -> int:
                     continue
                 print(f"\n=== {name}  CAS({ne},{ncas})/{args.basis}  N={n} ===")
                 try:
+                    log = JobLog(f"butadiene_{name}_cas{ne}-{ncas}_N{n}", total=n + 1,
+                                 echo=not args.quiet)
                     res, trav = run_loop(
                         loop.with_n_points(n),
                         cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
                         cont=ContinuationConfig(),
                         geom_fn=fn,
-                        progress=None if args.quiet else print,
+                        progress=log,
                     )
+                    log.done()
                 except Exception as exc:                        # noqa: BLE001
                     print(f"  RUN FAILED: {type(exc).__name__}: {exc}")
                     continue
@@ -260,10 +267,12 @@ def do_refine(args) -> int:
             print(f"\n=== refine pyr CAS({ne},{ncas}) around {seed:.2f} "
                   f"(+-{REFINE_HALFWIDTH:.0f} deg, {n} points, tw={tw0:.0f}) ===")
             t0 = time.time()
+            log = JobLog(f"butadiene_refinepyr_cas{ne}-{ncas}", total=n + 1,
+                         echo=not args.quiet)
             res = scan_gap(region, cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
                            scan=ScanConfig(n_alpha=1, n_phi=n, margin=0.0),
-                           geom_fn=fn, progress=None if args.quiet else print,
-                           checkpoint=path)
+                           geom_fn=fn, progress=log, checkpoint=path)
+            log.done()
             res.save(path)
             fit = cone_apex(res.phis, res.gap[0] * 1e3, window=None)
             print(f"  pyr = {fit.position:.3f}   closest approach {fit.closest_approach:.3f} mHa"
@@ -281,9 +290,11 @@ def do_refine(args) -> int:
         region = Loop("refine_tw", (90.0, pyr0), (REFINE_HALFWIDTH, 0.0))
         n = int(2 * REFINE_HALFWIDTH / REFINE_STEP) + 1
         print(f"\n=== refine tw CAS({ne},{ncas}) at pyr={pyr0:.2f} ({n} points) ===")
+        log = JobLog(f"butadiene_refinetw_cas{ne}-{ncas}", total=2 * n, echo=not args.quiet)
         res = scan_gap(region, cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
                        scan=ScanConfig(n_alpha=n, n_phi=1, margin=0.0),
-                       geom_fn=fn, progress=None if args.quiet else print, checkpoint=path)
+                       geom_fn=fn, progress=log, checkpoint=path)
+        log.done()
         res.save(path)
         fit = cone_apex(res.alphas, res.gap[:, 0] * 1e3, window=None)
         print(f"  tw = {fit.position:.3f}  (assumed 90)   residual {fit.residual:.2e}")

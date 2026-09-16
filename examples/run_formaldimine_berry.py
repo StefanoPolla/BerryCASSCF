@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from berrycasscf import BENCHMARK_LOOPS, CasConfig, ContinuationConfig, run_loop
 from berrycasscf.store import save_berry_run, berry_record_exists
+from berrycasscf.runlog import JobLog
 
 RESULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                           "results", "berry")

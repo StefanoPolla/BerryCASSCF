@@ -35,6 +35,7 @@ from berrycasscf import CasConfig, run_loop
 from berrycasscf.butadiene import plane_geom_fn
 from berrycasscf.geometry import Loop
 from berrycasscf.store import save_json
+from berrycasscf.runlog import JobLog
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "results", "butadiene", "failure_modes.json")

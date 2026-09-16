@@ -129,6 +129,21 @@ Two deliberate cost caps, both documented where they bite:
   three loops at two discretizations would run to several hours without changing a conclusion
   already established over four rungs.
 
+### Watching a run
+
+Every driver writes a timestamped log to **`logs/<job>.log`** inside the repository (gitignored),
+one line per completed point, carrying elapsed time, seconds per step and a projected finish:
+
+```
+18:12:41 [7/14] ( 90.000, 113.850)  gap = 0.004182 Ha  [0:21:03 elapsed, 180.4 s/step, ~0:21:03 left, ETA 18:33]
+```
+
+So a run can be followed with `tail -f logs/butadiene_scan_cas12-12.log`, and a slow job is
+distinguishable from a dead one. Earlier versions logged per *row*, which meant a CAS(12,12) scan
+could go silent for half an hour at a time; progress is now emitted per point.
+
+To check a job is alive: `pgrep -fl run_butadiene_study` .
+
 ### Threading note
 
 Both templates set `OMP_NUM_THREADS`/`MKL_NUM_THREADS`/`OPENBLAS_NUM_THREADS` from

@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from berrycasscf import SCAN_REGIONS, CasConfig, ScanConfig, scan_gap
 from berrycasscf.scan import ScanResult
+from berrycasscf.runlog import JobLog
 
 RESULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                           "results", "scan")

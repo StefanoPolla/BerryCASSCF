@@ -28,6 +28,7 @@ from berrycasscf.butadiene import (
     plane_geom_fn,
 )
 from berrycasscf.scan import ScanResult
+from berrycasscf.runlog import JobLog
 
 RESULT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                           "results", "butadiene")

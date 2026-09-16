@@ -35,6 +35,7 @@ from berrycasscf.ethylene import CI_REGION, DEFAULT_BASIS, ethylene_geom
 from berrycasscf.geometry import Loop
 from berrycasscf.scan import ScanResult
 from berrycasscf.store import save_berry_run, berry_record_exists
+from berrycasscf.runlog import JobLog
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULT_DIR = os.path.join(ROOT, "results", "ethylene")
@@ -111,14 +112,17 @@ def do_scans(args) -> int:
         print(f"\n=== scan CAS({ne},{ncas})/{args.basis}  {g[0]}x{g[1]}  "
               f"strategy={strategy} ===")
         t0 = time.time()
+        log = JobLog(f"ethylene_scan_cas{ne}-{ncas}", total=g[0] * g[1] + g[0],
+                     echo=not args.quiet)
         res = scan_gap(
             CI_REGION,
             cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
             scan=ScanConfig(n_alpha=g[0], n_phi=g[1], margin=0.0, strategy=strategy),
             geom_fn=ethylene_geom,
-            progress=None if args.quiet else print,
+            progress=log,
             checkpoint=path,
         )
+        log.done()
         res.save(path)
         t, p, g = res.min_gap_point()
         print(f"  min gap {g*1e3:.3f} mHa at (tau={t:.2f}, phi={p:.2f})   "
@@ -194,13 +198,16 @@ def do_berry(args) -> int:
                     continue
                 print(f"\n=== {name}  CAS({ne},{ncas})/{args.basis}  N={n} ===")
                 try:
+                    log = JobLog(f"ethylene_{name}_cas{ne}-{ncas}_N{n}", total=n + 1,
+                                 echo=not args.quiet)
                     res, trav = run_loop(
                         loop.with_n_points(n),
                         cas=CasConfig(basis=args.basis, ncas=ncas, nelecas=ne),
                         cont=ContinuationConfig(),
                         geom_fn=ethylene_geom,
-                        progress=None if args.quiet else print,
+                        progress=log,
                     )
+                    log.done()
                 except Exception as exc:                      # noqa: BLE001
                     print(f"  RUN FAILED: {type(exc).__name__}: {exc}")
                     continue

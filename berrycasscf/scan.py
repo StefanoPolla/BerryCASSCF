@@ -233,6 +233,11 @@ def scan_gap(
                 converged[i, j] = conv
                 prev_mol, prev_mo = mol, mo
             done[i, j] = True
+            # Per point, not per row: a row of CAS(12,12) points can take half an hour, and a
+            # job that logs nothing for that long is indistinguishable from a dead one.
+            gap_here = e_states[i, j, 1] - e_states[i, j, 0]
+            say(f"({alpha:7.3f}, {phi:7.3f})  gap = {gap_here:.6f} Ha"
+                + ("" if converged[i, j] else "   NOT CONVERGED"))
         say(
             f"  row {i + 1}/{scan.n_alpha}  alpha={alpha:7.3f}  "
             f"min gap in row = {np.nanmin(e_states[i, :, 1] - e_states[i, :, 0]):.6f} Ha"
