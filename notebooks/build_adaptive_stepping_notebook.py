@@ -414,17 +414,78 @@ plt.show()
 """)
 
 md(r"""
+### Why the predicted saving did not materialise
+
+The predictions (1.3x-4.7x) were made from the *spread of adjacent overlaps* on saved runs, on the
+assumption that cost is proportional to the number of points. Two measured effects break that
+assumption, and both work against adaptive stepping.
+
+**1. Hard points cost more to solve.** The points where the state turns fastest are also the ones
+where CASSCF needs the most iterations - so removing easy points removes the *cheap* ones, and
+adding points near the degeneracy adds the *expensive* ones.
+""")
+
+code(r"""
+from berrycasscf import CasConfig, LOOP_CI
+from berrycasscf.continuation import traverse_loop
+
+print("per-point solver cost against per-point difficulty, on one uniform N=33 walk:")
+print(f"{'system':>22} {'r(overlap, micro)':>18} {'hard half':>11} {'easy half':>11} {'ratio':>7}")
+print("-" * 74)
+for ncas, ne, lbl in ((2, 2, "formaldimine CAS(2,2)"), (6, 6, "formaldimine CAS(6,6)")):
+    tr = traverse_loop(LOOP_CI.with_n_points(33), cas=CasConfig(ncas=ncas, nelecas=ne))
+    pts = [p for p in tr.points if p.abs_overlap_with_prev is not None]
+    ov = np.array([p.abs_overlap_with_prev for p in pts])
+    mi = np.array([p.n_micro for p in pts], float)
+    r = np.corrcoef(ov, mi)[0, 1]
+    order = np.argsort(ov); h = len(pts) // 2
+    hard, easy = mi[order[:h]].mean(), mi[order[h:]].mean()
+    print(f"{lbl:>22} {r:>18.2f} {hard:>11.1f} {easy:>11.1f} {hard/easy:>6.2f}x")
+print()
+print("Negative r: the lower the adjacent overlap, the more micro-iterations that point cost.")
+""")
+
+md(r"""
+**2. Rejections are not free.** A rejected trial is a full CASSCF solve that produces nothing. The
+runs above reject 1-7 times on the harder loops, and those solves are charged in full, as they must
+be. The controller steers toward $m = 0.02$ while refusing only above $0.10$ precisely to keep
+rejections rare, but the $m \sim d^2$ model is evidently imperfect for a CASSCF wavefunction and it
+still oversteps.
+
+### The decomposition, on the loop that was supposed to be the best case
+
+Ethylene `E_x` at CAS(8,8) was predicted to save **4.7x** - the largest of any loop in the project,
+estimated from its adjacent-overlap spread (worst 0.855, median 0.994). At matched quality it comes
+out at **0.87x**. The two numbers that explain it, taken from the adaptive run with *zero*
+rejections so the second mechanism is excluded entirely:
+
+| | uniform $N=33$ | adaptive $d_{max}=0.05$ |
+|---|---|---|
+| points | 33 | 26  (**0.79x**) |
+| micro-iterations per point | 80.2 | 117.6  (**1.47x**) |
+| total micro-iterations | 2647 | 3058  (1.16x) |
+| worst adjacent overlap | 0.9243 | 0.9187 |
+
+**The point-count saving is real and is simply outweighed.** Adaptive uses 21% fewer points and
+each costs 47% more, because they sit where the solver has to work hardest. The prediction assumed
+a constant cost per point; that assumption, not the controller, is what failed.
+""")
+
+md(r"""
 ### Verdict
 
-**On formaldimine adaptive stepping is a wash — between 0.60× and 1.23× — and sometimes worse than
-uniform.** That is a negative result and it is reported as one. It is also exactly what should have
-been expected: formaldimine's loops have *uniform* difficulty (worst adjacent overlap 0.98 against a
-median of 0.99), so there is nothing for step control to exploit, and it pays a small overhead for
-carrying margin the loop does not need.
+**Adaptive stepping never beat uniform discretization on cost, on any CASSCF loop tested.**
 
-The prediction made before running it — from the spread of adjacent overlaps on saved runs — was
-1.3× for formaldimine, 3.1× for butadiene `B_x` at CAS(8,8), and 4.7× for ethylene at CAS(8,8). The
-formaldimine number is confirmed; the harder loops are where the case has to be made.
+| system | loops | measured, at matched quality |
+|---|---|---|
+| formaldimine STO-3G, CAS(2,2) and CAS(6,6) | `C_x`, `C_2` | 0.60x – 1.23x |
+| butadiene 6-31G\*, CAS(2,2) | `B_x`, `B_2` | 0.67x – 1.15x |
+| ethylene 6-31G\*, CAS(8,8) | `E_x`, `E_2` | 0.75x – 1.04x |
+
+The predictions made beforehand from adjacent-overlap spreads were 1.3x, 3.1x and **4.7x**. All
+three are wrong, and the largest prediction belongs to the loop that did worst against it. That
+prediction is retracted. The reason is measured above and is not subtle: **cost is not proportional
+to the number of points**, and the points adaptive adds are the expensive ones.
 
 **Where step control does pay is on loops that pass close to a degeneracy**, and there it pays
 enormously — 19x fewer points at a closest approach of 0.02 of the loop radius, 43x at 0.007. Those

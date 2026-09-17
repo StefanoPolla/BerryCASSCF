@@ -415,13 +415,34 @@ path-independent by construction; the measured price is that cold occasionally c
 worse solution (one formaldimine grid corner, 0.115 Ha high). Details and the alternatives
 considered are in `docs/active_space.md`.
 
-**Adaptive step control is cost-neutral, and useful for other reasons.** Steering the step size by
-the measured continuity (`berrycasscf/adaptive.py`) was expected to save 1.3x on formaldimine and
-up to 4.7x on the harder loops, estimated from the spread of adjacent overlaps on saved runs.
-Measured at *matched quality*, against a swept family of uniform N, it runs **0.60x–1.23x on
-formaldimine and 0.67x–1.15x on butadiene CAS(2,2)** — a wash, occasionally worse. The formaldimine
-figure confirms the prediction; both systems' loops have fairly uniform difficulty, so there is
-nothing for step control to exploit.
+**Adaptive step control never beat uniform discretization on cost, and the prediction that it
+would is retracted.** Steering the step size by the measured continuity
+(`berrycasscf/adaptive.py`) was expected to save 1.3x on formaldimine, 3.1x on butadiene `B_x` at
+CAS(8,8) and 4.7x on ethylene `E_x` at CAS(8,8), estimated from the spread of adjacent overlaps on
+saved runs. Measured at *matched quality*, against a swept family of uniform N:
+
+| system | loops | measured |
+|---|---|---|
+| formaldimine STO-3G, CAS(2,2) and CAS(6,6) | `C_x`, `C_2` | 0.60x–1.23x |
+| butadiene 6-31G\*, CAS(2,2) | `B_x`, `B_2` | 0.67x–1.15x |
+| ethylene 6-31G\*, CAS(8,8) | `E_x`, `E_2` | 0.75x–1.04x |
+
+**All three predictions were wrong, and the largest one belongs to the loop that did worst against
+it.** The cause is measurable and is not the controller. Cost is not proportional to the number of
+points: the points where the state turns fastest are also the ones where CASSCF needs the most
+iterations (measured correlation between per-point micro-iterations and adjacent overlap:
+r = −0.40 at formaldimine CAS(2,2), −0.67 at CAS(6,6)). Adaptive stepping removes cheap points and
+adds expensive ones. Taking ethylene `E_x` at CAS(8,8), comparing the *zero-rejection* adaptive run
+against uniform at the same worst-case overlap so that rejection cost is excluded entirely:
+
+| | uniform N=33 | adaptive d_max=0.05 |
+|---|---|---|
+| points | 33 | 26 (**0.79x**) |
+| micro-iterations per point | 80.2 | 117.6 (**1.47x**) |
+| total | 2647 | 3058 (1.16x) |
+
+The point-count saving is real and is simply outweighed. Rejected trials — full CASSCF solves that
+produce nothing, 1 to 7 of them on the harder loops — make it worse again where they occur.
 
 Its value is elsewhere, and is not a speed-up:
 

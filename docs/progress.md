@@ -394,11 +394,17 @@ The walk closes at eps = 0.007 and hits the floor at 0.005. Uniform N=24 returns
 at every eps tested and fails its own continuity check from eps = 0.1 inwards — right, but not
 trustworthy.
 
-**Negative result, reported as one: adaptive stepping is cost-neutral.** At matched quality it runs
-0.60x–1.23x against uniform on formaldimine and 0.67x–1.15x on butadiene CAS(2,2). Both are loops
-of fairly uniform difficulty, so there is nothing for step control to exploit — consistent with the
-1.3x predicted for formaldimine beforehand. Ethylene CAS(8,8), the loop with the largest predicted
-saving (4.7x), is running.
+**Negative result, reported as one: adaptive stepping never beat uniform on cost.** At matched
+quality: 0.60x–1.23x on formaldimine, 0.67x–1.15x on butadiene CAS(2,2), **0.75x–1.04x on ethylene
+CAS(8,8)** — the loop predicted to save 4.7x, the largest prediction in the project. All three
+predictions (1.3x, 3.1x, 4.7x) are **retracted**.
+
+The cause was measured rather than guessed. Cost is not proportional to point count: hard points
+are also expensive points (r between per-point micro-iterations and adjacent overlap is −0.40 at
+formaldimine CAS(2,2), −0.67 at CAS(6,6)). On ethylene `E_x` CAS(8,8), comparing the zero-rejection
+adaptive run against uniform at equal worst-case overlap — so rejection cost is excluded — adaptive
+uses **0.79x the points at 1.47x the cost each**, netting 1.16x. Rejected trials make it worse
+again where they occur.
 
 Where it *does* pay is not cost: it walks loops uniform discretization cannot walk at any
 affordable N (an order of magnitude closer to a degeneracy), removes the need to guess N, and
