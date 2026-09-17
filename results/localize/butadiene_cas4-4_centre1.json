@@ -1,0 +1,150 @@
+{
+  "system": "butadiene",
+  "cas": [
+    4,
+    4
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    12.0,
+    18.0
+  ],
+  "centres": [
+    [
+      90.0,
+      101.85321091497578
+    ],
+    [
+      90.0,
+      90.0
+    ],
+    [
+      99.0,
+      101.85321091497578
+    ]
+  ],
+  "reference": null,
+  "reference_note": "no exact reference exists for butadiene",
+  "bisections": [
+    {
+      "centre": [
+        90.0,
+        90.0
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(4,4)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9121265783368796,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 412,
+              "wall": 88.48607850074768,
+              "product": 0.6918368643656433,
+              "endpoint": 0.9999999984961004,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9470428649378234,
+              "n_points": 24,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 621,
+              "wall": 133.4576141834259,
+              "product": 0.7967277662269329,
+              "endpoint": 0.9999999984012246,
+              "messages": []
+            }
+          ],
+          "cost_micro": 1033,
+          "wall_time": 221.945130109787
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9993711935283413,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 362,
+              "wall": 75.1610267162323,
+              "product": 0.9965767472658754,
+              "endpoint": 0.9999999988255145,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9996841457006028,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 423,
+              "wall": 92.3166995048523,
+              "product": 0.9975683500250713,
+              "endpoint": 0.9999999999915341,
+              "messages": []
+            }
+          ],
+          "cost_micro": 785,
+          "wall_time": 167.47887444496155
+        }
+      ],
+      "lo": 0.08,
+      "hi": null,
+      "undetermined": [],
+      "total_micro": 1818,
+      "wall_time": 389.4342198371887,
+      "rho": null,
+      "rho_uncertainty": null
+    }
+  ],
+  "complete": true,
+  "wall_time": 389.43721866607666
+}

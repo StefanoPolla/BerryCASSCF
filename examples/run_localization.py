@@ -37,6 +37,7 @@ import numpy as np
 
 from berrycasscf import CasConfig, ContinuationConfig
 from berrycasscf.butadiene import butadiene_geom
+from berrycasscf.ethylene import ethylene_geom
 from berrycasscf.geometry import formaldimine_geom
 from berrycasscf.localize import (
     bisect_radius,
@@ -65,6 +66,31 @@ SYSTEMS = {
         # FCI gap scan, docs/results.md. phi = 90 by the symmetry of the coordinate.
         "reference": (132.61, 90.0),
         "reference_note": "FCI gap scan (docs/results.md); phi = 90 by symmetry",
+    },
+    "ethylene": {
+        "geom_fn": ethylene_geom,
+        "basis": "6-31g*",
+        # (12, 18) rather than the ladder's circular (12, 12). The object sits ~11-13 deg
+        # away in phi, so a centre far enough out for a circular loop of radius 12 to
+        # *exclude* it at small scale leaves that loop grazing it at scale 1 -- which is the
+        # configuration that produced the refused third centre at butadiene CAS(2,2). A
+        # longer phi semi-axis buys the margin; bisection scales the whole loop, so the
+        # shape only has to bracket, not to match the study's loops.
+        "shape": (12.0, 18.0),
+        # Two centres on the tau = 90 mirror line, one above the expected position and one
+        # below, and a third off the line to break the ambiguity those two leave. Taking the
+        # CAS(12,12) reference (90, 110.90) as the target, the elliptical radii are 0.72,
+        # 0.73 and 0.83 -- all comfortably inside 1 and far outside scale_lo.
+        "centres": [(90.0, 98.0), (90.0, 124.0), (80.0, 110.9)],
+        "scale_hi": 1.0,
+        "scale_lo": 0.08,
+        "tol": 0.05,
+        "max_probes": 9,
+        # Full-valence CAS(12,12) gap scan refined with the cone model (docs/findings.md §1).
+        # Exact in this basis in all but the two carbon 1s orbitals, which is what makes
+        # ethylene the system where a measured state-specific position can be checked.
+        "reference": (90.0, 110.90),
+        "reference_note": "CAS(12,12) full-valence gap scan, cone-refined (docs/findings.md §1)",
     },
     "butadiene": {
         "geom_fn": butadiene_geom,

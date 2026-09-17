@@ -293,3 +293,12 @@ def test_a_fully_cached_bisection_solves_nothing(monkeypatch):
     assert calls == []
     # The cost carried in the record is the whole measurement's, not the last session's.
     assert again.total_micro == full.total_micro
+
+
+def test_merge_refuses_an_unfinished_checkpoint():
+    """A checkpoint looks like a result: one bisection, right centre, no bracket yet."""
+    centres = [(90.0, 101.85)]
+    partial = _record([_bisection(centres[0], rho=0.5)])
+    partial["complete"] = False
+    with pytest.raises(ValueError, match="unfinished checkpoint"):
+        merge_centre_records([partial], centres)

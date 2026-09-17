@@ -1,0 +1,67 @@
+#!/bin/bash
+#SBATCH --job-name=bc-loceth
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=1-00:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=4G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-11
+#
+# Ethylene: locate what loop transport encircles, against a reference that is exact.
+#
+#   cd slurm && sbatch localize_ethylene.job
+#   # then, per rung:
+#   python examples/run_localization.py ethylene --cas 8 8 --merge
+#
+# Why ethylene, and why this is not a third copy of the same experiment.
+# docs/findings.md §4 says the open question -- is loop transport right, or consistently
+# wrong in the same direction? -- needs a system where an exact reference exists AND the
+# active-space ladder misbehaves, and concludes that none of the three systems provides it.
+# That conclusion is too pessimistic. Ethylene has both: CAS(12,12) is the full valence space
+# (everything but the two carbon 1s orbitals), so its intersection position is exact in this
+# basis, and its ladder is the badly behaved one -- accurate at CAS(2,2), displaced by 5-8 deg
+# at the intermediate rungs, stable only from CAS(10,10).
+#
+# So the measured state-specific position can be compared against a known answer here, at each
+# rung, which is exactly what formaldimine's FCI comparison did (-1.44 and -1.63 deg offsets)
+# and what butadiene cannot do at all.
+#
+# Four rungs x three centres. The reference rung, CAS(12,12), is deliberately NOT here: at
+# 115 s per point it is a two-day job per centre and belongs in its own submission once these
+# have shown the cheap rungs behave.
+#
+# Sizing: per-point costs measured on the laptop are 0.48, 0.55, 1.41 and 3.79 s for CAS(2,2)
+# through (8,8), and the node is 2.7x slower. Scaled from butadiene CAS(2,2)'s 2.0 h for three
+# centres at 3.5 s/point, that is roughly 15 min per centre at CAS(2,2) rising to 2 h at
+# CAS(8,8). A day is asked because a probe landing on the degeneracy costs several times one
+# that does not.
+
+set -euo pipefail
+
+NE_VALUES=(8 6 4 2)
+NCAS_VALUES=(8 6 4 2)
+N_CENTRES=3
+RUNG=$((SLURM_ARRAY_TASK_ID / N_CENTRES))
+CENTRE=$((SLURM_ARRAY_TASK_ID % N_CENTRES))
+NE=${NE_VALUES[$RUNG]}
+NCAS=${NCAS_VALUES[$RUNG]}
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/run_localization.py ethylene --cas $NE $NCAS --only-centre $CENTRE"
+python -u examples/run_localization.py ethylene --cas "$NE" "$NCAS" --only-centre "$CENTRE"

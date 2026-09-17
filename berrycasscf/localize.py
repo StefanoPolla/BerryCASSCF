@@ -172,12 +172,18 @@ def merge_centre_records(records: Sequence[dict], centres) -> list[BisectionResu
 
     Bisections about different centres are independent -- they share no state and no
     intermediate -- so at a large active space, where one centre is a day or more, they are
-    run as separate jobs and merged afterwards. Each record must hold exactly one bisection,
-    and the centres must match the requested list in order, so that a merge cannot silently
-    combine ellipses from two different constructions.
+    run as separate jobs and merged afterwards. Each record must hold exactly one *finished*
+    bisection, and the centres must match the requested list in order, so that a merge cannot
+    silently combine ellipses from two different constructions, nor a checkpoint written
+    part-way through one.
     """
     merged: list[BisectionResult] = []
     for i, (centre, record) in enumerate(zip(centres, records)):
+        # A record is also written after every probe, so that a killed run resumes. Those
+        # carry complete=False and a bisection with no bracket yet; merging one would quietly
+        # contribute a centre that had not finished measuring.
+        if record.get("complete", True) is False:
+            raise ValueError(f"record {i} is an unfinished checkpoint, not a result")
         bisections = record.get("bisections", [])
         if len(bisections) != 1:
             raise ValueError(f"record {i} holds {len(bisections)} bisections, expected 1")
