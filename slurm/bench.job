@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH --job-name=bc-bench
+#SBATCH --output=./out/%x-%j.out
+#SBATCH --error=./err/%x-%j.err
+#SBATCH --time=0-04:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --partition=cpu-short          # SITE: ALICE; 4 h cap, short queue, starts fast
+#SBATCH --mail-type=NONE
+#
+# Time one solve at an active space nothing has measured yet, before committing days to it.
+#
+#   cd slurm && sbatch --export=ALL,SYSTEM=butadiene,CAS="14 14" bench.job
+#
+# The point is to replace an extrapolation with a measurement. Determinant count is a poor
+# predictor of CASSCF cost -- CAS(14,14) is 13.8x CAS(12,12) in determinants, and whether
+# the solve is 13.8x, 5x or 40x slower decides whether rung14.job is a three-day job or an
+# impossible one. Memory is generous here for the same reason: it is unmeasured at this size.
+# A TIMEOUT is itself a result: it means one point exceeds four hours.
+
+set -euo pipefail
+
+SYSTEM="${SYSTEM:-butadiene}"
+CAS="${CAS:-14 14}"
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/bench_point.py $SYSTEM --cas $CAS"
+python -u examples/bench_point.py "$SYSTEM" --cas $CAS
+echo "python -u examples/bench_point.py $SYSTEM --cas $CAS --sa"
+python -u examples/bench_point.py "$SYSTEM" --cas $CAS --sa
