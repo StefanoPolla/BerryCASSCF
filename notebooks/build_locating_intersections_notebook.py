@@ -375,18 +375,36 @@ $\pi$ on the same loop at two discretizations.
 code(r"""
 buta = load("butadiene_cas2-2.json")
 if buta:
+    shape_b = tuple(buta["shape"])
+    # where the SA-CASSCF gap scan puts this rung's intersection, from the direct 2D search
+    gm = os.path.join(ROOT, "results", "butadiene", "gap_minimum_search.json")
+    sa_pt = None
+    if os.path.exists(gm):
+        for r in json.load(open(gm))["runs"]:
+            if tuple(r["cas"]) == (2, 2):
+                sa_pt = tuple(r["found"])
     print("BUTADIENE CAS(2,2)")
+    if sa_pt:
+        print(f"  gap scan (direct 2D search) puts the intersection at "
+              f"({sa_pt[0]:.2f}, {sa_pt[1]:.2f})\n")
+    print(f"  {'centre':>22} {'rho measured':>22} {'rho if the gap-scan point':>27}")
+    print("  " + "-" * 73)
     for b in buta["bisections"]:
         rho, unc = b.get("rho"), b.get("rho_uncertainty")
         c = f"({b['centre'][0]:.2f}, {b['centre'][1]:.2f})"
-        print(f"  centre {c:>18}: "
-              + (f"rho = {rho:.4f} +- {unc:.4f}" if rho is not None else "not bracketed"))
+        got = f"{rho:.4f} +- {unc:.4f}" if rho is not None else "not bracketed"
+        pred = (f"{elliptical_radius(sa_pt, tuple(b['centre']), shape_b):.4f}"
+                if sa_pt else "n/a")
+        print(f"  {c:>22} {got:>22} {pred:>27}")
     tri = buta.get("triangulation")
     if tri and tri.get("chosen"):
-        print(f"  triangulated: ({tri['chosen'][0]:.2f}, {tri['chosen'][1]:.2f}), "
+        print(f"\n  triangulated: ({tri['chosen'][0]:.2f}, {tri['chosen'][1]:.2f}), "
               f"residual {tri['residual']:.4f}")
         print(f"  note: {tri['note']}")
-    print(f"  cost: {buta['total_micro']} micro-iterations, {buta['wall_time']:.0f} s")
+        if sa_pt:
+            d = np.hypot(tri["chosen"][0] - sa_pt[0], tri["chosen"][1] - sa_pt[1])
+            print(f"  distance from the gap-scan intersection: {d:.2f} deg")
+    print(f"\n  cost: {buta['total_micro']} micro-iterations, {buta['wall_time']:.0f} s")
 else:
     print("butadiene localization not yet run:")
     print("  python examples/run_localization.py butadiene --cas 2 2")
