@@ -209,9 +209,16 @@ def main() -> int:
                   f"{elliptical_radius(ref, c, shape):.4f}")
     print()
 
-    log = JobLog(f"localize_{tag}", total=len(centres) * spec["max_probes"])
+    # One log per *task*: with --only-centre the three centres of a rung run concurrently,
+    # and a shared log interleaves three bisections into something no one can follow.
+    log_tag = tag if args.only_centre is None else f"{tag}_centre{args.only_centre}"
+    log = JobLog(f"localize_{log_tag}",
+                 total=(len(centres) if args.only_centre is None else 1) * spec["max_probes"])
     t0 = time.time()
-    saved = (existing or {}).get("bisections", [])
+    # In --only-centre mode the record is written once, when that centre finishes, so an
+    # incomplete file cannot exist and the completeness check above has already skipped a
+    # finished one. Only the all-centres path has anything to resume.
+    saved = (existing or {}).get("bisections", []) if args.only_centre is None else []
     results = [] if args.force else resume_bisections(saved, centres)
     if results:
         print(f"  resuming: {len(results)} of {len(centres)} centres already saved")
