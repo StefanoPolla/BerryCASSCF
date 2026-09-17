@@ -80,6 +80,18 @@ sys.path.insert(0, ROOT)
 
 from berrycasscf.localize import BisectionResult, elliptical_radius, triangulate
 
+def retriangulate(d):
+    # Rebuild the triangulation from the saved brackets. The saved records predate the
+    # uncertainty-normalised residual, and recomputing is exact: triangulation is pure
+    # geometry on the bracket endpoints, not a re-run of any physics.
+    bs = [BisectionResult(centre=tuple(b["centre"]), shape=tuple(b["shape"]),
+                          cas_label=str(d.get("cas", "?")), probes=[], lo=b["lo"], hi=b["hi"])
+          for b in d["bisections"] if b.get("lo") and b.get("hi")]
+    if len(bs) < 2:
+        return None
+    ref = tuple(d["reference"]) if d.get("reference") else None
+    return triangulate(bs, prefer=ref)
+
 plt.rcParams.update({"figure.dpi": 120, "font.size": 9, "axes.grid": True,
                      "grid.alpha": 0.25, "figure.facecolor": "white"})
 
@@ -318,22 +330,28 @@ def sa_position(cas):
 
 FCI_ALPHA = 132.61
 print(f"{'CAS':>9} {'loop transport (SS)':>21} {'gap scan (SA)':>15} {'SS - SA':>9} "
-      f"{'SA - FCI':>9} {'residual':>10}")
-print("-" * 80)
+      f"{'SA - FCI':>9} {'residual':>10} {'/precision':>11}")
+print("-" * 94)
 for cas in (2, 4, 6):
     d = runs.get(cas)
     sa = sa_position(cas)
-    tri = (d or {}).get("triangulation") or {}
-    ss = tri.get("chosen")
-    res = tri.get("residual")
+    tri = retriangulate(d) if d else None
+    ss = tri.chosen if tri else None
     ss_s = f"({ss[0]:.2f}, {ss[1]:.2f})" if ss else "n/a"
     sa_s = f"{sa[0]:.2f}" if sa else "n/a"
     diff = f"{ss[0] - sa[0]:+.2f}" if (ss and sa) else "--"
     sadiff = f"{sa[0] - FCI_ALPHA:+.2f}" if sa else "--"
-    flag = "  <- refused (inconsistent)" if (res is not None and res > 0.05) else ""
-    res_s = f"{res:.5f}" if res is not None else "n/a"
+    res_s = f"{tri.residual:.5f}" if tri else "n/a"
+    ratio = tri.residual_over_uncertainty if tri else float("nan")
+    ratio_s = f"{ratio:.2f}" if np.isfinite(ratio) else "n/a"
+    flag = "  <- INCONSISTENT" if (tri and tri.consistent is False) else ""
     print(f"{'CAS(%d,%d)' % (cas, cas):>9} {ss_s:>21} {sa_s:>15} {diff:>9} "
-          f"{sadiff:>9} {res_s:>10}{flag}")
+          f"{sadiff:>9} {res_s:>10} {ratio_s:>11}{flag}")
+print()
+print("'/precision' is the misfit divided by the RMS bisection bracket half-width.")
+print("Raw residuals are NOT comparable between runs: one with loose brackets can misfit")
+print("by a lot and still be consistent. Above ~1 the centres cannot be explained by a")
+print("single degeneracy.")
 print()
 print(f"FCI gap-scan reference: alpha = {FCI_ALPHA} (one-dimensional cut at fixed phi)")
 """)
@@ -345,10 +363,16 @@ md(r"""
 as $\pm 0.005$ in $\rho$, i.e. better than a twentieth of a degree — from a method that only ever
 learns one bit per loop.
 
-**The residual is doing its job.** At CAS(2,2) it is large, around 0.2 in units of the semi-axes
-(≈ 2°): the three measured ellipses do **not** meet at a point, so no single degeneracy explains
-them. That is the construction refusing to hand back a confident position from inconsistent data,
-and it is the behaviour that makes the small residuals at larger active spaces meaningful.
+**The residual is doing its job, but only once it is normalised.** Raw residuals across the ladder
+are 0.197, 0.0088 and 0.0574, which would suggest CAS(6,6) is six times worse than CAS(4,4).
+Divided by each run's own precision (the RMS bracket half-width) they become **1.57, 0.29 and
+0.76**: CAS(2,2) is the only rung whose misfit exceeds its own measurement uncertainty, and
+CAS(6,6) is simply measured less precisely, not less consistently. Comparing raw residuals between
+runs of different precision is meaningless, and this project nearly did it.
+
+So at CAS(2,2) three measured ellipses cannot be explained by a single degeneracy, and the
+construction refuses to hand back a confident position. That is what makes the consistent rungs
+meaningful.
 
 CAS(2,2) is independently known to be pathological for formaldimine: the gap scan at that active
 space does not merely misplace this intersection, it **finds no minimum in the region at all** and

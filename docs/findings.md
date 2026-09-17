@@ -266,16 +266,28 @@ object can be located rather than bracketed by hand. Two systems have been done.
 **Formaldimine, where an FCI reference exists**, comparing at the *same* active space so that only
 the state-specific/state-averaged difference is in play:
 
-| CAS | loop transport (state-specific) | gap scan (state-averaged) | difference | gap scan − FCI | triangulation residual |
-|---|---|---|---|---|---|
-| (2,2) | (131.67, 86.30) | 151.61 | −19.94 | +19.00 | **0.197 — refused** |
-| (4,4) | (128.99, 90.24) | 130.43 | **−1.44** | −2.18 | 0.0088 |
+| CAS | loop transport (state-specific) | gap scan (state-averaged) | difference | gap scan − FCI | residual | residual / precision |
+|---|---|---|---|---|---|---|
+| (2,2) | (131.67, 86.30) | 151.61 | −19.94 | +19.00 | 0.197 | **1.57 — inconsistent** |
+| (4,4) | (128.99, 90.24) | 130.43 | **−1.44** | −2.18 | 0.0088 | 0.29 |
+| (6,6) | (129.73, 88.49) | 131.35 | **−1.63** | −1.26 | 0.0574 | 0.76 |
 
-At CAS(4,4) the two methods put the degeneracy **1.44 deg apart** — comparable to the 2.18 deg by
-which the gap scan itself misses FCI. So the state-specific/state-averaged difference is not a
-small correction on top of active-space error; at this rung it is of the same size. The CAS(2,2)
-row is not a measurement: its residual says three centres cannot be explained by one degeneracy,
-and the construction declines to report a position (see §8).
+**The offset is stable where the method is applicable: −1.44 deg at CAS(4,4) and −1.63 deg at
+CAS(6,6)**, with the state-specific degeneracy consistently *below* the state-averaged one. That is
+comparable to the 2.18 and 1.26 deg by which the gap scan itself misses FCI — so the
+state-specific/state-averaged difference is not a small correction on top of active-space error, it
+is the same size.
+
+**The last column is the consistency criterion, and it had to be normalised to be meaningful.**
+Raw residuals of 0.197, 0.0088 and 0.0574 would suggest CAS(6,6) is six times worse than CAS(4,4).
+Divided by each run's own precision — the RMS of its bisection bracket half-widths — they become
+1.57, 0.29 and 0.76. CAS(6,6) is not less consistent, only less precisely measured (its brackets
+are ±0.06–0.09 against CAS(4,4)'s ±0.03), and **CAS(2,2) is the only rung whose misfit exceeds its
+own uncertainty**. Comparing raw residuals across runs of different precision is meaningless, and
+this document did it in an earlier revision.
+
+The CAS(2,2) row is therefore not a measurement at all: three centres cannot be explained by one
+degeneracy there, and the construction declines to report a position (see §8).
 
 **Butadiene CAS(2,2), where the disagreement was first noticed.** The bisection about the loop
 centre (90, 101.85) brackets the transition at **rho = 0.5385 ± 0.0843**, from a verdict sequence

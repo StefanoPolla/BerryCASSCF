@@ -306,9 +306,35 @@ class TriangulationResult:
     rhos: list[float]
     chosen: tuple[float, float] | None = None
     note: str = ""
+    # RMS of the bisection bracket half-widths: the precision the residual has to be judged
+    # against. Comparing raw residuals between runs is misleading, because a run whose
+    # brackets are loose can misfit by a lot and still be perfectly consistent.
+    uncertainty: float = float("nan")
+
+    @property
+    def residual_over_uncertainty(self) -> float:
+        """Misfit in units of the measurement precision. Above ~1 the data are inconsistent.
+
+        This, not the raw residual, is the consistency criterion. Measured on formaldimine:
+        CAS(2,2) 1.57 (inconsistent -- no single degeneracy explains three centres),
+        CAS(4,4) 0.29, CAS(6,6) 0.76. The raw residuals are 0.197, 0.0088 and 0.0574, which
+        would wrongly suggest CAS(6,6) is 6.5x worse than CAS(4,4) rather than equally
+        consistent but less precisely measured.
+        """
+        if not np.isfinite(self.uncertainty) or self.uncertainty <= 0:
+            return float("nan")
+        return float(self.residual / self.uncertainty)
+
+    @property
+    def consistent(self) -> bool | None:
+        r = self.residual_over_uncertainty
+        return None if not np.isfinite(r) else bool(r <= 1.0)
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        d = asdict(self)
+        d["residual_over_uncertainty"] = self.residual_over_uncertainty
+        d["consistent"] = self.consistent
+        return d
 
 
 def triangulate(
@@ -366,6 +392,8 @@ def triangulate(
     else:
         note = f"{len(usable)} centres; residual is the misfit of a single position"
 
+    half_widths = [r.rho_uncertainty for r in usable if r.rho_uncertainty is not None]
+    unc = float(np.sqrt(np.mean(np.square(half_widths)))) if half_widths else float("nan")
     return TriangulationResult(candidates=cands_real, residual=residual(best), shape=shape,
                                centres=[r.centre for r in usable], rhos=rhos,
-                               chosen=chosen, note=note)
+                               chosen=chosen, note=note, uncertainty=unc)

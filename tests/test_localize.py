@@ -112,3 +112,41 @@ def test_triangulation_refuses_unbracketed_input():
                                   probes=[], lo=None, hi=0.5)
     with pytest.raises(ValueError):
         triangulate([unbracketed, _bisection((136.0, 89.9), 0.3, shape)])
+
+
+# --- the residual has to be judged against the measurement precision -------------------
+
+def test_the_residual_is_normalised_by_the_bracket_widths():
+    """Raw residuals are not comparable between runs of different precision.
+
+    Measured on formaldimine: raw residuals 0.197 (CAS(2,2)), 0.0088 (CAS(4,4)) and 0.0574
+    (CAS(6,6)) would suggest CAS(6,6) is 6.5x worse than CAS(4,4). Normalised by the RMS
+    bracket half-width they are 1.57, 0.29 and 0.76 -- CAS(2,2) is the only one whose misfit
+    exceeds its own precision, and it is the only one independently known to be pathological.
+    """
+    truth, shape = (132.6, 90.0), (10.0, 10.0)
+    centres = [(130.0, 89.9), (137.0, 89.9), (133.0, 97.0)]
+
+    tight = triangulate([_bisection(c, elliptical_radius(truth, c, shape), shape,
+                                    half_width=1e-3) for c in centres])
+    loose = triangulate([_bisection(c, elliptical_radius(truth, c, shape), shape,
+                                    half_width=0.1) for c in centres])
+
+    # same (near-zero) misfit, very different precision
+    assert tight.residual == pytest.approx(loose.residual, abs=1e-9)
+    assert loose.uncertainty > 50 * tight.uncertainty
+    assert tight.consistent and loose.consistent
+
+
+def test_a_misfit_larger_than_the_precision_is_reported_inconsistent():
+    shape = (10.0, 10.0)
+    centres = [(130.0, 89.9), (137.0, 89.9), (133.0, 97.0)]
+    truth = (132.6, 90.0)
+    # third centre's radius deliberately wrong by far more than its stated precision
+    results = [_bisection(c, elliptical_radius(truth, c, shape), shape, half_width=1e-3)
+               for c in centres[:2]]
+    results.append(_bisection(centres[2], elliptical_radius(truth, centres[2], shape) + 0.3,
+                              shape, half_width=1e-3))
+    tri = triangulate(results)
+    assert tri.residual_over_uncertainty > 1.0
+    assert tri.consistent is False
