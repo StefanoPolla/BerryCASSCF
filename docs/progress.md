@@ -421,14 +421,38 @@ Plain bisection was useless here: the first midpoint lands in the refusal band a
 transition and the search gives up. It now tracks `lo`, `hi` *and* the refusal band, narrowing the
 two usable gaps alternately, so every probe either classifies or shrinks the next target interval.
 
-**Formaldimine CAS(2,2) result, and why it is not a validation.** Individual brackets are tight
-(rho = 0.3968 ± 0.0046 from one centre), but the **residual is 0.197 in units of the semi-axes,
-about 2 deg**: the three ellipses do not meet at a point, so no single degeneracy explains them.
-That is the check working. CAS(2,2) is independently known to be pathological for formaldimine —
-the gap scan there finds no minimum in the region at all — and a direct map of the state-specific
-in-CAS S1/S0 gap over this region **never falls below 321 mHa**. That map is also exactly symmetric
-about phi = 90, so any off-axis degeneracy has a mirror partner and a loop centred on the line
-would enclose both. CAS(4,4) and CAS(6,6) are running; the test is whether the residual collapses.
+**The formaldimine ladder, comparing both methods at the same active space** so that only the
+state-specific/state-averaged difference is in play:
+
+| CAS | loop transport (SS) | gap scan (SA) | SS − SA | SA − FCI | residual | residual/precision |
+|---|---|---|---|---|---|---|
+| (2,2) | (131.67, 86.30) | 151.61 | −19.94 | +19.00 | 0.197 | **1.57 inconsistent** |
+| (4,4) | (128.99, 90.24) | 130.43 | **−1.44** | −2.18 | 0.0088 | 0.29 |
+| (6,6) | (129.73, 88.49) | 131.35 | **−1.63** | −1.26 | 0.0574 | 0.76 |
+
+**The state-specific degeneracy sits consistently below the state-averaged one, by ~1.5 deg** at
+both rungs where the measurement is self-consistent — the same size as the gap scan's own error
+against FCI. This turns `docs/findings.md` §3 from an inference into a measurement.
+
+**The consistency check had to be normalised to mean anything.** Raw residuals of 0.197, 0.0088 and
+0.0574 read as CAS(6,6) being six times worse than CAS(4,4). Divided by each run's own precision
+(RMS bracket half-width) they are 1.57, 0.29 and 0.76: CAS(6,6) is less *precisely* measured, not
+less consistent, and CAS(2,2) is the only rung whose misfit exceeds its own uncertainty. An earlier
+revision of this log compared the raw numbers.
+
+CAS(2,2) failing the check is the expected outcome, not a surprise: the gap scan there finds no
+minimum in the region at all, and a direct map of the state-specific in-CAS S1/S0 gap over the
+region **never falls below 321 mHa**. That map is also exactly symmetric about phi = 90, so any
+off-axis degeneracy has a mirror partner and a loop centred on the line would enclose both
+(`docs/todo.md` §10).
+
+**Butadiene CAS(2,2) — the experiment the open question needs.** Bisection about the `B_x` centre
+brackets the transition at **rho = 0.5385 ± 0.0843** from a verdict sequence monotone in radius,
+while the gap scan's intersection for the same active space implies **rho = 0.2121** — a factor 2.5
+inside the bracket and decisively outside it. A second centre reports 0 *cleanly* at full size,
+excluding 63% of the measured circle and leaving pyr in (105.6, 111.5), tw in (84, 96). A third was
+refused at full size (step floor), so **no triangulation and no position is claimed**: two
+constraints confine it to an arc. Cost: 50 557 micro-iterations, 2 h, at the cheapest active space.
 
 ### Bugs found, all of them ours
 
@@ -467,9 +491,30 @@ CAS(12,12)). The comparison is between comparable *efforts*, not converged minim
 `locating_intersections.ipynb`, `summary.ipynb`. The butadiene notebook gains the direct
 gap-minimum search, which existed in `results/` and `docs/` but in no notebook.
 
+### One more solver fix, found by the bisection
+
+The initial point of a walk was the only rung of the solver ladder with **no recourse at all**:
+continued points escalate through `SOLVE_STRATEGIES` while point 0 got a single attempt at a fixed
+budget. Diagnosed on formaldimine CAS(6,6), a loop of radius 1.06 deg: the *only* unconverged point
+was point 0, which ran exactly its 200 macro iterations, while every other point converged, the
+loop closed and the step floor was never reached — the probe was refused entirely because of the
+first solve's budget. With a retry at 3x the budget (convergence criteria untouched) that probe
+returns OK/π. It matters most for bisection, which probes small loops by construction, and small
+loops mean near-perfect warm starts and exactly the flat-direction crawl that budget was cutting
+short. The CAS(6,6) localization above predates this fix and would be tighter with it.
+
+### The CAS(12,12) gap floor, settled
+
+The earlier search used 30 evaluations against the other rungs' 40, leaving the contrast open to
+being a budget artifact. Re-run with 60: **1.4595 mHa in 58 evaluations**, against 0.003–0.006 mHa
+in 40 for the five lighter rungs (a fall of 47x–163x, against 1.2x here). Doubling the effort moved
+the answer by 2.5%. The floor is not an artifact of fitting along a line, of an intersection off the
+sampled cross, or of stopping early — and it still does not license "no intersection", because
+1.46 mHa is 0.04 eV and no criterion exists for when a state-averaged minimum gap is compatible
+with a true crossing.
+
 ### Next step
 
-Finish the ethylene CAS(8,8) adaptive run (the largest predicted saving), the formaldimine
-CAS(4,4)/CAS(6,6) localization (does the residual collapse at a sane active space?), and the
-60-evaluation CAS(12,12) gap search. Then butadiene localization, which is the one that bears on
-the open question in `docs/findings.md` §3.
+`docs/todo.md` §9: butadiene localization at the rungs where the disagreement is sharpest,
+especially CAS(12,12). That is a cluster job — CAS(2,2) alone took two hours. §10 (mirror pairs)
+and §6 (a gap threshold) are the two open method questions that bear on interpreting it.

@@ -136,10 +136,17 @@ as an extra rung; if it does not, nothing in the write-up depends on it.
 
 ---
 
-## 9. Butadiene localization — the experiment the open question needs
+## 9. Butadiene localization — started at CAS(2,2), still needed at CAS(12,12)
 
-**What.** Bisection and triangulation (§2, now built) applied to butadiene, at CAS(2,2) first and
-then at the rungs where the two methods disagree.
+**Done at CAS(2,2)** (2026-09-17): the bisection brackets rho = 0.5385 ± 0.0843 about the `B_x`
+centre while the gap-scan intersection implies rho = 0.2121 — decisively outside. A second centre
+reports 0 cleanly, leaving the object at pyr in (105.6, 111.5), tw in (84, 96); a third was refused
+at full size, so no triangulation and no position is claimed. Cost 2 h at the cheapest rung.
+
+**What remains.** The same experiment at the rungs where the two methods actually disagree, above
+all CAS(12,12). Three things would make it much better than the CAS(2,2) run: the initial-point
+escalation fix (which postdates it), a third centre chosen so that its full-size loop does not
+graze the degeneracy, and a tighter `d_min` so the refusal bands narrow (§11).
 
 **Why.** `docs/findings.md` §3 is the sharpest open question in the project: at CAS(12,12) a direct
 2D search finds no gap below 1.5 mHa anywhere in the loop, while loop transport returns pi on that
@@ -148,10 +155,10 @@ tested and answered. What remains is to **measure** the position of whatever loo
 encircling instead of inferring it, which is exactly what bisection does — and it is the only
 available way to interrogate the state-specific object directly.
 
-**What would make it fail.** Cost: a CAS(12,12) adaptive walk is minutes per point and a bisection
-needs ~10 probes at two settings per centre, so the reference rung is a cluster job, not a laptop
-one. And §10 below: if the loop encloses an even number of degeneracies the phase is 0 and
-bisection measures the wrong boundary.
+**What would make it fail.** Cost, measured rather than guessed: CAS(2,2) took 2 h for three
+centres and 50 557 micro-iterations, and a CAS(12,12) adaptive walk is minutes *per point*, so the
+reference rung is a cluster job and needs a SLURM template. And §10 below: if a loop encloses an
+even number of degeneracies the phase is 0, and bisection would measure the wrong boundary.
 
 ---
 
