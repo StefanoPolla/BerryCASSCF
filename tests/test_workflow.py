@@ -112,3 +112,38 @@ def test_sa_scan_finds_the_conical_intersection_inside_the_loop():
     assert LOOP_CI.encloses(alpha, phi)
     assert abs(alpha - REFERENCE_CI_ALPHA_PHI[0]) < 6.0
     assert abs(phi - REFERENCE_CI_ALPHA_PHI[1]) < 6.0
+
+
+def test_the_initial_point_escalates_its_iteration_budget_when_it_does_not_converge():
+    """The first point is the one every other point warm-starts from.
+
+    It was also the only rung of the solver ladder with no recourse: continued points escalate
+    through SOLVE_STRATEGIES while point 0 got a single attempt at a fixed budget. Measured on
+    formaldimine CAS(6,6) on a loop of radius 1.06 deg, point 0 exhausted exactly its 200 macro
+    iterations while every other point converged, the loop closed and the step floor was never
+    reached -- so the whole run was refused because of the first solve's budget.
+
+    This geometry is the cheap reproduction of the same thing: PySCF reaches |grad[o]| = 8.8e-06,
+    inside the 1e-5 threshold, while dE = 4.4e-10 will not fall below conv_tol = 1e-10 within 200
+    macro iterations. It converges at 239, to the same energy.
+    """
+    from berrycasscf.casscf import build_mol, run_casscf, run_rhf
+    from berrycasscf.continuation import _solve_point
+    from berrycasscf.geometry import formaldimine_geom
+
+    geom = formaldimine_geom(130.8597, 91.9642)
+    cas = CasConfig(ncas=2, nelecas=2)
+
+    # the mechanism: 200 macro iterations is not enough here, 600 is
+    mol = build_mol(geom, cas.basis)
+    mf = run_rhf(mol)
+    short = run_casscf(mol, 2, 2, conv_tol=cas.conv_tol, conv_tol_grad=cas.conv_tol_grad,
+                       max_cycle_macro=200, mf=mf)
+    assert not short.converged, "this geometry is supposed to be the hard one"
+
+    wfn, info = _solve_point(geom, cas, previous=None, label="t")
+    assert wfn.converged
+    assert info["strategy"] == "initial-long"
+    assert abs(wfn.energy - short.energy) < 1e-7      # same solution, just finished
+    # the retry's work is charged, not hidden
+    assert info["n_macro"] > 200

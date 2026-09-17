@@ -171,14 +171,40 @@ def _solve_point(
         # manifold. Single-stepping the first point too would start the walk from an RHF guess and
         # compare the method against a strawman.
         mf = run_rhf(mol)
+        budget = max(cas.max_cycle_macro, 200)
         wfn = run_casscf(
             mol, cas.ncas, cas.nelecas,
             conv_tol=cas.conv_tol, conv_tol_grad=cas.conv_tol_grad,
-            max_cycle_macro=max(cas.max_cycle_macro, 200), fix_spin=cas.fix_spin,
+            max_cycle_macro=budget, fix_spin=cas.fix_spin,
             label=label, mf=mf,
         )
-        info["n_macro"] = wfn.meta.get("n_macro", 0)
-        info["n_micro"] = wfn.meta.get("n_micro", 0)
+        n_macro = wfn.meta.get("n_macro", 0)
+        n_micro = wfn.meta.get("n_micro", 0)
+        if not wfn.converged:
+            # The initial point is the one every other point warm-starts from, and it was the
+            # only rung of this ladder with no recourse at all: the continued points escalate
+            # through SOLVE_STRATEGIES while point 0 got a single attempt. That asymmetry was
+            # refusing whole runs on its own. Measured on formaldimine CAS(6,6), a loop of
+            # radius 1.06 deg: point 0 exhausted exactly its 200 macro iterations while every
+            # other point converged, the loop closed and the step floor was never reached --
+            # so the run was refused entirely because of the first solve's budget.
+            #
+            # Retrying with a larger budget is not widening a threshold: the convergence
+            # criteria are untouched, the optimizer is simply allowed to finish. A point that
+            # still fails is still reported as unconverged.
+            retry = run_casscf(
+                mol, cas.ncas, cas.nelecas,
+                conv_tol=cas.conv_tol, conv_tol_grad=cas.conv_tol_grad,
+                max_cycle_macro=budget * 3, fix_spin=cas.fix_spin,
+                label=label, mf=mf,
+            )
+            n_macro += retry.meta.get("n_macro", 0)
+            n_micro += retry.meta.get("n_micro", 0)
+            if retry.converged:
+                wfn = retry
+                info["strategy"] = "initial-long"
+        info["n_macro"] = n_macro
+        info["n_micro"] = n_micro
         return wfn, info
 
     mo_guess = transfer_mo(previous.mol, previous.mo_coeff, mol)
