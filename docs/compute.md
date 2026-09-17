@@ -236,6 +236,34 @@ Then commit from the laptop, where the notebooks are rebuilt. Do not commit on t
 the cluster clone is a worker, and the record of what ran is the `.job` file plus the commit
 hash each job echoes into its log.
 
+**One trap, and it will happen on the second sync.** `results/` is tracked in git *and* is
+where the cluster writes. Committing a cluster-produced file from the laptop makes the next
+`git pull` on the cluster abort:
+
+```
+error: The following untracked working tree files would be overwritten by merge:
+        results/localize/butadiene_cas4-4_centre1.json
+```
+
+The file is not in danger — it is the same file, now committed — so the fix is to drop the
+cluster's untracked copy, but only after checking it really is identical:
+
+```bash
+git fetch -q origin
+git status --porcelain | awk '$1=="??"{print $2}' | while read -r f; do
+    git cat-file -e "origin/main:$f" 2>/dev/null || continue
+    if [ "$(md5sum < "$f" | cut -d' ' -f1)" = "$(git show "origin/main:$f" | md5sum | cut -d' ' -f1)" ]; then
+        rm "$f"                      # already in origin/main, byte for byte
+    else
+        echo "KEPT $f (differs from origin/main)"
+    fi
+done
+git pull --ff-only
+```
+
+A file that differs is kept and reported, because that means the cluster recomputed something
+the laptop also has — which is a result to look at, not a conflict to clear.
+
 ### Watching a run
 
 Every driver writes a timestamped log to **`logs/<job>.log`** inside the repository (gitignored),
