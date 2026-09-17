@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --mem=4G                       # measured peak 593 MB; see localize.job on why small
 #SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
 #SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
 #SBATCH --mail-type=NONE
@@ -40,10 +40,11 @@
 # bracket rather than graze. It is a choice of centre, not an assumed answer: if the
 # degeneracy is elsewhere the bisection reports a different radius or refuses.
 #
-# Sizing, measured rather than extrapolated: a cold CAS(12,12) point took 276 s on node022
-# against 127 s on the laptop, and the CAS(2,2) localization spent 2.0 h for three centres at
-# 3.5 s/point. That puts one centre near 40-60 h. Three days per task leaves headroom, and if
-# a task is killed anyway the record is written after every centre and resumes.
+# Sizing, measured rather than extrapolated: a cold CAS(12,12) point took 276 s inside a loop
+# and 349 s from a cold RHF start on node022, against 127 s on the laptop -- the node is 2.7x
+# slower per point at every active space tested. The laptop's CAS(2,2) localization spent
+# 2.0 h over three centres at 3.5 s/point, which puts one centre here near 40-60 h. Three days
+# per task leaves headroom, and a killed task resumes from its saved record.
 
 set -euo pipefail
 

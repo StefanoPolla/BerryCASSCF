@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=64G
+#SBATCH --mem=16G
 #SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
 #SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
 #SBATCH --mail-type=NONE
