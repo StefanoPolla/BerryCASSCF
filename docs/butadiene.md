@@ -4,7 +4,8 @@
 but not *stable* until CAS(10,10). Butadiene is the follow-up, chosen because it should fail for
 a different and more fundamental reason.
 
-Narrative with figures: `notebooks/active_space_study.ipynb` (final section).
+Narrative with figures: `notebooks/butadiene_ladder.ipynb`. The localization method it
+uses is explained in `notebooks/locating_intersections.ipynb`.
 Reproduce: `python examples/search_butadiene_ci.py` then `python examples/run_butadiene_study.py scan` / `... berry`.
 
 ## Why butadiene
