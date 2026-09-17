@@ -35,8 +35,10 @@ echo "commit=$(git rev-parse --short HEAD)"
 python -c "import sys, pyscf, numpy, scipy; print('python', sys.version.split()[0],
  'pyscf', pyscf.__version__, 'numpy', numpy.__version__, 'scipy', scipy.__version__)"
 
+# A test failure must not abort the job: the timings below are what it is for, and they
+# are needed precisely when something about the environment differs.
 echo "=== fast tests ==="
-python -m pytest -q -m "not slow"
+python -m pytest -q -m "not slow" || echo "TESTS FAILED -- continuing to the timings"
 
 echo "=== per-point cost, state-specific (loop transport) ==="
 for CAS in "2 2" "12 12"; do

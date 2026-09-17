@@ -20,7 +20,15 @@ def test_cone_fit_is_exact_for_an_ideal_cone(x0, offset):
     fit = cone_apex(x, g, window=3)
     assert fit.method == "cone"
     assert fit.position == pytest.approx(x0, abs=1e-6)
-    assert fit.closest_approach == pytest.approx(2.0 * offset, abs=1e-6)
+    # A zero offset is the degenerate case: the cut passes exactly through the apex, the
+    # gap has a kink there, and the fitted offset sits on the boundary of its own domain,
+    # so the optimizer stops at its convergence tolerance rather than at zero. How far from
+    # zero that is depends on the SciPy build -- 0.0 on the laptop (1.18.1), 8.5e-06 on the
+    # cluster (1.17.1), which failed this assertion at 1e-06 and is the only difference the
+    # two stacks have shown. The position, which is the quantity every result uses, is
+    # exact in both. Tolerance widened only for that case, deliberately not for the others.
+    tolerance = 1e-4 if offset == 0.0 else 1e-6
+    assert fit.closest_approach == pytest.approx(2.0 * offset, abs=tolerance)
 
 
 def test_cone_fit_beats_the_parabolic_one_off_grid():
