@@ -56,7 +56,7 @@ def main() -> int:
         if os.path.exists(path) and not args.force:
             res = ScanResult.load(path)
             if np.isfinite(res.e_states).all():
-                print(f"[skip] {os.path.basename(path)}")
+                print(f"SKIP: {os.path.basename(path)}")
                 summary.append((name, cx, cy, fixed, res))
                 continue
         lo_x, hi_x, lo_y, hi_y = region.bounding_box()

@@ -62,7 +62,9 @@ GRID = (5, 13)                 # tw in {70, 80, 90, 100, 110}; pyr in 5 deg step
 # is where every other rung's two-dimensional minimum lies and which carries the only quantity
 # compared across the ladder -- the refined pyr position. The cost is that its tw is assumed
 # rather than resolved; see docs/butadiene.md.
-GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (1, 13)}
+# CAS(14,14) is 11.8 M determinants against CAS(12,12)'s 853 k, so it gets the same
+# single-row treatment for the same reason, with even less room to argue.
+GRID_OVERRIDE: dict[tuple[int, int], tuple[int, int]] = {(12, 12): (1, 13), (14, 14): (1, 13)}
 
 # Local refinement: a fine cut in pyr around each rung's coarse estimate, on which the cone model
 # actually holds. The coarse grid is 5 deg and the surfaces stop being conical well before that,
@@ -97,6 +99,17 @@ def scan_path(ne: int, ncas: int) -> str:
 
 def berry_path(loop: str, ne: int, ncas: int, n: int) -> str:
     return os.path.join(RESULT_DIR, f"butadiene_{loop}_cas{ne}-{ncas}_N{n}.json")
+
+
+def cas_list(args, default: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """Active spaces for a stage: ``--cas 12,12 14,14`` if given, else the stage's ladder.
+
+    Lets a single rung be run on its own -- which is how the expensive ones reach a cluster,
+    one active space per job -- without editing the ladders that define the study.
+    """
+    if not args.cas:
+        return list(default)
+    return [tuple(int(v) for v in spec.split(",")) for spec in args.cas]
 
 
 def geom_fn():
@@ -155,7 +168,7 @@ def do_scans(args) -> int:
         if os.path.exists(path) and not args.force:
             res = ScanResult.load(path)
             if np.isfinite(res.e_states).all():
-                print(f"[skip] CAS({ne},{ncas}): pyr = {refined_pyr(res):7.2f}   "
+                print(f"SKIP: CAS({ne},{ncas}): pyr = {refined_pyr(res):7.2f}   "
                       f"min {res.min_gap_point()[2]*1e3:8.3f} mHa")
                 continue
         g = grid_for(ne, ncas)
@@ -201,18 +214,20 @@ def do_berry(args) -> int:
         centre = (90.0, refined_pyr(ScanResult.load(path)))
     fn = geom_fn()
     loops = study_loops(centre)
+    if args.loops:
+        loops = {k: v for k, v in loops.items() if k in set(args.loops)}
     print(f"Loops centred on (tw, pyr) = ({centre[0]:.2f}, {centre[1]:.2f}), "
           f"radius {LOOP_RADIUS}")
     for name, lp in loops.items():
         print(f"  {name}: centre ({lp.centre[0]:7.2f}, {lp.centre[1]:7.2f})  "
               f"encloses: {lp.encloses(*centre)}")
 
-    for ne, ncas in BERRY_LADDER:
+    for ne, ncas in cas_list(args, BERRY_LADDER):
         for name, loop in loops.items():
-            for n in NPOINTS:
+            for n in (args.npoints or NPOINTS):
                 path = berry_path(name, ne, ncas, n)
                 if berry_record_exists(path) and not args.force:
-                    print(f"[skip] {os.path.basename(path)}")
+                    print(f"SKIP: {os.path.basename(path)}")
                     continue
                 print(f"\n=== {name}  CAS({ne},{ncas})/{args.basis}  N={n} ===")
                 try:
@@ -249,14 +264,13 @@ def do_loopscan(args) -> int:
     os.makedirs(RESULT_DIR, exist_ok=True)
     fn = geom_fn()
     nx, ny = args.grid
-    for spec in args.cas:
-        ne, ncas = (int(v) for v in spec.split(","))
+    for ne, ncas in cas_list(args, [(12, 12)]):
         path = loopscan_path(ne, ncas, nx, ny)
         if os.path.exists(path) and not args.force:
             res = ScanResult.load(path)
             if np.isfinite(res.e_states).all():
                 t, pyr, g = res.min_gap_point()
-                print(f"[skip] CAS({ne},{ncas}) loop scan: min {g*1e3:.3f} mHa at "
+                print(f"SKIP: CAS({ne},{ncas}) loop scan: min {g*1e3:.3f} mHa at "
                       f"(tw={t:.2f}, pyr={pyr:.2f})")
                 continue
         region = Loop("B_x_area", (90.0, 101.85), LOOP_RADIUS)
@@ -286,14 +300,14 @@ def do_refine(args) -> int:
 
     os.makedirs(RESULT_DIR, exist_ok=True)
     fn = geom_fn()
-    for ne, ncas in CAS_LADDER:
+    for ne, ncas in cas_list(args, CAS_LADDER):
         coarse_p = scan_path(ne, ncas)
         if not os.path.exists(coarse_p):
-            print(f"[skip] CAS({ne},{ncas}): no coarse scan")
+            print(f"SKIP: CAS({ne},{ncas}): no coarse scan")
             continue
         coarse = ScanResult.load(coarse_p)
         if not np.isfinite(coarse.e_states).all():
-            print(f"[skip] CAS({ne},{ncas}): coarse scan incomplete")
+            print(f"SKIP: CAS({ne},{ncas}): coarse scan incomplete")
             continue
         i = int(np.unravel_index(np.nanargmin(coarse.gap), coarse.gap.shape)[0])
         tw0 = float(coarse.alphas[i])
@@ -302,7 +316,7 @@ def do_refine(args) -> int:
         # --- fine cut in pyr, at the coarse row's tw -------------------------------
         path = refine_path(ne, ncas, "pyr")
         if os.path.exists(path) and not args.force:
-            print(f"[skip] {os.path.basename(path)}")
+            print(f"SKIP: {os.path.basename(path)}")
         else:
             region = Loop("refine", (tw0, seed), (0.0, REFINE_HALFWIDTH))
             n = int(2 * REFINE_HALFWIDTH / REFINE_STEP) + 1
@@ -325,7 +339,7 @@ def do_refine(args) -> int:
             continue
         path = refine_path(ne, ncas, "tw")
         if os.path.exists(path) and not args.force:
-            print(f"[skip] {os.path.basename(path)}")
+            print(f"SKIP: {os.path.basename(path)}")
             continue
         fine = ScanResult.load(refine_path(ne, ncas, "pyr"))
         pyr0 = cone_apex(fine.phis, fine.gap[0] * 1e3, window=None).position
@@ -347,13 +361,18 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("stage", choices=["scan", "refine", "berry", "loopscan"])
-    ap.add_argument("--cas", nargs="*", default=["12,12"],
-                    help="active spaces for the loopscan stage, as 'nelec,norb'")
+    ap.add_argument("--cas", nargs="*", default=None,
+                    help="active spaces to run, as 'nelec,norb'; default is the stage's "
+                         "ladder (CAS_LADDER, BERRY_LADDER, or 12,12 for loopscan)")
+    ap.add_argument("--npoints", nargs="*", type=int, default=None,
+                    help="loop discretizations for the berry stage (default 13 21)")
     ap.add_argument("--grid", nargs=2, type=int, default=[5, 5], metavar=("N_TW", "N_PYR"),
                     help="grid for the loopscan stage")
     ap.add_argument("--tw-check", nargs="*", default=["8,8", "12,12"],
                     help="active spaces for which to also scan tw (default: 8,8 and 12,12)")
     ap.add_argument("--basis", default=DEFAULT_BASIS)
+    ap.add_argument("--loops", nargs="*", default=None,
+                    help="loop names for the berry stage (default: all three)")
     ap.add_argument("--centre", nargs=2, type=float, default=None, metavar=("TW", "PYR"))
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--quiet", action="store_true")

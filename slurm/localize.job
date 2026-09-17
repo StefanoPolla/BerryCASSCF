@@ -1,0 +1,51 @@
+#!/bin/bash
+#SBATCH --job-name=bc-localize
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=1-12:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-3
+#
+# Butadiene: locate what loop transport encircles, one active space per task.
+# docs/todo.md §9; method in notebooks/locating_intersections.ipynb.
+#
+#   cd slurm && sbatch localize.job
+#
+# Why: the state-specific/state-averaged offset has been *measured* only at CAS(2,2) for
+# butadiene (rho = 0.5385 +/- 0.0843 against the gap scan's 0.2121). One rung is an
+# observation; a ladder is a result, and the rungs are where the two methods disagree.
+#
+# Sizing: CAS(2,2) took 2.0 h for three centres on a laptop. Scaled by the measured
+# per-point cost of a state-specific solve (CAS(4,4) 14.0 s, (6,6) 3.8 s, (8,8) 5.3 s,
+# (10,10) 12.4 s against CAS(2,2)'s 3.5 s) that is 2-8 h per rung. The 36 h request is
+# deliberately generous: a bisection probe that lands on the degeneracy costs several times
+# a probe that does not, and walltime on a 7-day partition is nearly free.
+
+set -euo pipefail
+
+# Expensive rungs first, so the tail of the array is the cheap one.
+NE_VALUES=(4 10 8 6)
+NCAS_VALUES=(4 10 8 6)
+NE=${NE_VALUES[$SLURM_ARRAY_TASK_ID]}
+NCAS=${NCAS_VALUES[$SLURM_ARRAY_TASK_ID]}
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/run_localization.py butadiene --cas $NE $NCAS --centres 3"
+python -u examples/run_localization.py butadiene --cas "$NE" "$NCAS" --centres 3

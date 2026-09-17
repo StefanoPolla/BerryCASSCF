@@ -40,7 +40,7 @@ from __future__ import annotations
 
 import math
 import time
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, asdict, field, fields as dataclass_fields
 from typing import Callable, Sequence
 
 import numpy as np
@@ -131,6 +131,34 @@ class BisectionResult:
                 f"rho = {self.rho:.4f} +- {self.rho_uncertainty:.4f}  "
                 f"[0 at {self.lo:.4f}, pi at {self.hi:.4f}]  "
                 f"{len(self.probes)} probes, {self.total_micro} micro")
+
+
+def restore_bisection(record: dict) -> BisectionResult:
+    """Rebuild a finished bisection from the dict :meth:`BisectionResult.to_dict` wrote.
+
+    ``rho`` and ``rho_uncertainty`` are properties rather than fields and are dropped; the
+    probes stay as plain dicts, which is all that triangulation and reporting read.
+    """
+    known = {f.name for f in dataclass_fields(BisectionResult)}
+    return BisectionResult(**{k: v for k, v in record.items() if k in known})
+
+
+def resume_bisections(saved: Sequence[dict], centres) -> list[BisectionResult]:
+    """The leading centres of ``centres`` that ``saved`` already covers.
+
+    A bisection is hours per centre and days at a large active space, so a run that is
+    killed part-way must not start over. Saved centres are matched against the requested
+    list *position by position*, and the first mismatch ends the match: a record made with
+    different centres is not partially reusable, because the ellipses it measured belong to
+    a different construction.
+    """
+    done: list[BisectionResult] = []
+    for centre, record in zip(centres, saved):
+        stored = record.get("centre")
+        if stored is None or not np.allclose(stored, centre, atol=1e-6):
+            break
+        done.append(restore_bisection(record))
+    return done
 
 
 def evaluate_radius(

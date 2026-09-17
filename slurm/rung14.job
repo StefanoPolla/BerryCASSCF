@@ -1,0 +1,63 @@
+#!/bin/bash
+#SBATCH --job-name=bc-rung14
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=3-00:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-1
+#
+# One more rung on the butadiene ladder: CAS(14,14). docs/todo.md §8.
+#
+#   cd slurm && sbatch rung14.job
+#
+# Task 0  gap scan on the tw = 90 row, then the fine pyr cut -- where this rung puts the
+#         state-averaged intersection, and whether the 1.5 mHa floor seen at CAS(12,12)
+#         persists or was particular to that rung.
+# Task 1  loop transport on all three loops at N = 13 and 21 -- whether the phase is still
+#         pi one rung up. Independent of task 0: the loops are fixed across the ladder by
+#         construction, so nothing here waits for the scan.
+#
+# Why it is queued and not waited for. Butadiene has no exact in-basis reference (full
+# valence is CAS(22,22)) and the ladder has not settled over six rungs -- the top two differ
+# by 2.9 deg. One more rung shows whether the position is settling or still wandering; it
+# does not settle the §3 disagreement, which is what localize_cas12.job is for. Per
+# docs/todo.md §8 this is explicitly last: take whatever it returns, and let the conclusions
+# stand on the rest.
+#
+# Sizing, and its uncertainty. CAS(14,14) is 11.8 M determinants against CAS(12,12)'s 853 k.
+# If cost tracks determinant count that is ~23 min per state-specific point and ~50 min per
+# state-averaged one, giving ~13 h for task 0 and ~13 h for task 1. That extrapolation is
+# the weakest number in this directory: run smoke.job with --cas 14 14 to replace it with a
+# measurement. Three days is requested so that a factor-of-two surprise is survivable, and
+# the Berry runs save one file per (loop, N) so a timeout loses only the run in flight.
+
+set -euo pipefail
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+
+if [ "${SLURM_ARRAY_TASK_ID:-0}" -eq 0 ]; then
+    echo "python -u examples/run_butadiene_study.py scan --cas 14,14"
+    python -u examples/run_butadiene_study.py scan --cas 14,14
+    echo "python -u examples/run_butadiene_study.py refine --cas 14,14"
+    python -u examples/run_butadiene_study.py refine --cas 14,14
+else
+    echo "python -u examples/run_butadiene_study.py berry --cas 14,14 --npoints 13 21"
+    python -u examples/run_butadiene_study.py berry --cas 14,14 --npoints 13 21
+fi

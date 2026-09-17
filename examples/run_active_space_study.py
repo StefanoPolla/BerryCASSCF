@@ -103,7 +103,7 @@ def do_scans(args) -> int:
             res = ScanResult.load(path)
             if np.isfinite(res.e_states).all():
                 t, p, g = res.min_gap_point()
-                print(f"[skip] CAS({ne},{ncas}): min {g*1e3:8.3f} mHa at "
+                print(f"SKIP: CAS({ne},{ncas}): min {g*1e3:8.3f} mHa at "
                       f"(tau={t:6.2f}, phi={p:6.2f})   mirror asymmetry "
                       f"{mirror_asymmetry(res):.2e} mHa")
                 continue
@@ -194,7 +194,7 @@ def do_berry(args) -> int:
             for n in NPOINTS:
                 path = berry_path(name, ne, ncas, n)
                 if berry_record_exists(path) and not args.force:
-                    print(f"[skip] {os.path.basename(path)}")
+                    print(f"SKIP: {os.path.basename(path)}")
                     continue
                 print(f"\n=== {name}  CAS({ne},{ncas})/{args.basis}  N={n} ===")
                 try:

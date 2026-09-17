@@ -127,7 +127,7 @@ def main() -> int:
     spec = SYSTEMS[args.system]
     out = os.path.join(ROOT, "results", "adaptive", f"{args.system}_stepping.json")
     if os.path.exists(out) and not args.force:
-        print(f"[skip] {os.path.relpath(out, ROOT)} exists; --force to redo")
+        print(f"SKIP: {os.path.relpath(out, ROOT)} exists; --force to redo")
         return 0
 
     cont = ContinuationConfig()

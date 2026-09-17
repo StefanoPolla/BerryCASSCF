@@ -56,7 +56,7 @@ def main() -> int:
             if os.path.exists(path) and not args.force:
                 res = ScanResult.load(path)
                 if res.converged.all():
-                    print(f"[skip] {os.path.basename(path)}")
+                    print(f"SKIP: {os.path.basename(path)}")
                     print(res.summary())
                     continue
             cas = CasConfig(basis=args.basis, ncas=ncas, nelecas=ne)

@@ -59,7 +59,7 @@ def main() -> int:
             for n in args.npoints:
                 path = record_path(loop_name, ne, ncas, n)
                 if berry_record_exists(path) and not args.force:
-                    print(f"[skip] {os.path.basename(path)}")
+                    print(f"SKIP: {os.path.basename(path)}")
                     continue
                 cas = CasConfig(basis=args.basis, ncas=ncas, nelecas=ne)
                 print(f"\n=== {loop_name}  {cas.cas_label}/{args.basis}  N={n} ===")

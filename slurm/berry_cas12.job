@@ -1,0 +1,49 @@
+#!/bin/bash
+#SBATCH --job-name=bc-berry12
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=0-16:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-2
+#
+# Butadiene loop transport at CAS(12,12), one loop per task, three discretizations each.
+#
+#   cd slurm && sbatch berry_cas12.job
+#
+# Why: docs/findings.md §3 rests on B_x returning pi at CAS(12,12) where the gap scan finds
+# nothing below 1.5 mHa. Two things that claim needs and does not have:
+#   * the CONTROL loops at the same rung. Every other rung has them; CAS(12,12) has only the
+#     enclosing loop, so "pi at CAS(12,12)" currently has nothing to be contrasted with. If a
+#     control also returned pi, the result would be a solver artifact rather than topology.
+#   * a third discretization. The stability criterion wants agreement across N; B_x has
+#     N = 13 and 21 only, and N = 31 is the cheapest way to make it three.
+# Runs already saved are skipped, so this adds exactly the missing runs.
+#
+# Sizing: 97.6 s per state-specific point measured at this rung, so 13+21+31 = 65 points is
+# ~1.8 h per loop. 16 h covers a threefold underestimate.
+
+set -euo pipefail
+
+LOOPS=(B_x B_1 B_2)
+LOOP=${LOOPS[$SLURM_ARRAY_TASK_ID]}
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/run_butadiene_study.py berry --cas 12,12 --loops $LOOP --npoints 13 21 31"
+python -u examples/run_butadiene_study.py berry --cas 12,12 --loops "$LOOP" --npoints 13 21 31

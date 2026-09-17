@@ -5,6 +5,7 @@ is easy to get subtly wrong is the geometry that turns transition radii into a p
 These tests pin the geometry down on synthetic inputs where the answer is exact.
 """
 
+import json
 import math
 
 import pytest
@@ -13,6 +14,8 @@ from berrycasscf.localize import (
     BisectionResult,
     _circle_intersections,
     elliptical_radius,
+    restore_bisection,
+    resume_bisections,
     triangulate,
 )
 
@@ -150,3 +153,47 @@ def test_a_misfit_larger_than_the_precision_is_reported_inconsistent():
     tri = triangulate(results)
     assert tri.residual_over_uncertainty > 1.0
     assert tri.consistent is False
+
+
+# --- resuming a killed run ------------------------------------------------------------
+#
+# A localization at a large active space runs for days, and the record used to be written
+# only after the last centre, so a walltime kill lost all of it. These pin the round trip
+# that makes a resubmission continue instead of starting over.
+
+def test_a_saved_bisection_round_trips():
+    original = _bisection((90.0, 101.85), rho=0.5385, shape=(12.0, 18.0), half_width=0.0843)
+    restored = restore_bisection(original.to_dict())
+    # In memory the centre is a tuple; through JSON it comes back a list. Both must work,
+    # since a resumed cluster job always takes the JSON path.
+    assert tuple(restored.centre) == (90.0, 101.85)
+    assert tuple(restore_bisection(json.loads(json.dumps(original.to_dict()))).centre) \
+        == (90.0, 101.85)
+    assert restored.rho == pytest.approx(0.5385)
+    assert restored.rho_uncertainty == pytest.approx(0.0843)
+    assert restored.bracketed
+    # The derived keys to_dict() adds must not be mistaken for constructor fields.
+    assert restore_bisection({**original.to_dict(), "rho": 999.0}).rho == pytest.approx(0.5385)
+
+
+def test_resume_takes_the_leading_centres_that_match():
+    centres = [(90.0, 101.85), (90.0, 90.0), (99.0, 110.0)]
+    saved = [_bisection(c, rho=0.5).to_dict() for c in centres[:2]]
+    assert len(resume_bisections(saved, centres)) == 2
+    assert len(resume_bisections([], centres)) == 0
+
+
+def test_resume_stops_at_the_first_changed_centre():
+    """A record made with different centres measured different ellipses; it is not reusable."""
+    centres = [(90.0, 101.85), (90.0, 90.0), (99.0, 110.0)]
+    saved = [_bisection(centres[0], rho=0.5).to_dict(),
+             _bisection((85.0, 95.0), rho=0.5).to_dict()]
+    assert len(resume_bisections(saved, centres)) == 1
+
+
+def test_resume_ignores_extra_saved_centres():
+    """Asking for fewer centres than are saved uses only the ones asked for."""
+    centres = [(90.0, 101.85), (90.0, 90.0)]
+    saved = [_bisection(c, rho=0.5).to_dict()
+             for c in centres + [(99.0, 110.0)]]
+    assert len(resume_bisections(saved, centres[:1])) == 1

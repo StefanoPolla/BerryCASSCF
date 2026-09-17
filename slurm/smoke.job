@@ -1,0 +1,53 @@
+#!/bin/bash
+#SBATCH --job-name=bc-smoke
+#SBATCH --output=./out/%x-%j.out
+#SBATCH --error=./err/%x-%j.err
+#SBATCH --time=0-00:40:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=16G
+#SBATCH --partition=cpu-short         # SITE: ALICE; 4 h cap, usually the shortest queue
+#SBATCH --mail-type=NONE
+#
+# Validate the environment on a compute node and measure the per-point CASSCF cost that
+# every other job in this directory is sized from. Run this first on a new machine.
+#
+#   cd slurm && sbatch smoke.job
+#
+# Prints: the fast test suite, then one state-specific and one state-averaged solve at the
+# two active spaces the expensive jobs use. Compare against docs/compute.md.
+
+set -euo pipefail
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+python -c "import sys, pyscf, numpy, scipy; print('python', sys.version.split()[0],
+ 'pyscf', pyscf.__version__, 'numpy', numpy.__version__, 'scipy', scipy.__version__)"
+
+echo "=== fast tests ==="
+python -m pytest -q -m "not slow"
+
+echo "=== per-point cost, state-specific (loop transport) ==="
+for CAS in "2 2" "12 12"; do
+    echo "python -u examples/bench_point.py butadiene --cas $CAS"
+    python -u examples/bench_point.py butadiene --cas $CAS
+done
+
+echo "=== per-point cost, state-averaged (gap scan) ==="
+echo "python -u examples/bench_point.py butadiene --cas 12 12 --sa"
+python -u examples/bench_point.py butadiene --cas 12 12 --sa
+
+echo "=== single-threaded reference, for the threading factor ==="
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+    python -u examples/bench_point.py butadiene --cas 12 12

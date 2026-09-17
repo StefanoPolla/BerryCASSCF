@@ -38,9 +38,14 @@ import numpy as np
 from berrycasscf import CasConfig, ContinuationConfig
 from berrycasscf.butadiene import butadiene_geom
 from berrycasscf.geometry import formaldimine_geom
-from berrycasscf.localize import bisect_radius, elliptical_radius, triangulate
+from berrycasscf.localize import (
+    bisect_radius,
+    elliptical_radius,
+    resume_bisections,
+    triangulate,
+)
 from berrycasscf.runlog import JobLog
-from berrycasscf.store import save_json
+from berrycasscf.store import load_json, save_json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -86,6 +91,11 @@ def main() -> int:
     ap.add_argument("system", choices=sorted(SYSTEMS))
     ap.add_argument("--cas", nargs=2, type=int, default=(2, 2), metavar=("NE", "NCAS"))
     ap.add_argument("--centres", type=int, default=3, help="how many centres to use")
+    ap.add_argument("--centre-xy", nargs="*", default=None, metavar="X,Y",
+                    help="override the centres, e.g. --centre-xy 90,101.85 90,90 99,110. "
+                         "A centre is only useful if its full-size loop encloses the target "
+                         "without grazing it: one that grazes is refused and costs a bisection "
+                         "for nothing (docs/todo.md §9).")
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
 
@@ -93,13 +103,19 @@ def main() -> int:
     ne, ncas = args.cas
     tag = f"{args.system}_cas{ne}-{ncas}"
     out = os.path.join(ROOT, "results", "localize", f"{tag}.json")
-    if os.path.exists(out) and not args.force:
-        print(f"[skip] {os.path.relpath(out, ROOT)} exists; --force to redo")
+    existing = load_json(out) if os.path.exists(out) else None
+    # Records written before incremental saving carry no flag and are complete by
+    # construction, so a missing key means complete.
+    if existing is not None and existing.get("complete", True) and not args.force:
+        print(f"SKIP: {os.path.relpath(out, ROOT)} exists; --force to redo")
         return 0
 
     cas = CasConfig(basis=spec["basis"], ncas=ncas, nelecas=ne)
     cont = ContinuationConfig()
-    centres = spec["centres"][: args.centres]
+    if args.centre_xy:
+        centres = [tuple(float(v) for v in c.split(",")) for c in args.centre_xy]
+    else:
+        centres = spec["centres"][: args.centres]
     shape = spec["shape"]
     ref = spec["reference"]
 
@@ -115,8 +131,27 @@ def main() -> int:
 
     log = JobLog(f"localize_{tag}", total=len(centres) * spec["max_probes"])
     t0 = time.time()
-    results = []
+    saved = (existing or {}).get("bisections", [])
+    results = [] if args.force else resume_bisections(saved, centres)
+    if results:
+        print(f"  resuming: {len(results)} of {len(centres)} centres already saved")
+        for r in results:
+            print("    " + r.summary())
+
+    def payload_now(complete: bool) -> dict:
+        return {
+            "system": args.system, "cas": [ne, ncas], "basis": spec["basis"],
+            "shape": list(shape), "centres": [list(c) for c in centres],
+            "reference": list(ref) if ref else None,
+            "reference_note": spec["reference_note"],
+            "bisections": [r.to_dict() for r in results],
+            "complete": complete,
+            "wall_time": time.time() - t0,
+        }
+
     for i, centre in enumerate(centres):
+        if i < len(results):
+            continue
         print(f"--- centre {i+1}/{len(centres)}: {centre} ---")
         res = bisect_radius(
             centre, shape, cas=cas, cont=cont, geom_fn=spec["geom_fn"],
@@ -125,15 +160,14 @@ def main() -> int:
             name=f"{args.system[:3].upper()}{i}", progress=log,
         )
         results.append(res)
+        # Save before starting the next centre: hours of bisection should not depend on the
+        # job surviving to the end.
+        save_json(payload_now(complete=len(results) == len(centres)), out)
+        print(f"    saved {len(results)}/{len(centres)} centres -> "
+              f"{os.path.relpath(out, ROOT)}")
         print()
 
-    payload = {
-        "system": args.system, "cas": [ne, ncas], "basis": spec["basis"],
-        "shape": list(shape), "reference": list(ref) if ref else None,
-        "reference_note": spec["reference_note"],
-        "bisections": [r.to_dict() for r in results],
-        "wall_time": time.time() - t0,
-    }
+    payload = payload_now(complete=True)
 
     print("=" * 78)
     for r in results:

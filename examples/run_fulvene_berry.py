@@ -64,7 +64,7 @@ def main() -> int:
             tag = f"fulvene_{name}_cas{ne}-{ncas}_{args.basis.replace('*','s')}_N{n}"
             path = os.path.join(RESULT_DIR, tag + ".json")
             if berry_record_exists(path) and not args.force:
-                print(f"[skip] {os.path.basename(path)}")
+                print(f"SKIP: {os.path.basename(path)}")
                 continue
             print(f"\n=== {name}  CAS({ne},{ncas})/{args.basis}  N={n} ===")
             try:
