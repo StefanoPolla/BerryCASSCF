@@ -525,73 +525,108 @@ against state-averaged.
 code(r"""
 LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
 
-def gap_scan_point(ne, ncas):
-    # where the direct 2D search puts this rung's intersection
-    gm = os.path.join(ROOT, "results", "butadiene", "gap_minimum_search.json")
-    if not os.path.exists(gm):
+def gap_scan_point(system, ne, ncas):
+    # Where the state-averaged gap scan puts this rung's intersection. The two systems
+    # record it differently: butadiene has a direct 2D search, ethylene a grid scan whose
+    # phi is refined with the cone model (the same number quoted in docs/findings.md §1).
+    if system == "butadiene":
+        gm = os.path.join(ROOT, "results", "butadiene", "gap_minimum_search.json")
+        if not os.path.exists(gm):
+            return None
+        for r in json.load(open(gm))["runs"]:
+            if tuple(r["cas"]) == (ne, ncas):
+                return tuple(r["found"])
         return None
-    for r in json.load(open(gm))["runs"]:
-        if tuple(r["cas"]) == (ne, ncas):
-            return tuple(r["found"])
-    return None
+    from berrycasscf.refine import cone_apex
+    from berrycasscf.scan import ScanResult
+    hits = sorted(glob.glob(os.path.join(ROOT, "results", "ethylene",
+                                         f"ethylene_scan_cas{ne}-{ncas}_*.npz")))
+    if not hits:
+        return None
+    r = ScanResult.load(hits[0])
+    i = int(np.nanargmin(np.nanmin(r.gap, axis=1)))
+    return (float(r.alphas[i]), float(cone_apex(r.phis, r.gap[i] * 1e3, window=3).position))
 
-rows = []
-for ne, ncas in LADDER:
-    d = load(f"butadiene_cas{ne}-{ncas}.json")
-    if not d:
-        continue
-    shape = tuple(d["shape"])
-    b0 = d["bisections"][0]
-    sa = gap_scan_point(ne, ncas)
-    rows.append({
-        "cas": f"({ne},{ncas})",
-        "rho": b0.get("rho"), "unc": b0.get("rho_uncertainty"),
-        "rho_sa": elliptical_radius(sa, tuple(b0["centre"]), shape) if sa else None,
-        "sa": sa, "shape": shape, "centre": tuple(b0["centre"]),
-        "n_bracketed": sum(1 for b in d["bisections"] if b.get("rho") is not None),
-        "tri": d.get("triangulation"),
-        "micro": d.get("total_micro"), "hours": d.get("wall_time", 0) / 3600,
-    })
+def ladder_rows(system):
+    rows = []
+    for ne, ncas in LADDER:
+        d = load(f"{system}_cas{ne}-{ncas}.json")
+        if not d:
+            continue
+        shape = tuple(d["shape"])
+        b0 = d["bisections"][0]
+        sa = gap_scan_point(system, ne, ncas)
+        ref = tuple(d["reference"]) if d.get("reference") else None
+        rows.append({
+            "cas": f"({ne},{ncas})",
+            "rho": b0.get("rho"), "unc": b0.get("rho_uncertainty"),
+            "rho_sa": elliptical_radius(sa, tuple(b0["centre"]), shape) if sa else None,
+            "rho_ref": elliptical_radius(ref, tuple(b0["centre"]), shape) if ref else None,
+            "sa": sa, "ref": ref, "shape": shape, "centre": tuple(b0["centre"]),
+            "n_bracketed": sum(1 for b in d["bisections"] if b.get("rho") is not None),
+            "tri": d.get("triangulation"),
+            "micro": d.get("total_micro"), "hours": d.get("wall_time", 0) / 3600,
+        })
+    return rows
 
-if not rows:
-    print("no localization records yet; run slurm/localize.job and merge each rung")
-else:
+SYSTEM = "butadiene"
+rows = ladder_rows(SYSTEM)
+
+def show(rows, system):
+    if not rows:
+        print(f"no {system} localization records yet; run the ladder and merge each rung")
+        return
+    has_ref = any(r["rho_ref"] is not None for r in rows)
+    print(f"{system.upper()}")
     print(f"{'CAS':>8} {'rho measured':>20} {'rho from gap scan':>18} "
-          f"{'difference':>11} {'agrees?':>9} {'centres':>8}")
-    print("-" * 80)
+          f"{'difference':>11} {'agrees?':>9}" + (f" {'rho reference':>14}" if has_ref else ""))
+    print("-" * (80 + (15 if has_ref else 0)))
     for r in rows:
         meas = ("not bracketed" if r["rho"] is None
                 else f"{r['rho']:.4f} +- {r['unc']:.4f}")
         pred = "n/a" if r["rho_sa"] is None else f"{r['rho_sa']:.4f}"
+        tail = ""
+        if has_ref:
+            tail = f" {'n/a':>14}" if r["rho_ref"] is None else f" {r['rho_ref']:>14.4f}"
         if r["rho"] is None or r["rho_sa"] is None:
-            print(f"{r['cas']:>8} {meas:>20} {pred:>18} {'':>11} {'':>9} "
-                  f"{r['n_bracketed']:>8}")
+            print(f"{r['cas']:>8} {meas:>20} {pred:>18} {'':>11} {'':>9}{tail}")
             continue
         diff = r["rho_sa"] - r["rho"]
         inside = abs(diff) <= r["unc"]
         print(f"{r['cas']:>8} {meas:>20} {pred:>18} {diff:>+11.4f} "
-              f"{('yes' if inside else 'NO'):>9} {r['n_bracketed']:>8}")
+              f"{('yes' if inside else 'NO'):>9}{tail}")
     print()
     print("'agrees?' asks whether the gap scan's intersection lies inside the measured bracket.")
-    print("Both columns are elliptical radii about the same centre, in units of the loop")
-    print("semi-axes, so a difference of 0.1 is 1.2 deg in tw and 1.8 deg in pyr.")
+    print("All columns are elliptical radii about the same centre, in units of the loop")
+    print("semi-axes; with a (12, 18) loop, 0.1 is 1.2 deg in the first coordinate and 1.8 in")
+    print("the second. 'rho reference' is where an exact in-basis calculation puts it, which")
+    print("exists for ethylene (full-valence CAS(12,12)) and not for butadiene.")
+
+show(rows, SYSTEM)
 """)
 
 code(r"""
-if rows:
+def plot_ladder(rows, system):
+    if not rows:
+        return
     fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.4))
 
     ax = axes[0]
     xs = np.arange(len(rows))
     meas = np.array([r["rho"] if r["rho"] is not None else np.nan for r in rows])
-    unc  = np.array([r["unc"] if r["unc"] is not None else np.nan for r in rows])
-    sa   = np.array([r["rho_sa"] if r["rho_sa"] is not None else np.nan for r in rows])
+    unc = np.array([r["unc"] if r["unc"] is not None else np.nan for r in rows])
+    sa = np.array([r["rho_sa"] if r["rho_sa"] is not None else np.nan for r in rows])
+    ref = np.array([r["rho_ref"] if r["rho_ref"] is not None else np.nan for r in rows])
     ax.errorbar(xs, meas, yerr=unc, fmt="o", capsize=4, color="tab:red",
                 label="loop transport (state-specific), measured")
     ax.plot(xs, sa, "s--", color="tab:blue", label="gap scan (state-averaged), implied")
-    ax.set_xticks(xs); ax.set_xticklabels([r["cas"] for r in rows])
-    ax.set_xlabel("active space"); ax.set_ylabel(r"$\rho$ about the loop centre")
-    ax.set_title("distance to the degeneracy, measured two ways")
+    if np.isfinite(ref).any():
+        ax.plot(xs, ref, ":", color="k", lw=1.6, label="exact in-basis reference")
+    ax.set_xticks(xs)
+    ax.set_xticklabels([r["cas"] for r in rows])
+    ax.set_xlabel("active space")
+    ax.set_ylabel(r"$\rho$ about the loop centre")
+    ax.set_title(f"{system}: distance to the degeneracy, measured two ways")
     ax.legend(fontsize=8)
 
     ax = axes[1]
@@ -606,16 +641,39 @@ if rows:
                 label=f"{r['cas']} measured")
         if r["sa"]:
             ax.plot(*r["sa"], "*", ms=13, color=col, mec="k", mew=0.6)
+    if rows[0]["ref"]:
+        ax.plot(*rows[0]["ref"], "P", ms=11, color="k", label="exact reference")
     ax.plot(*rows[0]["centre"], "+", ms=11, color="k")
-    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
+    ax.set_xlabel("first coordinate (deg)")
+    ax.set_ylabel("second coordinate (deg)")
     ax.set_title("measured circles (lines) vs gap-scan intersections (stars)")
     ax.legend(fontsize=7, loc="upper right")
     ax.set_aspect("equal")
-    plt.tight_layout(); plt.show()
+    plt.tight_layout()
+    plt.show()
 
     total = sum(r["hours"] for r in rows)
-    print(f"total cost of the ladder: {total:.1f} h over {len(rows)} rungs, "
+    print(f"{system}: {total:.1f} h over {len(rows)} rungs, "
           f"{sum(r['micro'] or 0 for r in rows)} micro-iterations")
+
+plot_ladder(rows, SYSTEM)
+""")
+
+md(r"""
+### Ethylene, where the reference is exact
+
+Butadiene has no exact reference, so a disagreement between the two methods there cannot be
+scored — neither party is known to be right. Ethylene can be scored. Its CAS(12,12) is the **full
+valence space**, everything except the two carbon 1s orbitals, so the intersection position that
+active space gives is exact in this basis; and its ladder is the badly behaved one, accurate at
+CAS(2,2) and displaced by 5–8 degrees in the middle. That combination — an exact answer and a
+ladder that misbehaves — is what `docs/findings.md` §4 says is needed and believed unavailable.
+""")
+
+code(r"""
+eth_rows = ladder_rows("ethylene")
+show(eth_rows, "ethylene")
+plot_ladder(eth_rows, "ethylene")
 """)
 
 md(r"""
