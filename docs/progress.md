@@ -518,3 +518,71 @@ with a true crossing.
 `docs/todo.md` §9: butadiene localization at the rungs where the disagreement is sharpest,
 especially CAS(12,12). That is a cluster job — CAS(2,2) alone took two hours. §10 (mirror pairs)
 and §6 (a gap threshold) are the two open method questions that bear on interpreting it.
+
+---
+
+## 2026-09-18 — The cluster campaign: ALICE jobs submitted
+
+**Implemented.** `slurm/` became five runnable ALICE job scripts plus a bench job, replacing
+the `#### SITE ####` templates for every workload that actually needs a cluster. Site-specific
+lines are marked `# SITE:`. The cluster clone is `~/git_repos/BerryCASSCF` on ALICE (Leiden),
+built on Python 3.11.5 / PySCF 2.14.0 / NumPy 2.4.6 / SciPy 1.17.1.
+
+**Three things the cluster taught us before any science came back.**
+
+1. **The node is 2.7x slower per point than the laptop**, consistently across active spaces:
+   butadiene CAS(2,2) 9.34 s against 3.65 s, CAS(12,12) 349 s (cold) against 127 s. Threading
+   does not rescue it. Every runtime estimate in `docs/compute.md` that had been scaled from
+   laptop timings was therefore 2.7x optimistic, and the walltimes are now sized from measured
+   cluster figures.
+2. **Memory, not CPU, is the scarce resource on `cpu_lorentz`.** All three nodes sat at
+   253 952 of 254 897 MB allocated with 174 of 384 cores idle, because `DefMemPerCPU` is
+   4027 MB and wide jobs reserve hundreds of GB. The first submission asked for 16-32 GB per
+   task against a **measured peak of 593 MB** at CAS(12,12), and that over-request blocked this
+   account's own flagship job (PENDING, reason `Resources`). Re-submitted at 4 GB, all 18 tasks
+   started within seconds. The jobs were 15 minutes old, so the fix cost nothing.
+3. **A job that writes only at the end cannot be run for days.** `run_localization.py` saved
+   its record after the last centre, so a walltime kill lost everything. It now saves after
+   every centre and resumes from the first unfinished one, and — because bisections about
+   different centres share no state — it can run **one centre per task** (`--only-centre`) and
+   merge afterwards (`--merge`). That turns the CAS(12,12) localization from ~6 days in series
+   into ~2 days in parallel. The merge refuses records whose centres do not match the requested
+   list, so ellipses from different constructions cannot be combined by accident.
+
+**Submitted** (all on `cpu_lorentz`, 8 CPUs and 4 GB per task):
+
+| job | tasks | what it answers | expected |
+|---|---|---|---|
+| `berry_cas12.job` | 3 | butadiene CAS(12,12) loop transport on **all three loops** at N = 13, 21, 31 | ~5 h |
+| `localize.job` | 12 | bisection ladder: CAS(4,4), (6,6), (8,8), (10,10) x 3 centres | 2-7 h per centre |
+| `localize_cas12.job` | 3 | the same at CAS(12,12), one centre per task | ~40-60 h per centre |
+| `bench.job` | 1 | one CAS(14,14) solve, to size `rung14.job` from measurement | < 4 h or it TIMEOUTs |
+
+**Why these, in this order.** `docs/findings.md` §3 — the sharpest open question in the project
+— rests on the enclosing loop returning pi at CAS(12,12) where the gap scan finds nothing below
+1.5 mHa inside it. Two gaps in that evidence are closable cheaply and were closed first: the
+rung had **no control loops at all** (so its pi had nothing to be contrasted against) and only
+two discretizations (the bare minimum the stability criterion accepts). The localization ladder
+then measures, rather than infers, where the state-specific degeneracy sits at each rung; at
+CAS(2,2) that measurement already contradicts the gap scan, and one rung is an observation
+rather than a result. `rung14.job` (`docs/todo.md` §8) stays last and unsubmitted until the
+bench says what a CAS(14,14) point costs.
+
+### When each job returns
+
+* **`berry_cas12.job`.** Read the three verdicts together. If `B_1` and `B_2` return 0 while
+  `B_x` returns pi at all three N, the CAS(12,12) pi survives its first real control and
+  `docs/findings.md` §3 can drop the "loop transport is wrong here" reading to third place. If a
+  control returns pi, that reading becomes the leading one and the section needs rewriting, not
+  amending. Either way N=31 gives the stability criterion a third discretization.
+* **`localize.job`.** Merge each rung (`--merge`), then compare its measured rho against the
+  gap-scan intersection for the *same* rung, exactly as the formaldimine table in §3 does. The
+  question is whether the CAS(2,2) offset is a property of that rung or of the method.
+* **`localize_cas12.job`.** Same, at the rung where the methods disagree. This is the one that
+  can separate the three readings in §3, and it will **not** finish inside a working session —
+  plan on two days.
+* **`bench.job`.** If a CAS(14,14) point is under ~25 min, `rung14.job` is viable as written;
+  if it TIMEOUTs at 4 h, the rung is not reachable this way and §8 should record that rather
+  than leaving an unsized job in `slurm/`.
+
+**Unresolved.** Everything the jobs are for. Nothing here changes a scientific conclusion yet.
