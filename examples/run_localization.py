@@ -64,7 +64,12 @@ SYSTEMS = {
         "geom_fn": butadiene_geom,
         "basis": "6-31g*",
         "shape": (12.0, 18.0),
-        "centres": [(90.0, 101.85321091497578), (90.0, 83.0), (99.0, 101.85321091497578)],
+        # Every centre must ENCLOSE the target at scale 1 and exclude it at scale_lo, or the
+        # bisection has nothing to bracket. Taking CAS(2,2)'s searched intersection
+        # (89.97, 105.67) as the target, the elliptical radii are 0.21, 0.87 and 0.78 -- all
+        # inside 1. The third is deliberately off the tw = 90 line, because two centres on a
+        # line leave a mirror ambiguity that nothing else here can break.
+        "centres": [(90.0, 101.85321091497578), (90.0, 90.0), (99.0, 101.85321091497578)],
         "scale_hi": 1.0,
         "scale_lo": 0.08,
         "tol": 0.05,

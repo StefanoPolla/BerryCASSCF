@@ -269,6 +269,37 @@ print("a user without the answer would have to refuse those runs.")
 """)
 
 md(r"""
+### How many points would uniform stepping actually need?
+
+The comparison above fixes $N = 24$, which is unfair in one direction: uniform stepping can always
+be made to work by taking more points. So measure how many it needs to reach the *same* margin the
+adaptive walk achieves.
+""")
+
+code(r"""
+print(f"{'eps':>7} {'uniform N for minovl>=0.90':>28} {'adaptive points':>17} {'ratio':>7}")
+print("-" * 64)
+for eps in (0.1, 0.05, 0.02, 0.007):
+    c = (0.0, 1.0 - eps)
+    need = None
+    for N in (24, 50, 100, 200, 400, 700, 1000, 1500, 2200, 3000):
+        if jt_loop_berry_phase(centre=c, radius=1.0, n_points=N).min_abs_adjacent_overlap >= 0.90:
+            need = N
+            break
+    ra, _ = jt_loop_adaptive(centre=c, radius=1.0)
+    ratio = f"{need/ra.n_points:.0f}x" if need else "--"
+    print(f"{eps:>7.3f} {str(need):>28} {ra.n_points:>17} {ratio:>7}")
+""")
+
+md(r"""
+This is the result that reconciles "cost-neutral" with "worth building". Adaptive stepping saves
+nothing on a loop of uniform difficulty — and **19x to 43x** on a loop that passes close to a
+degeneracy. The loops in the active-space studies are the former; the loops a *search* has to walk
+are the latter, by construction, because a search deliberately probes near the thing it is looking
+for.
+""")
+
+md(r"""
 The measurement lands on the prediction: the walk closes at $\varepsilon = 0.007$ and hits the
 floor at $0.005$, against a predicted $0.0070$.
 
@@ -395,12 +426,16 @@ The prediction made before running it — from the spread of adjacent overlaps o
 1.3× for formaldimine, 3.1× for butadiene `B_x` at CAS(8,8), and 4.7× for ethylene at CAS(8,8). The
 formaldimine number is confirmed; the harder loops are where the case has to be made.
 
-**Where step control does pay is not primarily cost.** It is:
+**Where step control does pay is on loops that pass close to a degeneracy**, and there it pays
+enormously — 19x fewer points at a closest approach of 0.02 of the loop radius, 43x at 0.007. Those
+are not the loops in the active-space studies, which is why the CASSCF numbers above are flat. They
+*are* the loops a search has to walk, because a search probes near the thing it is looking for.
 
-* **loops that uniform stepping cannot walk at any affordable $N$** — §3 above, where the
-  trustworthy range extends by more than an order of magnitude in closest approach. This is not a
-  speed-up, it is the difference between an answer and a refusal, and it is what makes
-  `locating_intersections.ipynb` possible;
+Three further reasons, none of them speed:
+
+* **loops uniform stepping cannot walk at any affordable $N$** — the trustworthy range extends by
+  more than an order of magnitude in closest approach. This is the difference between an answer and
+  a refusal, and it is what makes `locating_intersections.ipynb` possible;
 * **not having to guess $N$ in advance.** A uniform run needs $N$ chosen before anything is known
   about the loop, and the project's own history contains several runs refused purely for having
   guessed it too low;
