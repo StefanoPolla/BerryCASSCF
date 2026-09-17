@@ -41,24 +41,42 @@
   raises `LinAlgError` if it is singular. That can only happen if the two core spaces become
   orthogonal, which would mean the two points are not connected by continuation — but it is a
   hard failure rather than a graceful degradation.
-* **Convergence thresholds interact with warm starts.** Tightening `conv_tol_grad` beyond ~1e-5
-  makes warm-started CASSCF fail its convergence *test* while sitting on the correct answer to
-  1e-10 (see `docs/progress.md`). The default was chosen with this in mind; if you tighten it,
-  expect spurious FAILED verdicts.
-* **The fallback ladder can mask a problem.** If a point falls through to a cold start, the
-  continuation chain is broken there. This is warned about loudly and the overlap checks still
-  apply, but a cold-started point that happens to land on the same branch will pass silently.
+* **Convergence thresholds interact with warm starts, and not only through the gradient.**
+  Tightening `conv_tol_grad` beyond ~1e-5 makes warm-started CASSCF fail its convergence *test*
+  while sitting on the correct answer to 1e-10. But the gradient is not always the binding
+  criterion: measured at formaldimine CAS(2,2) (130.86, 91.96), PySCF reaches `|grad[o]|` = 8.8e-06
+  — *inside* the 1e-5 threshold — while the per-iteration `dE` of 4.4e-10 will not fall below
+  `conv_tol` = 1e-10 within 200 macro iterations. The optimizer is crawling along a flat direction;
+  it converges at 239 iterations to the same energy to 1e-8. The fallback ladder gained a rung that
+  raises the iteration budget, but **a point can still be refused for a numerical technicality
+  while its wavefunction is correct**, and there is no stationarity test independent of PySCF's own
+  flag.
+* ~~**The fallback ladder can mask a problem.**~~ **Resolved.** A fall-through to a cold start
+  breaks the continuation chain, and gauge fixing repairs an arbitrary sign but not a change of
+  branch. This was a warning for most of the project; it is now a binding check
+  (`ContinuationConfig.require_unbroken_chain`), calibrated against all 116 saved runs in
+  `examples/calibrate_thresholds.py`.
+* **Adaptive stepping has a resolution floor, and it is a knob rather than a guarantee.** A loop
+  passing closer than roughly `2*pi*R*d_min/dtheta_max` — 0.7% of the loop radius with the defaults
+  — cannot be walked, and the run is refused. Tightening `d_min` buys proximity at the cost of
+  rejected solves. This directly bounds how precisely bisection can locate a degeneracy.
+* **The step floor cannot say *why* it fired.** Shrinking failing to restore continuity means the
+  loop passes through something, but "a degeneracy" and "the solver switching between nearby
+  stationary solutions" produce the same signature, and the walk does not distinguish them.
 * **No parallelism.** Points are computed serially. The loop is inherently sequential (each
   point warm-starts from the previous), but the SA scan is embarrassingly parallel and is not
   parallelized.
 
 ## Scope limitations
 
-* **Only formaldimine has been run.** The follow-up system (fulvene) is implemented and its
-  machinery is tested, but no production result exists; see `docs/followup.md`.
-* **STO-3G only.** No basis-set convergence study. Within STO-3G the results are calibrated
-  against FCI (`docs/results.md` §2b), but the CI position is basis-dependent and a minimal
-  basis is not quantitative in absolute terms.
+* **Three systems have been run** — formaldimine (STO-3G), ethylene and butadiene (6-31G\*).
+  Fulvene is implemented and its machinery is tested, but its intersection is not reachable in the
+  current rigid two-coordinate model; see `docs/followup.md`.
+* **No basis-set convergence study.** Each system is calibrated within its own basis where a
+  reference exists, but an intersection position is basis-dependent and none of these numbers is
+  quantitative in absolute terms.
+* **Butadiene has no reachable reference at all** (full valence is CAS(22,22)), so nothing there
+  can be checked against truth — only against self-consistency across rungs.
 * **The comparator's state averaging is 2-state equal-weight only.** Cases needing three or more
   states, or unequal weights, are supported by `ScanConfig.weights`/`nroots` but untested.
 
@@ -70,9 +88,19 @@
    S0 transport is faithful. This has not been proven — a useful check would be to confirm
    that the CAS(2,2) S0 wavefunction has high overlap with the CAS(6,6) S0 wavefunction all
    the way around the loop.
-2. **How close can the loop pass to the seam before the answer degrades?** The toy model
-   degrades gracefully down to |Π| ≈ 0.5 at a 1% seam offset, but no such study was run at
-   CASSCF level.
+2. ~~**How close can the loop pass to the seam before the answer degrades?**~~ — **answered for
+   the discretization, still open for the physics.** With adaptive stepping the limit is
+   *predicted* and then measured: a loop is walkable down to a closest approach of
+   `eps_min ~ 2*pi*R*d_min/dtheta_max` = 0.7% of its radius (measured: closes at 0.007, floors at
+   0.005 on the Jahn-Teller model, against a prediction of 0.0070). Below that the run is refused
+   rather than wrong. What remains open is whether the *CASSCF solution itself* degrades before
+   that limit is reached — the step floor cannot distinguish a real degeneracy from a solver
+   switching branches, and at formaldimine CAS(2,2) it fired in a region whose in-CAS gap never
+   falls below 321 mHa, which suggests the solver.
+4. **Can a triangulated position be trusted when a symmetry forces degeneracies into mirror
+   pairs?** A loop enclosing two symmetry-related degeneracies reports 0, indistinguishable from
+   one enclosing none. Formaldimine's in-CAS gap map is exactly symmetric about phi = 90, so this
+   is a live concern rather than a hypothetical; see `docs/todo.md` §10.
 3. ~~The residual offset between the computed CI position and the literature value~~ —
    **resolved.** FCI in the same STO-3G basis puts the minimum at α = 132.6°, and the
    CAS(4,4) → CAS(6,6) → FCI sequence (130.0° → 130.9° → 132.6°) shows the offset is

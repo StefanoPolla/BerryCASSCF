@@ -290,6 +290,54 @@ if runs:
 """)
 
 md(r"""
+### The comparison that matters: same active space, two different objects
+
+Comparing a triangulated position to FCI mixes two effects — active-space truncation *and* the
+difference between a state-specific and a state-averaged surface. The cleaner comparison holds the
+active space fixed and asks how far apart the two methods' answers are at that level of theory.
+`docs/findings.md` §3 argues those are different objects. Here they can be measured.
+""")
+
+code(r"""
+from berrycasscf.refine import cone_apex
+from berrycasscf.scan import ScanResult
+import glob
+
+def sa_position(cas):
+    hits = sorted(glob.glob(os.path.join(ROOT, "results", "scan",
+                                         f"C_x_cas{cas}-{cas}_*.npz")))
+    if not hits:
+        return None
+    r = ScanResult.load(hits[-1])
+    a, ph, g = r.min_gap_point()
+    j = int(np.argmin(np.abs(r.phis - ph)))
+    try:
+        return cone_apex(r.alphas, r.gap[:, j] * 1e3, window=3).position, g * 1e3
+    except Exception:
+        return a, g * 1e3
+
+FCI_ALPHA = 132.61
+print(f"{'CAS':>9} {'loop transport (SS)':>21} {'gap scan (SA)':>15} {'SS - SA':>9} "
+      f"{'SA - FCI':>9} {'residual':>10}")
+print("-" * 80)
+for cas in (2, 4, 6):
+    d = runs.get(cas)
+    sa = sa_position(cas)
+    tri = (d or {}).get("triangulation") or {}
+    ss = tri.get("chosen")
+    res = tri.get("residual")
+    ss_s = f"({ss[0]:.2f}, {ss[1]:.2f})" if ss else "n/a"
+    sa_s = f"{sa[0]:.2f}" if sa else "n/a"
+    diff = f"{ss[0] - sa[0]:+.2f}" if (ss and sa) else "--"
+    sadiff = f"{sa[0] - FCI_ALPHA:+.2f}" if sa else "--"
+    flag = "  <- refused (inconsistent)" if (res is not None and res > 0.05) else ""
+    print(f"{'CAS(%d,%d)' % (cas, cas):>9} {ss_s:>21} {sa_s:>15} {diff:>9} "
+          f"{sadiff:>9} {res if res is None else round(res, 5):>10}{flag}")
+print()
+print(f"FCI gap-scan reference: alpha = {FCI_ALPHA} (one-dimensional cut at fixed phi)")
+""")
+
+md(r"""
 ## What the numbers say, including where the method reports its own failure
 
 **The bisection itself is precise.** Individual transition radii come back with brackets as tight
