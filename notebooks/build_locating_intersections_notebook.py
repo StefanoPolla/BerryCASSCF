@@ -509,6 +509,116 @@ which is a cluster job: this one took two hours at the cheapest active space.
 """)
 
 md(r"""
+## The same measurement across the active-space ladder
+
+One rung is an observation. The question `docs/findings.md` §3 actually asks is whether the
+state-specific object and the state-averaged one are *systematically* different, or whether
+CAS(2,2) — an active space below the $\pi$ space, and not a defensible choice for this molecule —
+simply misplaces one of them.
+
+So the same bisection is run at every rung, about the **same centres**, and compared against the
+gap-scan intersection **for that same rung**, located by direct 2D search. Both methods are then
+being asked about the same active space, and the only difference left in play is state-specific
+against state-averaged.
+""")
+
+code(r"""
+LADDER = [(2, 2), (4, 4), (6, 6), (8, 8), (10, 10), (12, 12)]
+
+def gap_scan_point(ne, ncas):
+    # where the direct 2D search puts this rung's intersection
+    gm = os.path.join(ROOT, "results", "butadiene", "gap_minimum_search.json")
+    if not os.path.exists(gm):
+        return None
+    for r in json.load(open(gm))["runs"]:
+        if tuple(r["cas"]) == (ne, ncas):
+            return tuple(r["found"])
+    return None
+
+rows = []
+for ne, ncas in LADDER:
+    d = load(f"butadiene_cas{ne}-{ncas}.json")
+    if not d:
+        continue
+    shape = tuple(d["shape"])
+    b0 = d["bisections"][0]
+    sa = gap_scan_point(ne, ncas)
+    rows.append({
+        "cas": f"({ne},{ncas})",
+        "rho": b0.get("rho"), "unc": b0.get("rho_uncertainty"),
+        "rho_sa": elliptical_radius(sa, tuple(b0["centre"]), shape) if sa else None,
+        "sa": sa, "shape": shape, "centre": tuple(b0["centre"]),
+        "n_bracketed": sum(1 for b in d["bisections"] if b.get("rho") is not None),
+        "tri": d.get("triangulation"),
+        "micro": d.get("total_micro"), "hours": d.get("wall_time", 0) / 3600,
+    })
+
+if not rows:
+    print("no localization records yet; run slurm/localize.job and merge each rung")
+else:
+    print(f"{'CAS':>8} {'rho measured':>20} {'rho from gap scan':>18} "
+          f"{'difference':>11} {'agrees?':>9} {'centres':>8}")
+    print("-" * 80)
+    for r in rows:
+        meas = ("not bracketed" if r["rho"] is None
+                else f"{r['rho']:.4f} +- {r['unc']:.4f}")
+        pred = "n/a" if r["rho_sa"] is None else f"{r['rho_sa']:.4f}"
+        if r["rho"] is None or r["rho_sa"] is None:
+            print(f"{r['cas']:>8} {meas:>20} {pred:>18} {'':>11} {'':>9} "
+                  f"{r['n_bracketed']:>8}")
+            continue
+        diff = r["rho_sa"] - r["rho"]
+        inside = abs(diff) <= r["unc"]
+        print(f"{r['cas']:>8} {meas:>20} {pred:>18} {diff:>+11.4f} "
+              f"{('yes' if inside else 'NO'):>9} {r['n_bracketed']:>8}")
+    print()
+    print("'agrees?' asks whether the gap scan's intersection lies inside the measured bracket.")
+    print("Both columns are elliptical radii about the same centre, in units of the loop")
+    print("semi-axes, so a difference of 0.1 is 1.2 deg in tw and 1.8 deg in pyr.")
+""")
+
+code(r"""
+if rows:
+    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.4))
+
+    ax = axes[0]
+    xs = np.arange(len(rows))
+    meas = np.array([r["rho"] if r["rho"] is not None else np.nan for r in rows])
+    unc  = np.array([r["unc"] if r["unc"] is not None else np.nan for r in rows])
+    sa   = np.array([r["rho_sa"] if r["rho_sa"] is not None else np.nan for r in rows])
+    ax.errorbar(xs, meas, yerr=unc, fmt="o", capsize=4, color="tab:red",
+                label="loop transport (state-specific), measured")
+    ax.plot(xs, sa, "s--", color="tab:blue", label="gap scan (state-averaged), implied")
+    ax.set_xticks(xs); ax.set_xticklabels([r["cas"] for r in rows])
+    ax.set_xlabel("active space"); ax.set_ylabel(r"$\rho$ about the loop centre")
+    ax.set_title("distance to the degeneracy, measured two ways")
+    ax.legend(fontsize=8)
+
+    ax = axes[1]
+    th = np.linspace(0, 2 * np.pi, 801)
+    colours = plt.cm.viridis(np.linspace(0.1, 0.9, len(rows)))
+    for r, col in zip(rows, colours):
+        if r["rho"] is None:
+            continue
+        c, shape = r["centre"], r["shape"]
+        ax.plot(c[0] + r["rho"] * shape[0] * np.cos(th),
+                c[1] + r["rho"] * shape[1] * np.sin(th), "-", lw=1.4, color=col,
+                label=f"{r['cas']} measured")
+        if r["sa"]:
+            ax.plot(*r["sa"], "*", ms=13, color=col, mec="k", mew=0.6)
+    ax.plot(*rows[0]["centre"], "+", ms=11, color="k")
+    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
+    ax.set_title("measured circles (lines) vs gap-scan intersections (stars)")
+    ax.legend(fontsize=7, loc="upper right")
+    ax.set_aspect("equal")
+    plt.tight_layout(); plt.show()
+
+    total = sum(r["hours"] for r in rows)
+    print(f"total cost of the ladder: {total:.1f} h over {len(rows)} rungs, "
+          f"{sum(r['micro'] or 0 for r in rows)} micro-iterations")
+""")
+
+md(r"""
 ## Summary
 
 * A method that returns **one bit per loop** can be made to return a **position**, by bisecting the
