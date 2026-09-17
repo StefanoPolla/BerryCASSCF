@@ -50,15 +50,222 @@ python examples/run_formaldimine_scan.py --loops C_x C_1 C_2 --cas 4,4 --grid 25
 python examples/summarize.py
 ```
 
+### The third system: butadiene
+
+All local, in three stages (`docs/butadiene.md`):
+
+```bash
+python examples/search_butadiene_ci.py              # 3 candidate planes, ~45 min
+python examples/run_butadiene_study.py scan         # CAS(4,4)..(12,12), ~1.5 h
+python examples/run_butadiene_study.py berry        # CAS(4,4)..(10,10), ~1 h
+```
+
+Two deliberate cost caps, both documented where they bite:
+
+* **CAS(12,12) is scanned on one row** (`tw = 90`, 13 points) rather than the 5x13 grid. At
+  >2.4 min per cold point a full grid is ~2.6 h for a single rung, and every other rung's
+  two-dimensional minimum lies on that row anyway. The cost is that its `tw` is assumed.
+* **The Berry ladder stops at CAS(10,10).** A state-specific CAS(12,12) solve costs minutes, so
+  three loops at two discretizations would run to several hours without changing a conclusion
+  already established over four rungs.
+
 ## What needs the cluster
 
-Anything beyond the STO-3G/CAS(6,6) formaldimine benchmark. In particular the follow-up
-system (Experiment B) and any larger-basis formaldimine check. **These have not been run**;
-the templates below are prepared for submission.
+Anything beyond the STO-3G/CAS(6,6) formaldimine benchmark: the large butadiene active
+spaces, and above all the localization runs, which are hours per centre at a cheap active
+space and days at the reference one.
 
-Templates live in `slurm/`. Every site-specific field is marked `#### SITE ####`:
-partition, account, time limit, `--cpus-per-task`, `--mem`, module loads, and the
-environment-activation line. Nothing else needs editing.
+`slurm/` holds five **runnable** job scripts with concrete values for ALICE (Leiden
+University), plus four older generic templates that still carry `#### SITE ####`
+placeholders for workloads that have never needed a cluster (the formaldimine workflows and
+the abandoned fulvene follow-up). In the runnable ones, every site-specific line is marked
+`# SITE:` — partition, account, module stack, venv path — and those are the only lines
+another cluster needs changed.
+
+### Setting up on ALICE
+
+```bash
+git clone git@github.com:StefanoPolla/BerryCASSCF.git ~/git_repos/BerryCASSCF
+cd ~/git_repos/BerryCASSCF
+ml purge && ml load ALICE/default && ml load Python/3.11.5-GCCcore-13.2.0
+python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+cd slurm && sbatch --test-only smoke.job && sbatch smoke.job
+```
+
+Thereafter: `git pull --ff-only` on the cluster, then `cd slurm && sbatch <job>`. Code goes
+up through git, never rsync; results come back down with rsync (below). Submit from inside
+`slurm/`, because `--output=./out/...` is relative to the submission directory.
+
+The cluster stack is Python 3.11.5 / PySCF 2.14.0 / NumPy 2.4.6 / SciPy 1.17.1 against the
+laptop's 3.12.10 / 2.14.0 / 2.5.3 / 1.18.1. The **only** difference the two have shown is a
+fitted parameter whose true value is zero coming back as 8.5e-06 instead of 0.0 at a kink
+(`tests/test_refine.py`); fitted positions agree exactly. `smoke.job` is what establishes
+that on a new machine, and it runs the test suite before it measures anything.
+
+### Partition choice
+
+`cpu_lorentz` for everything real: it is private, allows 7 days, and was carrying 5 queued
+jobs against `cpu-skylake`'s 227 and `cpu-zen4`'s 199 when these runs were submitted, so
+eight tasks all started within seconds. It needs **both** `--partition=cpu_lorentz` and
+`--account=cpu_lorentz`; ALICE rejects the submission with only the first. `cpu-short` (4 h
+cap, its own small queue) is right for `smoke.job` and for anything else under four hours.
+`--time` is mandatory on ALICE — there is no default and a job without it is rejected.
+
+## The ALICE jobs
+
+Everything below lands in the repository working directory on the cluster
+(`~/git_repos/BerryCASSCF`): results under `results/<system>/`, live progress under
+`logs/<name>.log`, SLURM's own streams under `slurm/out/` and `slurm/err/`. Nothing writes
+outside the repo, so pulling results back is one rsync.
+
+**All five jobs skip work already saved**, printing `SKIP: <path>` and exiting 0, so a
+resubmission runs only what is missing and a job that finds everything present costs
+seconds. That also means `sacct` reporting `FAILED` means a real failure.
+
+### `smoke.job` — validate and measure (cpu-short, 40 min)
+
+Runs the fast test suite, then times one state-specific and one state-averaged CASSCF solve
+at CAS(2,2) and CAS(12,12), threaded and single-threaded (`examples/bench_point.py`). Run it
+first on any new machine: every estimate below is a per-point cost times a point count, and
+the per-point cost is what changes between machines.
+
+### `berry_cas12.job` — the missing controls at CAS(12,12) (array of 3)
+
+*What.* Butadiene loop transport at CAS(12,12) on all three loops, at N = 13, 21 and 31.
+
+*Why.* `docs/findings.md` §3 rests on the enclosing loop `B_x` returning pi at this rung
+while the gap scan finds nothing below 1.5 mHa inside it. Two things that claim needed:
+
+* **the control loops at the same rung.** Every other rung has them; CAS(12,12) had only
+  `B_x`, so its pi had nothing to be contrasted against. A control returning pi would make
+  the result a solver artifact rather than a topological statement.
+* **a third discretization.** The stability criterion is "at least two discretizations, all
+  passing, same phase"; `B_x` had exactly two, which is the minimum the criterion accepts.
+
+*Cost.* 97.6 s per point measured over the saved N=21 run, so 13+21+31 = 65 points is ~1.8 h
+per loop; `B_x` only needs N=31 and is ~0.9 h. Asked for 16 h.
+
+*Output.* `results/butadiene/butadiene_{B_x,B_1,B_2}_cas12-12_N{13,21,31}.json`.
+
+### `localize.job` and `localize_cas12.job` — where the degeneracy actually is
+
+*What.* Bisects the loop radius about several centres until the Berry phase turns over, then
+intersects the resulting ellipses. The transition radius is the elliptical distance to
+whatever the loop encircles, so this **measures** the state-specific degeneracy rather than
+inferring it. Method and figures: `notebooks/locating_intersections.ipynb`; motivation:
+`docs/findings.md` §3.
+
+*Why a ladder.* The state-specific/state-averaged offset has been measured for butadiene at
+CAS(2,2) only (rho = 0.5385 +/- 0.0843, against the gap scan's 0.2121 — decisively outside).
+One rung is an observation. `localize.job` runs CAS(4,4), (6,6), (8,8) and (10,10), one per
+array task; `localize_cas12.job` runs the reference rung, where the two methods disagree
+most sharply and which is far out of laptop range.
+
+*Why it is expensive.* Each probe is two adaptive loop walks (two step-control settings that
+must agree), each walk is 15-35 CASSCF points, and a bisection uses up to 9 probes per
+centre. Measured at CAS(2,2) on a laptop: **2 h 1 min** for three centres, 50 557
+micro-iterations.
+
+| rung | s/point (laptop, state-specific) | scaled from the CAS(2,2) run | asked |
+|---|---|---|---|
+| CAS(4,4) | 14.0 | ~8 h | 36 h |
+| CAS(6,6) | 3.8 | ~2 h | 36 h |
+| CAS(8,8) | 5.3 | ~3 h | 36 h |
+| CAS(10,10) | 12.4 | ~7 h | 36 h |
+| CAS(12,12) | 97.6 | ~57 h | 5 days |
+
+The requests are deliberately generous. A probe that lands *on* the degeneracy costs several
+times one that does not — the CAS(2,2) run's slowest probe took 40 minutes against a 3-minute
+median — and walltime on a 7-day partition costs only a little backfill priority.
+
+*Restartability.* The record is written **after every centre**, and a resubmission resumes
+from the first unfinished one (`resume_bisections`). Before that, the file was written only
+at the end, so a walltime kill lost days; the older advice in this file to submit one centre
+per job is obsolete. A saved centre is reused only while it matches the requested centre list
+position by position — changing a centre invalidates it and everything after it, because the
+ellipses it measured belong to a different construction.
+
+*Centres for the reference rung.* `localize_cas12.job` uses (90, 101.85), (90, 90) and
+(99, 110) rather than the defaults. At CAS(2,2) the third default centre was refused at full
+size — its loop grazes the object — so no triangulation was possible. That run confined the
+enclosed object to `pyr` in (105.6, 111.5), `tw` in (84, 96); (99, 110) sits rho ~ 0.75 from
+the middle of that box against the old centre's ~0.88, far enough inside to bracket rather
+than graze. It is a choice of centre, not an assumed answer: if the degeneracy is elsewhere,
+the bisection returns a different radius or refuses.
+
+*Output.* `results/localize/butadiene_cas<ne>-<ncas>.json` — every probe with its verdict and
+cost, the bracket per centre, the triangulation and its uncertainty-normalised residual, and
+a `complete` flag distinguishing a finished record from a resumable one.
+
+*Known failure modes*, both seen at CAS(2,2) and both reported rather than hidden: a centre
+whose full-size loop hits the step floor contributes nothing, and a centre whose full-size
+loop does not enclose the target cannot be bracketed at all.
+
+### `rung14.job` — one more rung, queued and not waited for (array of 2)
+
+*What.* CAS(14,14) butadiene: task 0 runs the `tw = 90` gap-scan row and the fine `pyr` cut,
+task 1 runs loop transport on all three loops at N = 13 and 21. The two are independent,
+because the loops are fixed across the ladder by construction.
+
+*Why last.* Butadiene has no exact in-basis reference (full valence is CAS(22,22)) and the
+ladder has not settled over six rungs — the top two differ by 2.9 deg. One more rung shows
+whether the position is settling or still wandering; it does not settle the §3 disagreement,
+which is what the localization jobs are for. `docs/todo.md` §8 is explicit that this is not
+on the critical path.
+
+*Cost, and the weakest number in this file.* CAS(14,14) is 11.8 M determinants against
+CAS(12,12)'s 853 k. If cost tracked determinant count that would be ~23 min per
+state-specific point and ~50 min per state-averaged one — ~13 h per task. That extrapolation
+has not been checked; `python examples/bench_point.py butadiene --cas 14 14` replaces it with
+a measurement, and should be run before trusting it. Three days asked, so that a factor of
+two is survivable.
+
+*Output.* `results/butadiene/butadiene_scan_cas14-14_1x13.npz`,
+`butadiene_refinepyr_cas14-14.npz`, and `butadiene_{B_x,B_1,B_2}_cas14-14_N{13,21}.json`.
+
+### Pulling results back
+
+Laptop-initiated, additive, and safe to repeat:
+
+```bash
+rsync -avz --exclude='.venv/' --exclude='__pycache__/' \
+      alice:~/git_repos/BerryCASSCF/results/ results/
+```
+
+Then commit from the laptop, where the notebooks are rebuilt. Do not commit on the cluster:
+the cluster clone is a worker, and the record of what ran is the `.job` file plus the commit
+hash each job echoes into its log.
+
+### Watching a run
+
+Every driver writes a timestamped log to **`logs/<job>.log`** inside the repository (gitignored),
+one line per completed point, carrying elapsed time, seconds per step and a projected finish:
+
+```
+18:12:41 [7/14] ( 90.000, 113.850)  gap = 0.004182 Ha  [0:21:03 elapsed, 180.4 s/step, ~0:21:03 left, ETA 18:33]
+```
+
+So a run can be followed with `tail -f logs/butadiene_scan_cas12-12.log`, and a slow job is
+distinguishable from a dead one. Earlier versions logged per *row*, which meant a CAS(12,12) scan
+could go silent for half an hour at a time; progress is now emitted per point.
+
+To check a job is alive: `pgrep -fl run_butadiene_study` .
+
+### Threading note
+
+Both templates set `OMP_NUM_THREADS`/`MKL_NUM_THREADS`/`OPENBLAS_NUM_THREADS` from
+`SLURM_CPUS_PER_TASK`. PySCF parallelizes through threaded BLAS and its own OpenMP kernels;
+oversubscription makes CASSCF slower, so do not leave these unset.
+
+There is no MPI in this package. Do not request more than one task.
+
+## Generic templates, not site-specific
+
+These predate the ALICE setup and still carry `#### SITE ####` placeholders, because none
+of them has ever needed a cluster: the formaldimine workflows run locally in minutes, and
+the fulvene follow-up was abandoned when its intersection turned out to be unreachable in
+a rigid two-coordinate model (`docs/followup.md`). They are kept as starting points, not
+as things to submit.
 
 ### `slurm/berry_loop.sbatch` — Berry-phase continuation
 
@@ -121,96 +328,6 @@ resume on re-submission.
 
 *Outputs.* `results/fulvene/fulvene_scan_*.npz` and `results/fulvene/fulvene_<loop>_*.json`,
 both inside the repository. Full detail in `docs/followup.md`.
-
-### The third system: butadiene
-
-All local, in three stages (`docs/butadiene.md`):
-
-```bash
-python examples/search_butadiene_ci.py              # 3 candidate planes, ~45 min
-python examples/run_butadiene_study.py scan         # CAS(4,4)..(12,12), ~1.5 h
-python examples/run_butadiene_study.py berry        # CAS(4,4)..(10,10), ~1 h
-```
-
-Two deliberate cost caps, both documented where they bite:
-
-* **CAS(12,12) is scanned on one row** (`tw = 90`, 13 points) rather than the 5x13 grid. At
-  >2.4 min per cold point a full grid is ~2.6 h for a single rung, and every other rung's
-  two-dimensional minimum lies on that row anyway. The cost is that its `tw` is assumed.
-* **The Berry ladder stops at CAS(10,10).** A state-specific CAS(12,12) solve costs minutes, so
-  three loops at two discretizations would run to several hours without changing a conclusion
-  already established over four rungs.
-
-### Watching a run
-
-Every driver writes a timestamped log to **`logs/<job>.log`** inside the repository (gitignored),
-one line per completed point, carrying elapsed time, seconds per step and a projected finish:
-
-```
-18:12:41 [7/14] ( 90.000, 113.850)  gap = 0.004182 Ha  [0:21:03 elapsed, 180.4 s/step, ~0:21:03 left, ETA 18:33]
-```
-
-So a run can be followed with `tail -f logs/butadiene_scan_cas12-12.log`, and a slow job is
-distinguishable from a dead one. Earlier versions logged per *row*, which meant a CAS(12,12) scan
-could go silent for half an hour at a time; progress is now emitted per point.
-
-To check a job is alive: `pgrep -fl run_butadiene_study` .
-
-### Threading note
-
-Both templates set `OMP_NUM_THREADS`/`MKL_NUM_THREADS`/`OPENBLAS_NUM_THREADS` from
-`SLURM_CPUS_PER_TASK`. PySCF parallelizes through threaded BLAS and its own OpenMP kernels;
-oversubscription makes CASSCF slower, so do not leave these unset.
-
-There is no MPI in this package. Do not request more than one task.
-
-### Locating what loop transport encircles (`slurm/localize.sbatch`)
-
-**What it does.** Bisects the loop radius about several centres until the Berry phase turns over,
-then intersects the resulting ellipses. The transition radius is the elliptical distance to
-whatever the loop encircles, so this *measures* the state-specific degeneracy rather than inferring
-it. Method and figures: `notebooks/locating_intersections.ipynb`; motivation: `docs/findings.md` §3.
-
-**Why it needs the cluster.** Each probe is two adaptive loop walks (two step-control settings that
-must agree), each walk is 15-35 CASSCF points, and a bisection uses up to 11 probes per centre.
-Measured locally at the cheapest active space, butadiene CAS(2,2): **2 h 1 min** for three centres.
-A CAS(12,12) point costs >144 s against ~4 s at CAS(2,2), so the reference rung is far out of
-laptop range.
-
-**Estimated runtime**, butadiene CAS(12,12), 3 centres:
-
-| | |
-|---|---|
-| points per adaptive walk | ~20 (more near the transition) |
-| walks per probe | 2 |
-| probes per centre | up to 11 |
-| points per centre | ~440 |
-| seconds per point | ~150 (state-specific CAS(12,12)/6-31G\*) |
-| **per centre** | **~18 h** |
-| **three centres** | **~55 h** |
-
-That exceeds a typical 48 h wall limit, so **submit one centre per job** using `CENTRES=1` and
-raising `--centres` as results accumulate, or split by hand. The driver skips a completed result
-file, so re-submission is safe and restartable.
-
-**How to submit.**
-
-```bash
-sbatch --export=ALL,SYSTEM=butadiene,CAS="12 12",CENTRES=1 slurm/localize.sbatch
-```
-
-**Expected output.** `results/localize/butadiene_cas12-12.json` — every probe with its verdict and
-cost, the bracket per centre, and the triangulation with its uncertainty-normalised residual.
-`logs/localize_butadiene_cas12-12.log` carries one line per probe with an ETA.
-
-**What to look for.** Whether the measured rho agrees with the gap-scan intersection for that rung.
-At CAS(2,2) it does not — 0.5385 ± 0.0843 measured against 0.2121 implied — and CAS(12,12) is where
-the two methods disagree most sharply.
-
-**Known failure modes**, both seen at CAS(2,2): a centre whose full-size loop hits the step floor
-contributes nothing (choose centres so the loop does not graze the degeneracy), and a centre whose
-full-size loop does not enclose the target cannot be bracketed at all. Both are reported, not
-hidden.
 
 ## Scaling guidance for the follow-up system
 

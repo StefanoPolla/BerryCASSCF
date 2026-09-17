@@ -161,6 +161,27 @@ def resume_bisections(saved: Sequence[dict], centres) -> list[BisectionResult]:
     return done
 
 
+def merge_centre_records(records: Sequence[dict], centres) -> list[BisectionResult]:
+    """Assemble per-centre records into the bisections of one localization.
+
+    Bisections about different centres are independent -- they share no state and no
+    intermediate -- so at a large active space, where one centre is a day or more, they are
+    run as separate jobs and merged afterwards. Each record must hold exactly one bisection,
+    and the centres must match the requested list in order, so that a merge cannot silently
+    combine ellipses from two different constructions.
+    """
+    merged: list[BisectionResult] = []
+    for i, (centre, record) in enumerate(zip(centres, records)):
+        bisections = record.get("bisections", [])
+        if len(bisections) != 1:
+            raise ValueError(f"record {i} holds {len(bisections)} bisections, expected 1")
+        stored = bisections[0].get("centre")
+        if stored is None or not np.allclose(stored, centre, atol=1e-6):
+            raise ValueError(f"record {i} is centred on {stored}, expected {centre}")
+        merged.append(restore_bisection(bisections[0]))
+    return merged
+
+
 def evaluate_radius(
     centre,
     shape,

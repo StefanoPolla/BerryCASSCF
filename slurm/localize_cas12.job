@@ -1,41 +1,53 @@
 #!/bin/bash
 #SBATCH --job-name=bc-loc12
-#SBATCH --output=./out/%x-%j.out
-#SBATCH --error=./err/%x-%j.err
-#SBATCH --time=5-00:00:00
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=3-00:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
 #SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
 #SBATCH --mail-type=NONE
+#SBATCH --array=0-2
 #
-# Butadiene CAS(12,12): measure where the state-specific degeneracy is.
+# Butadiene CAS(12,12): measure where the state-specific degeneracy is, one centre per task.
 # docs/todo.md §9 -- the sharpest open question in the project.
 #
 #   cd slurm && sbatch localize_cas12.job
+#   # when all three tasks have finished:
+#   python examples/run_localization.py butadiene --cas 12 12 --merge \
+#          --centre-xy 90.0,101.85321091497578 90.0,90.0 99.0,110.0
 #
-# Why this rung specifically. At CAS(12,12) a direct 2D search finds no gap below 1.5 mHa
-# anywhere inside B_x, while loop transport returns pi on that same loop at two
-# discretizations (docs/findings.md §3). Three readings are live -- the state-specific
-# surfaces have a degeneracy the state-averaged ones do not; both see the same crossing and
-# 1.5 mHa is this model's floor; or loop transport is wrong here. Bisection measures the
-# position of whatever loop transport encircles instead of inferring it, which is the only
-# one of the three that can be decided by measurement.
+# Why this rung. At CAS(12,12) a direct 2D search finds no gap below 1.5 mHa anywhere inside
+# B_x, while loop transport returns pi on that same loop at two discretizations
+# (docs/findings.md §3). Three readings are live -- the state-specific surfaces have a
+# degeneracy the state-averaged ones do not; both see the same crossing and 1.5 mHa is this
+# model's floor; or loop transport is wrong here. Bisection measures the position of whatever
+# loop transport encircles instead of inferring it, which is the only one of the three that
+# can be decided by measurement.
+#
+# Why one centre per task. Bisections about different centres share no state, and a centre is
+# ~50 h here: in series that is six days, in parallel it is two. They are merged afterwards,
+# and the merge refuses records whose centres do not match the list, so a mismatched set
+# cannot be combined by accident.
 #
 # Centres. The defaults come from the CAS(2,2) run, where the third was refused at full size
 # because its loop grazes the object, so no triangulation was possible. That run bounded the
 # enclosed object to pyr in (105.6, 111.5), tw in (84, 96); a third centre at (99, 110) sits
-# rho ~ 0.75 from the middle of that box against the old centre's ~0.88, far enough inside
-# to bracket rather than graze. It is a choice of centre, not an assumed answer: if the
+# rho ~ 0.75 from the middle of that box against the old centre's ~0.88, far enough inside to
+# bracket rather than graze. It is a choice of centre, not an assumed answer: if the
 # degeneracy is elsewhere the bisection reports a different radius or refuses.
 #
-# Sizing: CAS(2,2) took 2.0 h for three centres; a state-specific point costs 97.6 s here
-# against 3.5 s there, so ~57 h laptop-equivalent. Five days leaves room for the probes near
-# the transition, which are the expensive ones. It will NOT finish inside a working session.
+# Sizing, measured rather than extrapolated: a cold CAS(12,12) point took 276 s on node022
+# against 127 s on the laptop, and the CAS(2,2) localization spent 2.0 h for three centres at
+# 3.5 s/point. That puts one centre near 40-60 h. Three days per task leaves headroom, and if
+# a task is killed anyway the record is written after every centre and resumes.
 
 set -euo pipefail
+
+CENTRE=${SLURM_ARRAY_TASK_ID:-0}
 
 cd ..
 ml purge
@@ -47,8 +59,8 @@ export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
 export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
 export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
 
-echo "host=$(hostname) job=${SLURM_JOB_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${CENTRE} threads=${OMP_NUM_THREADS}"
 echo "commit=$(git rev-parse --short HEAD)"
-CENTRES="90,101.85321091497578 90,90 99,110"
-echo "python -u examples/run_localization.py butadiene --cas 12 12 --centre-xy $CENTRES"
-python -u examples/run_localization.py butadiene --cas 12 12 --centre-xy $CENTRES
+CENTRES="90.0,101.85321091497578 90.0,90.0 99.0,110.0"
+echo "python -u examples/run_localization.py butadiene --cas 12 12 --only-centre $CENTRE --centre-xy $CENTRES"
+python -u examples/run_localization.py butadiene --cas 12 12 --only-centre "$CENTRE" --centre-xy $CENTRES

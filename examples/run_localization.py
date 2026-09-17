@@ -41,6 +41,7 @@ from berrycasscf.geometry import formaldimine_geom
 from berrycasscf.localize import (
     bisect_radius,
     elliptical_radius,
+    merge_centre_records,
     resume_bisections,
     triangulate,
 )
@@ -85,6 +86,58 @@ SYSTEMS = {
 }
 
 
+def report(results, centres, shape, ref, spec, args, ne, ncas, out, wall_time):
+    """Print the brackets, triangulate, and write the record.
+
+    Shared by a single-job run and by --merge so that a localization assembled from
+    per-centre jobs is byte-for-byte the same kind of record as one run in series.
+    """
+    payload = {
+        "system": args.system, "cas": [ne, ncas], "basis": spec["basis"],
+        "shape": list(shape), "centres": [list(c) for c in centres],
+        "reference": list(ref) if ref else None,
+        "reference_note": spec["reference_note"],
+        "bisections": [r.to_dict() for r in results],
+        "complete": True,
+        "wall_time": wall_time,
+    }
+
+    print("=" * 78)
+    for r in results:
+        print("  " + r.summary())
+        if ref and r.bracketed:
+            expected = elliptical_radius(ref, r.centre, shape)
+            print(f"      reference rho {expected:.4f} -> "
+                  f"{'INSIDE' if r.lo <= expected <= r.hi else 'OUTSIDE'} the bracket "
+                  f"(off by {abs(expected - r.rho):.4f})")
+
+    bracketed = [r for r in results if r.bracketed]
+    if len(bracketed) >= 2:
+        tri = triangulate(bracketed, prefer=ref)
+        payload["triangulation"] = tri.to_dict()
+        print(f"\n  triangulated position: "
+              f"({tri.chosen[0]:.3f}, {tri.chosen[1]:.3f})" if tri.chosen else
+              "\n  triangulation failed")
+        if tri.candidates:
+            print(f"    candidates: "
+                  + ", ".join(f"({p[0]:.3f}, {p[1]:.3f})" for p in tri.candidates))
+            print(f"    residual {tri.residual:.5f} (in units of the loop semi-axes)")
+            print(f"    note: {tri.note}")
+        if ref and tri.chosen:
+            err = np.hypot(tri.chosen[0] - ref[0], tri.chosen[1] - ref[1])
+            payload["error_vs_reference"] = float(err)
+            print(f"\n  ERROR VS REFERENCE: {err:.3f} deg "
+                  f"(loop transport {tri.chosen[0]:.2f} vs reference {ref[0]:.2f})")
+    else:
+        print("\n  fewer than two centres bracketed; no triangulation")
+
+    payload["total_micro"] = sum(r.total_micro for r in results)
+    print(f"\n  total cost: {payload['total_micro']} micro-iterations, {wall_time:.0f} s")
+    save_json(payload, out)
+    print(f"-> {os.path.relpath(out, ROOT)}")
+    return payload
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -96,6 +149,14 @@ def main() -> int:
                          "A centre is only useful if its full-size loop encloses the target "
                          "without grazing it: one that grazes is refused and costs a bisection "
                          "for nothing (docs/todo.md §9).")
+    ap.add_argument("--only-centre", type=int, default=None, metavar="K",
+                    help="run just centre K (0-based) and save it on its own. Bisections "
+                         "about different centres share nothing, so at a large active space "
+                         "they run as concurrent jobs and are combined afterwards with "
+                         "--merge, which turns days in series into a day in parallel.")
+    ap.add_argument("--merge", action="store_true",
+                    help="combine the per-centre records written by --only-centre into the "
+                         "full record, and triangulate")
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
 
@@ -103,12 +164,17 @@ def main() -> int:
     ne, ncas = args.cas
     tag = f"{args.system}_cas{ne}-{ncas}"
     out = os.path.join(ROOT, "results", "localize", f"{tag}.json")
+    if args.only_centre is not None:
+        out = os.path.join(ROOT, "results", "localize", f"{tag}_centre{args.only_centre}.json")
     existing = load_json(out) if os.path.exists(out) else None
     # Records written before incremental saving carry no flag and are complete by
     # construction, so a missing key means complete.
     if existing is not None and existing.get("complete", True) and not args.force:
         print(f"SKIP: {os.path.relpath(out, ROOT)} exists; --force to redo")
         return 0
+
+    if args.only_centre is not None and args.merge:
+        raise SystemExit("--only-centre and --merge are alternatives, not a combination")
 
     cas = CasConfig(basis=spec["basis"], ncas=ncas, nelecas=ne)
     cont = ContinuationConfig()
@@ -118,6 +184,20 @@ def main() -> int:
         centres = spec["centres"][: args.centres]
     shape = spec["shape"]
     ref = spec["reference"]
+
+    if args.merge:
+        paths = [os.path.join(ROOT, "results", "localize", f"{tag}_centre{k}.json")
+                 for k in range(len(centres))]
+        missing = [os.path.relpath(q, ROOT) for q in paths if not os.path.exists(q)]
+        if missing:
+            raise SystemExit("cannot merge, these per-centre records are missing:\n  "
+                             + "\n  ".join(missing))
+        results = merge_centre_records([load_json(q) for q in paths], centres)
+        print(f"Merged {len(results)} per-centre records for {args.system} "
+              f"{cas.cas_label}/{spec['basis']}")
+        report(results, centres, shape, ref, spec, args, ne, ncas, out,
+               wall_time=sum(load_json(q).get("wall_time", 0.0) for q in paths))
+        return 0
 
     print(f"Locating the degeneracy with loop transport alone: {args.system} "
           f"{cas.cas_label}/{spec['basis']}")
@@ -149,8 +229,9 @@ def main() -> int:
             "wall_time": time.time() - t0,
         }
 
+    wanted = range(len(centres)) if args.only_centre is None else [args.only_centre]
     for i, centre in enumerate(centres):
-        if i < len(results):
+        if i not in wanted or i < len(results):
             continue
         print(f"--- centre {i+1}/{len(centres)}: {centre} ---")
         res = bisect_radius(
@@ -162,48 +243,24 @@ def main() -> int:
         results.append(res)
         # Save before starting the next centre: hours of bisection should not depend on the
         # job surviving to the end.
-        save_json(payload_now(complete=len(results) == len(centres)), out)
-        print(f"    saved {len(results)}/{len(centres)} centres -> "
-              f"{os.path.relpath(out, ROOT)}")
+        done = len(results) if args.only_centre is None else 1
+        want = len(centres) if args.only_centre is None else 1
+        save_json(payload_now(complete=done == want), out)
+        print(f"    saved {done}/{want} centres -> {os.path.relpath(out, ROOT)}")
         print()
 
-    payload = payload_now(complete=True)
+    if args.only_centre is not None:
+        print(f"centre {args.only_centre} done: {results[-1].summary()}")
+        print(f"-> {os.path.relpath(out, ROOT)}")
+        print(f"   merge with: python examples/run_localization.py {args.system} "
+              f"--cas {ne} {ncas} --merge"
+              + (f" --centre-xy {' '.join(f'{c[0]},{c[1]}' for c in centres)}"
+                 if args.centre_xy else ""))
+        return 0
 
-    print("=" * 78)
-    for r in results:
-        print("  " + r.summary())
-        if ref and r.bracketed:
-            expected = elliptical_radius(ref, r.centre, shape)
-            print(f"      reference rho {expected:.4f} -> "
-                  f"{'INSIDE' if r.lo <= expected <= r.hi else 'OUTSIDE'} the bracket "
-                  f"(off by {abs(expected - r.rho):.4f})")
-
-    bracketed = [r for r in results if r.bracketed]
-    if len(bracketed) >= 2:
-        tri = triangulate(bracketed, prefer=ref)
-        payload["triangulation"] = tri.to_dict()
-        print(f"\n  triangulated position: "
-              f"({tri.chosen[0]:.3f}, {tri.chosen[1]:.3f})" if tri.chosen else
-              "\n  triangulation failed")
-        if tri.candidates:
-            print(f"    candidates: "
-                  + ", ".join(f"({p[0]:.3f}, {p[1]:.3f})" for p in tri.candidates))
-            print(f"    residual {tri.residual:.5f} (in units of the loop semi-axes)")
-            print(f"    note: {tri.note}")
-        if ref and tri.chosen:
-            err = np.hypot(tri.chosen[0] - ref[0], tri.chosen[1] - ref[1])
-            payload["error_vs_reference"] = float(err)
-            print(f"\n  ERROR VS REFERENCE: {err:.3f} deg "
-                  f"(loop transport {tri.chosen[0]:.2f} vs reference {ref[0]:.2f})")
-    else:
-        print("\n  fewer than two centres bracketed; no triangulation")
-
-    total_micro = sum(r.total_micro for r in results)
-    payload["total_micro"] = total_micro
-    print(f"\n  total cost: {total_micro} micro-iterations, {time.time()-t0:.0f} s")
     log.done()
-    save_json(payload, out)
-    print(f"-> {os.path.relpath(out, ROOT)}")
+    report(results, centres, shape, ref, spec, args, ne, ncas, out,
+           wall_time=time.time() - t0)
     return 0
 
 

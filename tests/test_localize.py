@@ -14,6 +14,7 @@ from berrycasscf.localize import (
     BisectionResult,
     _circle_intersections,
     elliptical_radius,
+    merge_centre_records,
     restore_bisection,
     resume_bisections,
     triangulate,
@@ -197,3 +198,33 @@ def test_resume_ignores_extra_saved_centres():
     saved = [_bisection(c, rho=0.5).to_dict()
              for c in centres + [(99.0, 110.0)]]
     assert len(resume_bisections(saved, centres[:1])) == 1
+
+
+# --- merging centres that ran as separate jobs ----------------------------------------
+
+def _record(bisections):
+    return {"system": "butadiene", "bisections": [b.to_dict() for b in bisections]}
+
+
+def test_merge_combines_one_bisection_per_record():
+    centres = [(90.0, 101.85), (90.0, 90.0), (99.0, 110.0)]
+    records = [_record([_bisection(c, rho=0.5 + i * 0.1)]) for i, c in enumerate(centres)]
+    merged = merge_centre_records(records, centres)
+    assert [tuple(r.centre) for r in merged] == centres
+    assert [r.rho for r in merged] == pytest.approx([0.5, 0.6, 0.7])
+
+
+def test_merge_refuses_a_record_centred_somewhere_else():
+    """Ellipses from a different construction must not be silently combined."""
+    centres = [(90.0, 101.85), (90.0, 90.0)]
+    records = [_record([_bisection(centres[0], rho=0.5)]),
+               _record([_bisection((12.0, 34.0), rho=0.5)])]
+    with pytest.raises(ValueError, match="centred on"):
+        merge_centre_records(records, centres)
+
+
+def test_merge_refuses_a_record_holding_more_than_one_bisection():
+    centres = [(90.0, 101.85)]
+    records = [_record([_bisection(centres[0], rho=0.5), _bisection((90.0, 90.0), rho=0.6)])]
+    with pytest.raises(ValueError, match="expected 1"):
+        merge_centre_records(records, centres)
