@@ -372,9 +372,11 @@ if os.path.exists(gm):
     plt.show()
 
     print()
-    print("NOTE: no rung's search converged -- every one stopped on its evaluation budget")
-    print("(each CAS(12,12) evaluation costs ~2.2 minutes). The comparison is between")
-    print("comparable efforts, not between converged minima.")
+    print("NOTE: no rung's search converged in the optimizer's sense -- each stops on its")
+    print("evaluation budget, a CAS(12,12) evaluation costing ~2.2 minutes. The budgets are")
+    print("comparable (40 for the light rungs, 60 for CAS(12,12)), and CAS(12,12) was given")
+    print("the LARGER one deliberately: an earlier 30-evaluation run returned 1.4963 mHa, so")
+    print("doubling the effort moved the answer by 2.5%. The contrast is not a budget artifact.")
 else:
     print("Not yet run:  python examples/run_gap_minimum_search.py")
 """)
@@ -394,8 +396,10 @@ Three results, one of which corrects an earlier claim in this project.
    did not catch it, because that cut was taken at the wrong `pyr`. *Two one-dimensional cuts
    through a two-dimensional surface are not a substitute for a search.*
 
-**CAS(12,12) is the exception, and it is not a fitting artifact**: the same search, same budget,
-converged in 29 evaluations and improved the gap by only 16%, to 1.496 mHa.
+**CAS(12,12) is the exception, and it is not a fitting artifact**: the same search improves the gap
+by only 18%, to 1.4595 mHa, using 58 evaluations -- more than the 40 given to every other rung.
+Doubling the budget from 30 to 58 moved the answer by 2.5%, so it is not an artifact of stopping
+early either.
 
 ### What does a 1.5 mHa floor mean? Not what it first seemed
 

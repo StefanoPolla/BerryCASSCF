@@ -96,13 +96,14 @@ Three results, one of which corrects this document:
    assumed position cannot do better than that line allows.
 
 3. **CAS(12,12) behaves differently under the same search, and not because of the fit.** From its
-   fitted position, the search used 29 evaluations to reach (90.00, 101.96) with a gap of
-   **1.496 mHa** — a 16% improvement on the fitted 1.776, against the ~100x collapse at every
-   other rung. **None of these searches converged**: every one stopped on its evaluation budget
-   (40 for the five lighter rungs, 30 for this one, since each CAS(12,12) evaluation costs ~2.2
-   minutes). So the comparison is between comparable budgets, not between converged minima — and
-   on comparable budgets five rungs fell by two orders of magnitude and this one by 16%. **What
-   that floor means is a separate question** — see the note on thresholds below.
+   fitted position the search reaches **1.4595 mHa** in 58 evaluations — an 18% improvement on
+   the fitted 1.776, against the 47x–163x collapse at every other rung. **The budget was
+   deliberately raised to settle this**: an earlier 30-evaluation run gave 1.4963, so doubling the
+   effort moved the answer by 2.5%. The other five rungs reach 0.003–0.006 mHa in 40 evaluations.
+   None of these searches converged in the optimizer's sense — each stops on its evaluation budget,
+   since a CAS(12,12) evaluation costs ~2.2 minutes — but the budgets are now comparable and the
+   contrast is not a budget artifact. **What that floor means is a separate question** — see the
+   note on thresholds below.
 4. **CAS(6,6)'s intersection is at `tw` = 89.11, not 90.** That is why its `pyr` cut at `tw` = 90
    fitted badly and appeared to jump: the cut simply missed the apex. The one-dimensional `tw`
    check at the fitted `pyr` reported 89.982 and did not catch it, because that cut was taken at
@@ -143,12 +144,11 @@ Loop transport at CAS(12,12) nonetheless returns **π**, stable across two discr
 **Two objections to reading that as a disagreement were raised and tested; both have now been
 answered, and the claim still should not be pushed as far as it first was.**
 
-*Objection 1: the floor came from a fit along a line.* Fits of that kind run ~100x too high on
+*Objection 1: the floor came from a fit along a line.* Fits of that kind run 47x–163x too high on
 every rung where a direct search was tried, so the 1.7 mHa could have been an artifact. A free 2D
-minimization from that position reached **1.496 mHa**, only 16% below the fit, where the same
-procedure on every other rung fell by ~100x. The caveat is that this search stopped on its
-evaluation budget rather than converging — as all of them did — so what is established is that a
-comparable search effort does not get under the floor, not that nothing could.
+minimization from that position reaches **1.4595 mHa** in 58 evaluations, 18% below the fit, where
+the same procedure on every other rung falls by two orders of magnitude in 40. Doubling the budget
+from 30 to 58 moved it by 2.5%, so the floor is not an artifact of stopping early either.
 
 *Objection 2: only a cross through the loop had been sampled.* The scan covered one row at
 `tw` = 90 over `pyr` 80–140 and one column at `pyr` = 102.2 over `tw` 84–96, while the loop spans

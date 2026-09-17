@@ -195,11 +195,29 @@ Three methodological additions, each with a notebook:
   against self-consistency rather than by taste: with it on, no overlap threshold from 0.70 to 0.92
   admits a contradiction; with it off, 0.80 admits a lone dissenter and 0.70 an outright
   contradiction.
-* **Adaptive step control.** Measured honestly, it is **cost-neutral** on the loops tested. Its
-  value is that it walks loops uniform discretization cannot walk at any affordable $N$, removes
-  the need to guess $N$, and diagnoses *why* a loop failed.
+* **Adaptive step control.** Measured honestly, it **never beat uniform discretization on cost** on
+  any CASSCF loop tested (0.60×–1.23× formaldimine, 0.67×–1.15× butadiene, 0.75×–1.04× ethylene
+  CAS(8,8)), and the predictions of 1.3×, 3.1× and 4.7× made beforehand are all retracted. Cost is
+  not proportional to point count: hard points are also expensive points, so adaptive removes the
+  cheap ones and adds the expensive ones. Its value is that it walks loops uniform discretization
+  cannot walk at any affordable $N$ (19×–43× fewer points near a degeneracy), removes the need to
+  guess $N$, and diagnoses *why* a loop failed.
 * **Bisection and triangulation.** A method returning one bit per loop can return a position, with
-  a measured resolution and a built-in consistency check.
+  a measured resolution and a built-in consistency check. This turned an inference into a
+  measurement. Comparing the two methods *at the same active space*, so that only the
+  state-specific/state-averaged difference is in play:
+
+  | formaldimine | loop transport (SS) | gap scan (SA) | SS − SA | SA − FCI | residual / precision |
+  |---|---|---|---|---|---|
+  | CAS(2,2) | (131.67, 86.30) | 151.61 | −19.94 | +19.00 | **1.57 — inconsistent** |
+  | CAS(4,4) | (128.99, 90.24) | 130.43 | **−1.44** | −2.18 | 0.29 |
+  | CAS(6,6) | (129.73, 88.49) | 131.35 | **−1.63** | −1.26 | 0.76 |
+
+  The state-specific degeneracy sits **consistently below** the state-averaged one, by about 1.5°
+  at both rungs where the measurement is self-consistent — the same size as the gap scan's own
+  error against FCI. At butadiene CAS(2,2) the same experiment brackets the transition at
+  ρ = 0.5385 ± 0.0843 while the gap-scan intersection implies ρ = 0.2121, a factor 2.5 outside.
+  **The two methods do not localize to the same point**, which §3's open question turns on.
 
 Three of this project's own claims were overturned by checking them, and the checks are recorded
 next to the claims in `docs/findings.md` rather than quietly corrected.

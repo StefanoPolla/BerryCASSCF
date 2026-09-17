@@ -138,18 +138,19 @@ gap from each fitted position (cold SA-CASSCF evaluations, cached, hard budget):
 | (6,6) | (90.00, 114.46) | 0.990 | (**89.11**, 114.61) | **0.006** | **0.91** | 40 |
 | (8,8) | (90.00, 120.87) | 0.201 | (89.98, 121.08) | **0.003** | 0.22 | 40 |
 | (10,10) | (90.00, 105.07) | 0.303 | (89.96, 104.90) | **0.006** | 0.18 | 40 |
-| (12,12) | (90.00, 102.17) | 1.776 | (90.00, 101.96) | **1.496** | 0.21 | 29 |
+| (12,12) | (90.00, 102.17) | 1.776 | (89.97, 101.94) | **1.460** | 0.23 | 58 |
 
 The positions move by at most 0.91 degrees, so the ladder's 19.2-degree spread is not a fitting
 artifact. The *gaps* are another matter: five of six rungs fall by about two orders of magnitude,
 confirming that those cuts pass essentially through a real intersection and that a fitted "closest
 approach" measured along a line means very little.
 
-**CAS(12,12) does not follow.** The same search improved the gap by only 16% in 29
-evaluations. **No rung's search converged** -- every one stopped on its evaluation budget, 40 for
-the five lighter rungs and 30 here, because a single CAS(12,12) evaluation costs ~2.2 minutes. The
-comparison is therefore between comparable efforts rather than between converged minima. Two
-follow-ups were run to see whether the difference is an artifact:
+**CAS(12,12) does not follow.** The same search improves the gap by 18% in 58 evaluations --
+more effort than the 40 given to every other rung, and deliberately so: an earlier 30-evaluation
+run returned 1.4963, so doubling the budget moved the answer by 2.5%. No rung's search converged in
+the optimizer's sense (each stops on its budget, a CAS(12,12) evaluation costing ~2.2 minutes), but
+the efforts are comparable and the contrast is not a budget artifact. Two follow-ups were run to
+see whether it is an artifact of something else:
 
 * **Was the minimum off the sampled cross?** A 5 x 5 grid over the loop's bounding box
   (`tw` 78-102, `pyr` 83.9-119.9) puts its minimum at **(90.00, 101.85)** — the centre, on the row
