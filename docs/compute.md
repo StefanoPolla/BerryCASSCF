@@ -25,7 +25,19 @@ STO-3G, PySCF 2.14:
 | One SA-CASSCF point, butadiene CAS(4,4)/6-31G\* | ~2 s |
 | One SA-CASSCF point, butadiene CAS(10,10)/6-31G\* | ~14 s |
 | One SA-CASSCF point, butadiene CAS(12,12)/6-31G\* | **>144 s** (853k determinants, 68 AOs) |
-| Test suite (`pytest -q`) | ~15 s |
+| Test suite (`pytest -q`) | ~20 s (185 tests) |
+| Adaptive loop walk, formaldimine CAS(2,2) | 1.4 s (17 points) |
+| Adaptive loop walk, ethylene CAS(8,8)/6-31G\* | ~330-710 s (23-35 points) |
+| Adaptive/uniform stepping study, formaldimine (40 runs) | ~4 min |
+| Adaptive/uniform stepping study, butadiene CAS(2,2) (20 runs) | ~45 min |
+| Adaptive/uniform stepping study, ethylene CAS(8,8) (20 runs) | ~75 min |
+| One bisection probe (2 adaptive walks), formaldimine CAS(2,2) | 1.5-55 s; slowest near the transition |
+| Localization, formaldimine CAS(2,2), 3 centres | 6 min, 127k micro-iterations |
+| Localization, formaldimine CAS(4,4), 3 centres | 39 min, 307k micro-iterations |
+| Localization, formaldimine CAS(6,6), 3 centres | 2 h 46 min, 245k micro-iterations |
+| Localization, butadiene CAS(2,2), 3 centres | 2 h 1 min, 51k micro-iterations |
+| Gap-minimum search, butadiene CAS(12,12), 58 evaluations | 2 h 20 min (~145 s/evaluation) |
+| Threshold calibration (reads saved runs only) | < 1 s |
 
 Overlaps are three to four orders of magnitude cheaper than the CASSCF solve they compare,
 so the exact nonorthogonal treatment costs essentially nothing.
@@ -151,6 +163,54 @@ Both templates set `OMP_NUM_THREADS`/`MKL_NUM_THREADS`/`OPENBLAS_NUM_THREADS` fr
 oversubscription makes CASSCF slower, so do not leave these unset.
 
 There is no MPI in this package. Do not request more than one task.
+
+### Locating what loop transport encircles (`slurm/localize.sbatch`)
+
+**What it does.** Bisects the loop radius about several centres until the Berry phase turns over,
+then intersects the resulting ellipses. The transition radius is the elliptical distance to
+whatever the loop encircles, so this *measures* the state-specific degeneracy rather than inferring
+it. Method and figures: `notebooks/locating_intersections.ipynb`; motivation: `docs/findings.md` §3.
+
+**Why it needs the cluster.** Each probe is two adaptive loop walks (two step-control settings that
+must agree), each walk is 15-35 CASSCF points, and a bisection uses up to 11 probes per centre.
+Measured locally at the cheapest active space, butadiene CAS(2,2): **2 h 1 min** for three centres.
+A CAS(12,12) point costs >144 s against ~4 s at CAS(2,2), so the reference rung is far out of
+laptop range.
+
+**Estimated runtime**, butadiene CAS(12,12), 3 centres:
+
+| | |
+|---|---|
+| points per adaptive walk | ~20 (more near the transition) |
+| walks per probe | 2 |
+| probes per centre | up to 11 |
+| points per centre | ~440 |
+| seconds per point | ~150 (state-specific CAS(12,12)/6-31G\*) |
+| **per centre** | **~18 h** |
+| **three centres** | **~55 h** |
+
+That exceeds a typical 48 h wall limit, so **submit one centre per job** using `CENTRES=1` and
+raising `--centres` as results accumulate, or split by hand. The driver skips a completed result
+file, so re-submission is safe and restartable.
+
+**How to submit.**
+
+```bash
+sbatch --export=ALL,SYSTEM=butadiene,CAS="12 12",CENTRES=1 slurm/localize.sbatch
+```
+
+**Expected output.** `results/localize/butadiene_cas12-12.json` — every probe with its verdict and
+cost, the bracket per centre, and the triangulation with its uncertainty-normalised residual.
+`logs/localize_butadiene_cas12-12.log` carries one line per probe with an ETA.
+
+**What to look for.** Whether the measured rho agrees with the gap-scan intersection for that rung.
+At CAS(2,2) it does not — 0.5385 ± 0.0843 measured against 0.2121 implied — and CAS(12,12) is where
+the two methods disagree most sharply.
+
+**Known failure modes**, both seen at CAS(2,2): a centre whose full-size loop hits the step floor
+contributes nothing (choose centres so the loop does not graze the degeneracy), and a centre whose
+full-size loop does not enclose the target cannot be bracketed at all. Both are reported, not
+hidden.
 
 ## Scaling guidance for the follow-up system
 
