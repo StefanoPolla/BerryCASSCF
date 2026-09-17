@@ -375,6 +375,7 @@ per-point overhead that differs between machines. Rejected adaptive trials are c
 code(r"""
 form = load("results/adaptive/formaldimine_stepping.json")
 buta = load("results/adaptive/butadiene_stepping.json")
+eth  = load("results/adaptive/ethylene_stepping.json")
 
 def frontier_table(data, title):
     if not data:
@@ -389,19 +390,27 @@ def frontier_table(data, title):
         as_ = f"{a} ({q['adaptive_setting'].split(',')[0]})" if a else "none passes"
         print(f"{q['loop']:>5} {q['cas']:>10} {q['target']:>10.2f} {us:>20} {as_:>22} {ratio:>7}")
 
-frontier_table(form, "FORMALDIMINE / STO-3G  -- cost (micro-iterations) at matched quality")
-frontier_table(buta, "BUTADIENE / 6-31G*     -- cost (micro-iterations) at matched quality")
+frontier_table(form, "FORMALDIMINE / STO-3G      -- cost (micro-iterations) at matched quality")
+frontier_table(buta, "BUTADIENE CAS(2,2) / 6-31G* -- cost (micro-iterations) at matched quality")
+frontier_table(eth,  "ETHYLENE CAS(8,8) / 6-31G*  -- the largest PREDICTED saving, 4.7x")
 """)
 
 code(r"""
-fig, axes = plt.subplots(1, 2, figsize=(10.0, 4.2), squeeze=False)
-for ax, data, title in zip(axes[0], (form, buta), ("formaldimine", "butadiene")):
+fig, axes = plt.subplots(1, 3, figsize=(13.2, 4.2), squeeze=False)
+for ax, data, title in zip(axes[0], (form, buta, eth),
+                           ("formaldimine", "butadiene CAS(2,2)", "ethylene CAS(8,8)")):
     if not data:
         ax.text(0.5, 0.5, f"{title}\nnot run yet", ha="center", va="center"); ax.axis("off")
         continue
     for method, colour, marker in (("uniform", "steelblue", "o"), ("adaptive", "crimson", "s")):
         rows = [r for r in data["rows"] if r["method"] == method and r["status"] == "OK"
                 and r["loop"].endswith("_x")]
+        # the refused runs matter too: they are where uniform stepping cannot be trusted
+        bad = [r for r in data["rows"] if r["method"] == method and r["status"] != "OK"
+               and r["loop"].endswith("_x")]
+        if bad:
+            ax.plot([r["micro"] for r in bad], [r["min_overlap"] for r in bad],
+                    marker, color=colour, ms=6, ls="none", mfc="none", alpha=0.55)
         if not rows: continue
         ax.plot([r["micro"] for r in rows], [r["min_overlap"] for r in rows],
                 marker, color=colour, ms=6, ls="none", label=method)
