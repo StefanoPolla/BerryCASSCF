@@ -111,54 +111,59 @@ surface as if it came out that way.
 
 ---
 
-## 8. A larger butadiene reference on the cluster — worth queueing, not worth waiting for
+## 8. A larger butadiene reference on the cluster — sizing measured 2026-09-18
 
-**What.** A CAS(16,16) (or larger) run for butadiene, as a SLURM job with the usual
-`#### SITE ####` placeholders, covering at minimum the `tw = 90` row and a direct gap search at its
-minimum, so the ladder gains a rung above CAS(12,12).
+**What.** A rung above CAS(12,12) for butadiene, so the ladder gains a point and the question
+"has the position stopped moving?" gains an answer. `slurm/rung14.job` runs CAS(14,14): the
+`tw = 90` gap-scan row plus the fine cut in one task, loop transport on all three loops in the
+other.
 
-**Why, and why it is last.** Butadiene has no exact in-basis reference — full valence is CAS(22,22)
-— and the ladder is still moving at the top, so every statement about "the" intersection position
-is relative to a rung that is not itself converged. A higher rung would show whether the position
-is settling or still wandering, and whether the 1.5 mHa floor at CAS(12,12) persists.
+**Why, and why it is last.** Butadiene has no exact in-basis reference — full valence is
+CAS(22,22) — and the ladder is still moving at the top, so every statement about "the"
+intersection position is relative to a rung that is not itself converged. A higher rung would
+show whether the position is settling. It does **not** settle the §3 disagreement, which is
+about the two methods disagreeing on a fixed loop; §9 does that, by measuring.
 
-**But it is not on the critical path, and should not become one.** The absence of a converged
-reference is itself one of the project's clearer results: it is the sharpest available answer to
-"is there a system needing more than CAS(4,4)?". And the open question in `docs/findings.md` §3 is
-about *the two methods disagreeing on a fixed loop*, which one more rung does not settle — §2 does,
-by measuring rather than inferring. CAS(16,16) is ~5 M determinants against 853 k, so several hours
-per point even on a cluster; it buys one more data point in a sequence that has already refused to
-converge over six.
+**Status.** Written and validated, **not submitted**. It is sized by assuming CASSCF cost tracks
+determinant count (CAS(14,14) is 11.8 M against CAS(12,12)'s 853 k), which is the weakest number
+in `docs/compute.md`. `slurm/bench.job` measures one solve at that active space; submit `rung14`
+only once that measurement exists, and record the measurement either way.
 
-**Practical form.** Queue it when the cluster is free, take whatever it returns, and let the
-conclusions stand or fall on the local work. If it arrives, it goes into `butadiene_ladder.ipynb`
-as an extra rung; if it does not, nothing in the write-up depends on it.
+**What would make it fail.** If a CAS(14,14) point costs hours rather than tens of minutes, the
+rung is not reachable by this route and that should be *recorded as the finding* rather than left
+as an unsized job in `slurm/`. Nothing in the write-up depends on it.
 
 ---
 
-## 9. Butadiene localization — started at CAS(2,2), still needed at CAS(12,12)
+## 9. Butadiene localization — the ladder is running, CAS(12,12) will not finish in a session
 
 **Done at CAS(2,2)** (2026-09-17): the bisection brackets rho = 0.5385 ± 0.0843 about the `B_x`
 centre while the gap-scan intersection implies rho = 0.2121 — decisively outside. A second centre
 reports 0 cleanly, leaving the object at pyr in (105.6, 111.5), tw in (84, 96); a third was refused
 at full size, so no triangulation and no position is claimed. Cost 2 h at the cheapest rung.
 
-**What remains.** The same experiment at the rungs where the two methods actually disagree, above
-all CAS(12,12). Three things would make it much better than the CAS(2,2) run: the initial-point
-escalation fix (which postdates it), a third centre chosen so that its full-size loop does not
-graze the degeneracy, and a tighter `d_min` so the refusal bands narrow (§11).
+**Running since 2026-09-18** on ALICE (`docs/progress.md`): `slurm/localize.job` covers CAS(4,4),
+(6,6), (8,8) and (10,10) as twelve tasks — one centre each, merged per rung with `--merge` —
+and `slurm/localize_cas12.job` covers the reference rung the same way. Expect 2-7 h per centre on
+the ladder and 40-60 h per centre at CAS(12,12), measured from a node that is 2.7x slower per
+point than the laptop.
 
-**Why.** `docs/findings.md` §3 is the sharpest open question in the project: at CAS(12,12) a direct
-2D search finds no gap below 1.5 mHa anywhere in the loop, while loop transport returns pi on that
-same loop at two discretizations. Every objection to reading that as a disagreement has now been
-tested and answered. What remains is to **measure** the position of whatever loop transport is
-encircling instead of inferring it, which is exactly what bisection does — and it is the only
-available way to interrogate the state-specific object directly.
+**What still needs deciding, and it is a choice of centres.** The ladder tasks use the **default**
+third centre (99, 101.85), the one that was refused at CAS(2,2) because its full-size loop grazes
+the object. CAS(12,12) uses (99, 110) instead, chosen from the CAS(2,2) bracket. Neither choice can
+be right for every rung: the gap-scan intersections span pyr 102-121, and a centre that brackets
+cleanly at one rung grazes at another. The correct order is to pick each rung's third centre from
+*its own* first-centre measurement, once that exists — so if a third centre comes back refused,
+the follow-up is a single extra task with a centre chosen from that rung's bracket, not a re-run.
 
-**What would make it fail.** Cost, measured rather than guessed: CAS(2,2) took 2 h for three
-centres and 50 557 micro-iterations, and a CAS(12,12) adaptive walk is minutes *per point*, so the
-reference rung is a cluster job and needs a SLURM template. And §10 below: if a loop encloses an
-even number of degeneracies the phase is 0, and bisection would measure the wrong boundary.
+**Why it matters.** `docs/findings.md` §3 is the sharpest open question in the project. Every
+objection to reading it as a disagreement has been tested and answered; what remains is to
+**measure** the position of whatever loop transport encircles at the rung where the gap scan finds
+nothing, which is what bisection does and the only way to interrogate the state-specific object
+directly.
+
+**What would make it fail.** §10 below: if a loop encloses an even number of degeneracies the
+phase is 0, and bisection would measure the wrong boundary.
 
 ---
 
