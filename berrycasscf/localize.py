@@ -133,6 +133,12 @@ class BisectionResult:
                 f"{len(self.probes)} probes, {self.total_micro} micro")
 
 
+def restore_probe(record: dict) -> RadiusProbe:
+    """Rebuild one evaluated radius from its saved form."""
+    known = {f.name for f in dataclass_fields(RadiusProbe)}
+    return RadiusProbe(**{k: v for k, v in record.items() if k in known})
+
+
 def restore_bisection(record: dict) -> BisectionResult:
     """Rebuild a finished bisection from the dict :meth:`BisectionResult.to_dict` wrote.
 
@@ -251,6 +257,8 @@ def bisect_radius(
     max_probes: int = 12,
     name: str = "L",
     progress: Callable[[str], None] | None = None,
+    cached_probes: Sequence[dict] = (),
+    on_probe: Callable[[list[RadiusProbe]], None] | None = None,
 ) -> BisectionResult:
     """Shrink the loop about ``centre`` until the phase turns over.
 
@@ -259,15 +267,33 @@ def bisect_radius(
     through. Bisection is **geometric** (the midpoint of the logarithms), because the
     quantity sought is a distance spanning possibly an order of magnitude and relative
     precision is what matters.
+
+    **Resuming.** One bisection is days at a large active space, which is longer than a
+    walltime, so probes can be carried across runs: ``on_probe`` is called with every probe
+    completed so far, and ``cached_probes`` supplies what an earlier run saved. Replay is
+    exact rather than approximate — the control flow is a pure function of the verdicts, so
+    re-running it with the saved verdicts reproduces the same sequence of radii and then
+    continues from where it stopped. A cached probe costs nothing and is not re-solved.
     """
     say = progress or (lambda _m: None)
-    t0 = time.time()
+    done = {round(float(p["scale"]), 9): restore_probe(p) for p in cached_probes}
+    # Start the clock behind by whatever the cached probes already spent, so that a resumed
+    # bisection reports the cost of the whole measurement rather than of its last session.
+    t0 = time.time() - sum(p.wall_time for p in done.values())
     probes: list[RadiusProbe] = []
+    if done:
+        say(f"  resuming with {len(done)} probes already evaluated: "
+            + ", ".join(f"{k:.4f}->{v.verdict}" for k, v in sorted(done.items())))
 
     def probe(scale: float) -> RadiusProbe:
-        p = evaluate_radius(centre, shape, scale, cas=cas, cont=cont, settings=settings,
-                            geom_fn=geom_fn, name=name, progress=say)
+        key = round(float(scale), 9)
+        cached = key in done
+        p = done[key] if cached else evaluate_radius(
+            centre, shape, scale, cas=cas, cont=cont, settings=settings,
+            geom_fn=geom_fn, name=name, progress=say)
         probes.append(p)
+        if not cached and on_probe is not None:
+            on_probe(probes)
         return p
 
     say(f"bisecting about ({centre[0]:.3f}, {centre[1]:.3f}) with shape {tuple(shape)}")

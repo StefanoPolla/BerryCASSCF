@@ -236,6 +236,33 @@ def main() -> int:
             "wall_time": time.time() - t0,
         }
 
+    # Probe-level checkpointing, only where a single bisection outlives a walltime: at
+    # CAS(12,12) one centre is one job of ~two days, so saving per centre saves nothing.
+    # Each finished probe is written out, and a resubmission replays the saved verdicts --
+    # which reproduces the same sequence of radii, since the control flow is a pure function
+    # of them -- and continues. See bisect_radius.
+    cached_probes: list[dict] = []
+    checkpoint = None
+    if args.only_centre is not None:
+        stale = (existing or {}).get("bisections") or []
+        cached_probes = (stale[0].get("probes") or []) if stale and not args.force else []
+
+        def checkpoint(probes, _centre=centres[args.only_centre]):
+            save_json({
+                "system": args.system, "cas": [ne, ncas], "basis": spec["basis"],
+                "shape": list(shape), "centres": [list(c) for c in centres],
+                "reference": list(ref) if ref else None,
+                "reference_note": spec["reference_note"],
+                "bisections": [{"centre": list(_centre), "shape": list(shape),
+                                "cas_label": cas.cas_label,
+                                "probes": [q.to_dict() for q in probes],
+                                "lo": None, "hi": None, "undetermined": [],
+                                "total_micro": sum(q.cost_micro for q in probes),
+                                "wall_time": sum(q.wall_time for q in probes)}],
+                "complete": False,
+                "wall_time": time.time() - t0,
+            }, out)
+
     wanted = range(len(centres)) if args.only_centre is None else [args.only_centre]
     for i, centre in enumerate(centres):
         if i not in wanted or i < len(results):
@@ -246,6 +273,7 @@ def main() -> int:
             scale_hi=spec["scale_hi"], scale_lo=spec["scale_lo"],
             tol=spec["tol"], max_probes=spec["max_probes"],
             name=f"{args.system[:3].upper()}{i}", progress=log,
+            cached_probes=cached_probes, on_probe=checkpoint,
         )
         results.append(res)
         # Save before starting the next centre: hours of bisection should not depend on the

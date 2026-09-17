@@ -12,6 +12,8 @@ import pytest
 
 from berrycasscf.localize import (
     BisectionResult,
+    RadiusProbe,
+    bisect_radius,
     _circle_intersections,
     elliptical_radius,
     merge_centre_records,
@@ -228,3 +230,66 @@ def test_merge_refuses_a_record_holding_more_than_one_bisection():
     records = [_record([_bisection(centres[0], rho=0.5), _bisection((90.0, 90.0), rho=0.6)])]
     with pytest.raises(ValueError, match="expected 1"):
         merge_centre_records(records, centres)
+
+
+# --- resuming one bisection, probe by probe -------------------------------------------
+#
+# A bisection at a large active space is days long -- one centre is one cluster job -- so a
+# walltime kill must not cost the whole measurement. Replay is only trustworthy if the
+# control flow is a pure function of the verdicts, and that is what these check, with a
+# synthetic oracle in place of the CASSCF so the logic is tested rather than the chemistry.
+
+def _oracle(rho_true=0.5):
+    """A degeneracy at elliptical distance rho_true, and a counter of real evaluations."""
+    calls = []
+
+    def evaluate(centre, shape, scale, **kw):
+        calls.append(scale)
+        return RadiusProbe(scale=scale, radius=(shape[0] * scale, shape[1] * scale),
+                           verdict=("pi" if scale > rho_true else "zero"),
+                           reason="synthetic", cost_micro=1, wall_time=1.0)
+
+    return evaluate, calls
+
+
+def test_bisection_brackets_a_synthetic_degeneracy(monkeypatch):
+    evaluate, calls = _oracle(0.5)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    res = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0, tol=0.02)
+    assert res.bracketed
+    assert res.lo <= 0.5 <= res.hi
+    assert res.rho == pytest.approx(0.5, abs=0.05)
+    assert len(calls) > 2
+
+
+def test_a_resumed_bisection_reaches_the_same_bracket_without_redoing_work(monkeypatch):
+    evaluate, calls = _oracle(0.5)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    saved: list[list[dict]] = []
+    full = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0, tol=0.02,
+                         on_probe=lambda ps: saved.append([p.to_dict() for p in ps]))
+    assert len(saved) == len(calls)                    # every probe was checkpointed
+
+    # Kill it after three probes and resume from what was written.
+    partial = saved[2]
+    calls.clear()
+    resumed = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0,
+                            tol=0.02, cached_probes=partial)
+    assert (resumed.lo, resumed.hi) == (full.lo, full.hi)
+    assert [p.scale for p in resumed.probes] == [p.scale for p in full.probes]
+    assert len(calls) == len(full.probes) - 3          # the first three were not re-solved
+
+
+def test_a_fully_cached_bisection_solves_nothing(monkeypatch):
+    evaluate, calls = _oracle(0.5)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    saved: list[list[dict]] = []
+    full = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0, tol=0.02,
+                         on_probe=lambda ps: saved.append([p.to_dict() for p in ps]))
+    calls.clear()
+    again = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0, tol=0.02,
+                          cached_probes=saved[-1])
+    assert (again.lo, again.hi) == (full.lo, full.hi)
+    assert calls == []
+    # The cost carried in the record is the whole measurement's, not the last session's.
+    assert again.total_micro == full.total_micro
