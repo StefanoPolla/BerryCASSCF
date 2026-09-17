@@ -172,6 +172,37 @@ It matters because loop transport returns **pi** on that same loop at CAS(12,12)
 and N=21 with endpoint overlap -1.000000. The two methods are hardest to reconcile exactly where
 the active space is largest.
 
+### Locating what loop transport encircles, by bisection
+
+The ladder above locates the *state-averaged* intersection. Loop transport never evaluates a gap,
+so its object has to be located differently: shrink the loop about a fixed centre until the phase
+turns over, and the transition radius is the elliptical distance to whatever is enclosed
+(`examples/run_localization.py`, method explained in `notebooks/locating_intersections.ipynb`).
+
+At CAS(2,2), about the `B_x` centre (90, 101.85) with the `B_x` shape (12, 18):
+
+| probe scale | 1.00 | 0.73 | 0.62 | 0.53 | 0.49 | 0.45 | 0.39 | 0.28 | 0.08 |
+|---|---|---|---|---|---|---|---|---|---|
+| verdict | pi | pi | pi | refused | refused | 0 | 0 | 0 | 0 |
+
+**rho = 0.5385 +- 0.0843**, bracketed between 0.4542 and 0.6228, from a sequence that is monotone
+in verdict with the two refusals falling inside the bracket exactly as expected -- that band is the
+resolution, not a defect.
+
+**The gap scan's intersection for this same active space is at rho = 0.2121**, from the direct 2D
+search position (89.97, 105.67). That is a factor 2.5 inside the measured bracket, and decisively
+outside it. The two methods do not localize to the same point.
+
+A second centre at (90, 90) reports **0 cleanly** at full size -- both settings agreeing, not a
+refusal -- which excludes 63% of the measured circle and leaves the enclosed object at `pyr`
+between 105.6 and 111.5 with `tw` between 84 and 96. A third centre at (99, 101.85) hit the step
+floor at full size and was refused, so **no triangulation is available and no position is claimed**.
+Two constraints confine it to an arc; they do not pin it to a point, and with only one distance
+there is no residual to check consistency with.
+
+Cost: 50 557 micro-iterations, 2 hours, at the *cheapest* active space. Repeating this at
+CAS(12,12), where the disagreement is sharpest, is a cluster job (`docs/todo.md` §9).
+
 ### A consequence for the Berry phase
 
 The loops are centred on the CAS(12,12) intersection at `pyr = 101.85`, with radius 18 degrees in

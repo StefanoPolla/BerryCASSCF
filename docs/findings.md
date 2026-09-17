@@ -257,6 +257,44 @@ Shrinking the loop bounds the degeneracy loop transport actually encircles:
 A 12 deg loop reaching only to pyr = 113.9 still returns a clean π, so **what carries the phase
 lies below 113.9, not at 121.2**.
 
+### The difference has now been measured, not only bounded
+
+Bisection on the loop radius (`berrycasscf/localize.py`, `notebooks/locating_intersections.ipynb`)
+measures the elliptical distance from a centre to whatever a loop encircles, so the state-specific
+object can be located rather than bracketed by hand. Two systems have been done.
+
+**Formaldimine, where an FCI reference exists**, comparing at the *same* active space so that only
+the state-specific/state-averaged difference is in play:
+
+| CAS | loop transport (state-specific) | gap scan (state-averaged) | difference | gap scan − FCI | triangulation residual |
+|---|---|---|---|---|---|
+| (2,2) | (131.67, 86.30) | 151.61 | −19.94 | +19.00 | **0.197 — refused** |
+| (4,4) | (128.99, 90.24) | 130.43 | **−1.44** | −2.18 | 0.0088 |
+
+At CAS(4,4) the two methods put the degeneracy **1.44 deg apart** — comparable to the 2.18 deg by
+which the gap scan itself misses FCI. So the state-specific/state-averaged difference is not a
+small correction on top of active-space error; at this rung it is of the same size. The CAS(2,2)
+row is not a measurement: its residual says three centres cannot be explained by one degeneracy,
+and the construction declines to report a position (see §8).
+
+**Butadiene CAS(2,2), where the disagreement was first noticed.** The bisection about the loop
+centre (90, 101.85) brackets the transition at **rho = 0.5385 ± 0.0843**, from a verdict sequence
+monotone in radius (π at 1.00, 0.73, 0.62; 0 at 0.45, 0.39, 0.28, 0.08). The gap scan's
+intersection for the same active space, located by direct 2D search at (89.97, 105.67), sits at
+**rho = 0.2121** — a factor 2.5 inside the bracket and decisively outside it.
+
+A second centre at (90, 90) reports 0 *cleanly* at full size, which excludes 63% of the measured
+circle and leaves the enclosed object at `pyr` between 105.6 and 111.5 with `tw` between 84 and 96.
+A third centre was refused at full size (step floor), so **no triangulation is available and no
+position is claimed** — two constraints confine it to an arc, they do not pin it to a point.
+
+What the butadiene measurement does establish is the thing §3 asserts: **loop transport encircles
+something that is not where the gap scan puts its intersection.** Until now that was inferred from
+a loop still returning π when the gap-scan minimum had moved outside it; it is now measured.
+
+The same experiment at CAS(12,12), where the disagreement is sharpest, is a cluster job — this one
+took two hours at the cheapest active space (`docs/todo.md` §9).
+
 ## 4. The inversion: the cheap method is the stable one
 
 Across butadiene's ladder, loop transport returns the same answer at every rung while the gap scan

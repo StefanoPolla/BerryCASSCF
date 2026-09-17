@@ -331,8 +331,9 @@ for cas in (2, 4, 6):
     diff = f"{ss[0] - sa[0]:+.2f}" if (ss and sa) else "--"
     sadiff = f"{sa[0] - FCI_ALPHA:+.2f}" if sa else "--"
     flag = "  <- refused (inconsistent)" if (res is not None and res > 0.05) else ""
+    res_s = f"{res:.5f}" if res is not None else "n/a"
     print(f"{'CAS(%d,%d)' % (cas, cas):>9} {ss_s:>21} {sa_s:>15} {diff:>9} "
-          f"{sadiff:>9} {res if res is None else round(res, 5):>10}{flag}")
+          f"{sadiff:>9} {res_s:>10}{flag}")
 print()
 print(f"FCI gap-scan reference: alpha = {FCI_ALPHA} (one-dimensional cut at fixed phi)")
 """)
@@ -408,6 +409,79 @@ if buta:
 else:
     print("butadiene localization not yet run:")
     print("  python examples/run_localization.py butadiene --cas 2 2")
+""")
+
+code(r"""
+if buta:
+    shape_b = tuple(buta["shape"])
+    b1 = buta["bisections"][0]
+    rho1 = b1["rho"]
+    c1 = tuple(b1["centre"])
+    c2 = tuple(buta["bisections"][1]["centre"])
+    outer2 = buta["bisections"][1]["probes"][0]["verdict"]
+
+    fig, ax = plt.subplots(figsize=(6.6, 5.2))
+    # the measured circle about centre 1
+    th = np.linspace(0, 2*np.pi, 2001)
+    u1 = np.array([c1[0]/shape_b[0], c1[1]/shape_b[1]])
+    u2 = np.array([c2[0]/shape_b[0], c2[1]/shape_b[1]])
+    pts = u1[:, None] + rho1*np.vstack([np.cos(th), np.sin(th)])
+    allowed = np.linalg.norm(pts - u2[:, None], axis=0) > 1.0 if outer2 == "zero" else \
+              np.ones(th.size, bool)
+    tw, pyr = pts[0]*shape_b[0], pts[1]*shape_b[1]
+    ax.plot(tw[~allowed], pyr[~allowed], ".", ms=1.6, color="0.75",
+            label="excluded by centre 2")
+    ax.plot(tw[allowed], pyr[allowed], ".", ms=2.4, color="tab:red",
+            label="where loop transport says it is")
+    ax.add_patch(Ellipse(c2, 2*shape_b[0], 2*shape_b[1], fill=False,
+                         edgecolor="tab:blue", lw=1.4, ls="--"))
+    ax.plot(*c1, "+", ms=11, color="k", label="centre 1")
+    ax.plot(*c2, "x", ms=9, color="tab:blue", label="centre 2 (reports 0)")
+    if sa_pt:
+        ax.plot(*sa_pt, "*", ms=17, color="gold", mec="k", mew=0.7,
+                label="gap-scan intersection")
+    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
+    ax.set_title("butadiene CAS(2,2): the two methods do not localize to the same point")
+    ax.legend(fontsize=7.5, loc="lower left")
+    ax.set_aspect("equal")
+    plt.tight_layout(); plt.show()
+
+    print(f"measured    rho from centre 1 = {rho1:.4f}  "
+          f"(bracket {b1['lo']:.4f} to {b1['hi']:.4f})")
+    if sa_pt:
+        print(f"gap scan implies rho        = "
+              f"{elliptical_radius(sa_pt, c1, shape_b):.4f}  -> outside the bracket")
+    print(f"remaining allowed arc: pyr in ({pyr[allowed].min():.1f}, "
+          f"{pyr[allowed].max():.1f}), tw in ({tw[allowed].min():.1f}, "
+          f"{tw[allowed].max():.1f})  ({100*allowed.mean():.0f}% of the circle)")
+""")
+
+md(r"""
+### What butadiene shows, and what it does not
+
+**The measurement is clean and it excludes the gap-scan position.** The bisection about the loop
+centre brackets the transition at $\rho = 0.5385 \pm 0.0843$ from a sequence that is monotone in
+verdict — $\pi$ at 1.00, 0.73 and 0.62, $0$ at 0.45, 0.39, 0.28 and 0.08, with two refusals in
+between. The gap scan's intersection for this active space, located by direct 2D search at
+(89.97, 105.67), sits at $\rho = 0.2121$ — **a factor 2.5 inside the bracket, and nowhere near
+it.**
+
+The second centre adds a constraint rather than a position: its full-size loop reports $0$
+*cleanly*, with both settings agreeing, so whatever is enclosed lies outside it. That removes 63%
+of the measured circle and leaves `pyr` between 105.6 and 111.5 with `tw` between 84 and 96.
+
+**What it does not do is triangulate.** The third centre's full-size loop hit the step floor and was
+refused, so only one centre produced a distance and one produced an exclusion. Two constraints
+confine the position to an arc; they do not pin it to a point, and no residual is available to
+check consistency. Claiming a position here would be exactly the overreach the residual exists to
+prevent.
+
+So the defensible statement is: **at butadiene CAS(2,2), loop transport encircles something that is
+not where the gap scan puts its intersection.** That is the first *measurement* of the
+state-specific object's position in this project rather than a bound on it, and it is direct
+evidence for `docs/findings.md` §3 — the two methods are sensing different objects. Whether the same
+holds at CAS(12,12), where the disagreement is sharpest, needs the same experiment at that rung,
+which is a cluster job: this one took two hours at the cheapest active space.
 """)
 
 md(r"""
