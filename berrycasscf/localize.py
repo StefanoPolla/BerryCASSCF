@@ -261,6 +261,10 @@ def bisect_radius(
     scale_lo: float = 0.05,
     tol: float = 0.02,
     max_probes: int = 12,
+    anchor_factor: float = 2.0,
+    max_anchor_moves: int = 3,
+    scale_ceiling: float = 4.0,
+    scale_floor: float = 1e-3,
     name: str = "L",
     progress: Callable[[str], None] | None = None,
     cached_probes: Sequence[dict] = (),
@@ -273,6 +277,13 @@ def bisect_radius(
     through. Bisection is **geometric** (the midpoint of the logarithms), because the
     quantity sought is a distance spanning possibly an order of magnitude and relative
     precision is what matters.
+
+    **Anchors move.** ``scale_hi`` must enclose and ``scale_lo`` must not, but neither is known
+    in advance: the first is grown (up to ``scale_ceiling``) while it reports anything but pi,
+    the second shrunk (down to ``scale_floor``) while it reports anything but zero, at most
+    ``max_anchor_moves`` times each. A refused anchor is usually a grazing loop, and moving it
+    away from the seam is exactly what it needs -- the alternative, which this replaced, was to
+    abandon the centre with nothing measured.
 
     **Resuming.** One bisection is days at a large active space, which is longer than a
     walltime, so probes can be carried across runs: ``on_probe`` is called with every probe
@@ -303,13 +314,42 @@ def bisect_radius(
         return p
 
     say(f"bisecting about ({centre[0]:.3f}, {centre[1]:.3f}) with shape {tuple(shape)}")
-    top, bottom = probe(scale_hi), probe(scale_lo)
+
+    # Move the two anchors until they say what a bracket needs, instead of giving up the
+    # moment they do not. Both moves are monotone in the right direction:
+    #
+    #   outer anchor, wants pi.  A zero means the loop is too small to enclose anything, and a
+    #                            refusal usually means it is grazing -- growing fixes both.
+    #   inner anchor, wants 0.   A pi means even this loop encloses the object, and a refusal
+    #                            again means grazing -- shrinking fixes both.
+    #
+    # Without this a single refused anchor ends the bisection with nothing measured, which is
+    # how ethylene CAS(6,6) spent 18 minutes and returned "not bracketed" while its outer loop
+    # had cleanly reported pi.
+    top = probe(scale_hi)
+    for _ in range(max_anchor_moves):
+        if top.verdict == PI or scale_hi * anchor_factor > scale_ceiling:
+            break
+        scale_hi *= anchor_factor
+        say(f"  outer anchor was {top.verdict}; growing it to {scale_hi:.4f}")
+        top = probe(scale_hi)
+
+    bottom = probe(scale_lo)
+    for _ in range(max_anchor_moves):
+        if bottom.verdict == ZERO or scale_lo / anchor_factor < scale_floor:
+            break
+        scale_lo /= anchor_factor
+        say(f"  inner anchor was {bottom.verdict}; shrinking it to {scale_lo:.4f}")
+        bottom = probe(scale_lo)
+
     lo = scale_lo if bottom.verdict == ZERO else None
     hi = scale_hi if top.verdict == PI else None
     if hi is None:
-        say(f"  outer loop does not report pi ({top.verdict}); nothing to bracket")
+        say(f"  outer loop still does not report pi ({top.verdict}) at scale {scale_hi:.4f}; "
+            f"nothing to bracket")
     if lo is None and bottom.verdict == PI:
-        say(f"  inner loop already reports pi: the degeneracy is inside scale {scale_lo}")
+        say(f"  inner loop still reports pi at scale {scale_lo:.4f}: the degeneracy is closer "
+            f"to the centre than any loop tried")
 
     # Plain bisection gives up the moment a midpoint comes back undetermined, and that is
     # exactly what the first midpoint tends to do: it lands in the refusal band around the

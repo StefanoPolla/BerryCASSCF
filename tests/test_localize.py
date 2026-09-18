@@ -302,3 +302,67 @@ def test_merge_refuses_an_unfinished_checkpoint():
     partial["complete"] = False
     with pytest.raises(ValueError, match="unfinished checkpoint"):
         merge_centre_records([partial], centres)
+
+
+# --- anchors that move -----------------------------------------------------------------
+#
+# A bisection needs an outer loop that encloses and an inner one that does not, and neither
+# is known in advance. Before these, a single anchor that came back refused ended the whole
+# bisection with nothing measured -- which is how ethylene CAS(6,6) burned 18 minutes while
+# its outer loop had cleanly reported pi.
+
+def _band_oracle(rho_true=0.5, band=0.0):
+    """Verdicts for a degeneracy at rho_true, refused within `band` of it (the grazing zone)."""
+    calls = []
+
+    def evaluate(centre, shape, scale, **kw):
+        calls.append(scale)
+        if abs(scale - rho_true) <= band:
+            verdict = "undetermined"
+        else:
+            verdict = "pi" if scale > rho_true else "zero"
+        return RadiusProbe(scale=scale, radius=(shape[0] * scale, shape[1] * scale),
+                           verdict=verdict, reason="synthetic", cost_micro=1, wall_time=1.0)
+
+    return evaluate, calls
+
+
+def test_inner_anchor_shrinks_when_the_degeneracy_is_inside_it(monkeypatch):
+    """A degeneracy closer than scale_lo used to be reported as 'not bracketed'."""
+    evaluate, calls = _band_oracle(0.05)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    res = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.08, scale_hi=1.0, tol=0.05)
+    assert res.bracketed
+    assert res.lo < 0.05 < res.hi
+    assert min(calls) < 0.08                       # it really did shrink the anchor
+
+
+def test_outer_anchor_grows_when_the_degeneracy_is_outside_it(monkeypatch):
+    evaluate, calls = _band_oracle(1.5)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    res = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.05, scale_hi=1.0, tol=0.05)
+    assert res.bracketed
+    assert res.lo < 1.5 < res.hi
+    assert max(calls) > 1.0
+
+
+def test_a_refused_anchor_is_moved_rather_than_fatal(monkeypatch):
+    """The ethylene CAS(6,6) case: the inner anchor lands in the refusal band."""
+    evaluate, _ = _band_oracle(0.09, band=0.02)     # 0.08 falls inside the band
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", evaluate)
+    res = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.08, scale_hi=1.0, tol=0.05)
+    assert res.bracketed
+    assert res.lo < 0.09 < res.hi
+
+
+def test_anchor_moves_are_bounded(monkeypatch):
+    """A loop that can never be walked must stop, not escalate forever."""
+    def always_refused(centre, shape, scale, **kw):
+        return RadiusProbe(scale=scale, radius=(shape[0] * scale, shape[1] * scale),
+                           verdict="undetermined", reason="synthetic", cost_micro=1,
+                           wall_time=1.0)
+    monkeypatch.setattr("berrycasscf.localize.evaluate_radius", always_refused)
+    res = bisect_radius((90.0, 100.0), (12.0, 18.0), scale_lo=0.08, scale_hi=1.0,
+                        max_anchor_moves=3)
+    assert not res.bracketed
+    assert len(res.probes) <= 2 + 2 * 3            # both anchors, each moved at most 3 times
