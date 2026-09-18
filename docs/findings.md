@@ -150,11 +150,14 @@ anywhere. Both control loops have now been run at the same rung, at three discre
 
 | loop | N=13 | N=21 | N=31 | min abs adjacent overlap |
 |---|---|---|---|---|
-| `B_x` (encloses) | **π**, Π = −0.493 | **π**, Π = −0.626 | *running* | 0.83, 0.88 |
+| `B_x` (encloses) | **π**, Π = −0.493 | **π**, Π = −0.626 | **π**, Π = −0.715 | 0.83, 0.88, 0.92 |
 | `B_1` (control) | 0, Π = +0.868 | 0, Π = +0.915 | 0, Π = +0.941 | 0.986, 0.995, 0.997 |
 | `B_2` (control) | 0, Π = +0.868 | 0, Π = +0.915 | 0, Π = +0.941 | 0.986, 0.994, 0.997 |
 
-Every run reports `OK`, and every endpoint estimator is ±1.000000 exactly. Three things follow:
+Every run reports `OK`, and every endpoint estimator is ±1.000000 exactly. The enclosing loop's
+worst overlap improves monotonically with refinement (0.83 → 0.88 → 0.92) while |Π| grows
+(0.49 → 0.63 → 0.72), which is what a converging discretization looks like rather than a
+marginal one. Three things follow:
 
 * **the π is selective.** The two controls are trivial at every discretization, so whatever
   produces π on `B_x` does not produce it on loops of the same size and shape 30 deg away;

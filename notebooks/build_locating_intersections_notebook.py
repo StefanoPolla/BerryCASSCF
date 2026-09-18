@@ -767,11 +767,24 @@ CAS(2,2) tension:
   and its three sibling loops were refused outright in that same region, which is at least
   consistent with the region being hard.
 
-`slurm/mirror_test.job` separates these with two loops placed deliberately **off** the line, at
-(100, 106) and its exact mirror (80, 106), each containing one candidate region and excluding the
-other. Two $\pi$'s support the pair; two $0$'s move the fault to the large loops; a disagreement
-between two geometries that are exact mirror images would indicate a bug, and is the check built
-into the design.
+`slurm/mirror_test.job` was built to separate these, with two loops placed deliberately **off**
+the line, at (100, 106) and its exact mirror (80, 106), each containing one candidate region and
+excluding the other. Two $\pi$'s would support the pair; two $0$'s would move the fault to the
+large loops; a disagreement between two exact mirror images would indicate a bug.
+
+**It returned none of those.** Every full-size loop it tried was refused, each for a different
+and separately diagnosed reason: the walk never closing the loop at all; an endpoint overlap of
+0.457, meaning the loop did not return to the same state; and a point where CASSCF did not
+converge. Counting these with the earlier centres, **seven of the eight full-size loops tried in
+this region fail their checks, in four distinct ways** — and the one that passes is the single
+exclusion the tension above depends on.
+
+So the tension is not a finding; it is a caution about the one verdict holding it up. What the
+region *has* established is a limit of the method: at full loop size — a (12, 18) ellipse
+reaching `pyr` = 124 and `tw` = 68 — ethylene's plane cannot be transported by this continuation.
+The centre that works, (90, 98), works because its transition radius of 0.82 keeps every probe
+inside the traversable region. Localizing here needs centres placed *closer* to the object, with
+the loop shrunk to match, rather than larger loops reaching further out.
 """)
 
 md(r"""

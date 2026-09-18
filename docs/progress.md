@@ -601,12 +601,15 @@ done, at three discretizations each:
 
 | loop | N=13 | N=21 | N=31 | worst adjacent overlap |
 |---|---|---|---|---|
-| `B_x` encloses | **pi** | **pi** | *running* | 0.83, 0.88 |
+| `B_x` encloses | **pi** | **pi** | **pi** | 0.83, 0.88, 0.92 |
 | `B_1` control | 0 | 0 | 0 | 0.986, 0.995, 0.997 |
 | `B_2` control | 0 | 0 | 0 | 0.986, 0.994, 0.997 |
 
 Every run `OK`, every endpoint estimator ±1.000000 exactly, and the two controls — mirror-image
-loops traversed independently — agree to 1e-4. The enclosing loop is also the *hard* one by the
+loops traversed independently — agree to 1e-4. The enclosing loop's worst overlap *improves* with
+refinement (0.83 → 0.88 → 0.92) as |Pi| grows (0.49 → 0.63 → 0.72): a converging discretization,
+not a marginal one. The stability criterion is now met at this rung with three discretizations
+and both controls, where before it had two and none. The enclosing loop is also the *hard* one by the
 method's own measure (0.83 against 0.99), which is what passing near a degeneracy looks like.
 "The loop-transport result is simply wrong at this rung" now needs a failure selective enough to
 spare both controls at three discretizations each.
@@ -658,9 +661,29 @@ must be paired and every `tw`-symmetric loop must read even. That is a real tens
 survive: the same claim at CAS(4,4), where both other loops were refused, nothing excludes the
 line, and the allowed region straddles it.
 
-**The first mirror probe has itself come back refused** (centre (80, 106), CAS(2,2), full size:
-"at least one setting failed its checks"), which is consistent with the region simply being hard
-to walk at full loop size — the second candidate explanation rather than the first.
+**The mirror test has since returned, and its answer is a third one I had not enumerated: every
+full-size loop in that region is refused.** Three of its four tasks are done and none produced a
+verdict, each failing differently and each diagnosed:
+
+| centre | rung | full-size verdict | why |
+|---|---|---|---|
+| (100, 106) | CAS(2,2) | refused | the adaptive walk never reached `t = 1`; the loop was never closed |
+| (80, 106) | CAS(2,2) | refused | endpoint `\|<Psi_0\|Psi_N>\|` = 0.457 — the loop did not return to the same state |
+| (100, 106) | CAS(4,4) | refused | CASSCF did not converge at one point |
+
+So the experiment designed to separate "an off-line mirror pair" from "the large loops are not
+measuring enclosure" could not be run — and that failure is itself the evidence for the second
+option. **Seven of the eight full-size loops tried in this region of ethylene's plane fail their
+checks**, in four distinct ways. The one that passes, (80, 110.9) at CAS(2,2), is the sole basis
+for the CAS(2,2) tension reported above, and a single passing verdict among siblings that fail
+that consistently is not a sound foundation for a parity claim.
+
+**So the tension is withdrawn as a finding and kept as a caution.** What is established is
+narrower and more useful: at full loop size — a (12, 18) ellipse reaching `pyr` = 124 and `tw` =
+68 — ethylene's plane is not traversable by this continuation. Localization there needs loops
+that stay in the region where transport works: centres nearer the object so that `scale = 1` is
+already small, or a smaller shape. The bracketing centre (90, 98) works precisely because its
+transition radius, 0.82, keeps every probe inside that region.
 
 ### 6. Adaptive and uniform transport disagree on one loop — unresolved
 
@@ -690,7 +713,8 @@ a branch change in one of them.
 
 ## Resume here — jobs still running on ALICE as of 2026-09-18 05:13 CEST
 
-Nineteen tasks were still running when this session ended. They need no attention while they
+Eighteen tasks were still running when this session ended (`berry_cas12.job` finished during
+the write-up; its N=31 result is in the table above). They need no attention while they
 run; the drivers skip finished work, so **re-submitting any of these jobs is safe** and picks up
 only what is missing.
 
@@ -700,7 +724,6 @@ only what is missing.
 | `5028404_[0,3-7,9,11]` | `localize.job` | butadiene ladder, the centres still unfinished | ~19 h |
 | `5028474_[0-3]` | `localize_ethylene.job` | ethylene CAS(8,8) all centres, CAS(6,6) centre 0 | ~20 h |
 | `5029232_[0-2]` | `mirror_test.job` | the off-line mirror centres (one task already finished) | ~7 h |
-| `5028403_0` | `berry_cas12.job` | butadiene `B_x` at CAS(12,12), N=31 | ~11 h |
 
 Check with `squeue -u pollas1`, or
 `~/.claude/skills/alice-hpc/scripts/alice-jobs.sh triage <jobid>` for a finished one.
@@ -734,5 +757,9 @@ Check with `squeue -u pollas1`, or
 * **The ethylene third centres were not re-chosen per rung.** `docs/todo.md` §9 says each rung's
   third centre should come from *its own* first-centre bracket; these were all placed from the
   CAS(12,12) reference, and three of four were refused. The fix is one extra task per rung, not
-  a re-run, and it should wait until the first centres have reported.
+  a re-run, and it should wait until the first centres have reported. The mirror-test outcome
+  sharpens what that replacement must satisfy: a centre is only usable if its **full-size** loop
+  stays inside the traversable region, which for ethylene means a transition radius well under 1
+  — so centres should be placed *closer* to the expected object, not further, and the loop shape
+  shrunk with them.
 * **`rung14.job` was not submitted** and should not be, at 3.6 h per non-converged point.
