@@ -268,6 +268,22 @@ git pull --ff-only
 A file that differs is kept and reported, because that means the cluster recomputed something
 the laptop also has — which is a result to look at, not a conflict to clear.
 
+**The same trap has a second form, and `rm` is the wrong fix for it.** A localization writes its
+record after every probe, so a sync taken mid-run picks up an *incomplete* checkpoint. Commit
+that, let the job finish, and the cluster's copy is now a **tracked modification** rather than an
+untracked file:
+
+```
+error: Your local changes to the following files would be overwritten by merge:
+        results/localize/ethylene_cas6-6_centre0.json
+```
+
+The cluster's version is the finished one and the committed version is the stale checkpoint, so
+the order matters: **pull it to the laptop first, commit it there, then** `git checkout -- <file>`
+on the cluster and pull. Doing the checkout first would discard the finished record in favour of
+the checkpoint. Better still, do not commit records whose `complete` flag is false — they are
+resumption state, not results.
+
 ### Watching a run
 
 Every driver writes a timestamped log to **`logs/<job>.log`** inside the repository (gitignored),
