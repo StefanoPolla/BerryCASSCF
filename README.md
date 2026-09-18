@@ -172,7 +172,30 @@ python examples/calibrate_thresholds.py
 | [summary.ipynb](notebooks/summary.ipynb) | the cross-system verdict, short |
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
-gap scans additionally checkpoint after each grid row.
+gap scans additionally checkpoint after each grid row, and a localization writes a record after
+every probe, so a run killed after two days resumes instead of starting over.
+
+### Is a small gap an intersection?
+
+```bash
+python examples/report_gap_criterion.py butadiene     # seconds, reads saved results
+```
+
+No threshold is invented. Near a conical intersection the gap is linear, so a floor `g` on a cut
+of local slope `a` is what a cut passing `g / a` from the apex would show — and that distance has
+a natural comparison, the loop radius. Butadiene CAS(12,12)'s 1.46 mHa floor becomes **0.83 deg,
+4.6% of the loop's semi-axis**, where every other rung lands at 0.002–0.005 deg. So the floor
+never supported the claim that the loop encloses nothing; the 300x contrast between that rung and
+the others is real but is not about enclosure. See [docs/findings.md](docs/findings.md) §3.
+
+### Running on a cluster
+
+The heavy work — localization at large active spaces — lives in [slurm/](slurm/) as job scripts
+that are **runnable**, not templates, with concrete values for ALICE (Leiden) and every
+site-specific line marked `# SITE:`. Measured there: a state-specific CAS(12,12) point costs 349 s
+on 8 threads against 876 s on one, and **CAS(14,14) costs 13 123 s and does not converge**, which
+is why the butadiene ladder stops where it does. Setup, sizing, partition choice and the
+result-syncing recipe: [docs/compute.md](docs/compute.md).
 
 ### Minimal example
 
