@@ -14,6 +14,15 @@
 #
 # One more rung on the butadiene ladder: CAS(14,14). docs/todo.md §8.
 #
+# *** MEASURED AND NOT VIABLE -- DO NOT SUBMIT AS IT STANDS. ***
+# bench.job timed one state-specific solve at this active space on 2026-09-18: 13 123 s,
+# 3.6 hours, and it returned converged=False at the default macro-iteration budget. That is
+# 37x the CAS(12,12) cost, against the 13.8x the determinant count predicts. At that rate the
+# scan task is ~26 h of *non-converged* points and the loop-transport task ~47 h, which the
+# continuity checks would refuse anyway. The file is kept because the measurement is the
+# result; making the rung reachable needs a different solver (DMRG or selected CI), not a
+# longer walltime. See docs/compute.md and docs/todo.md §8.
+#
 #   cd slurm && sbatch rung14.job
 #
 # Task 0  gap scan on the tw = 90 row, then the fine pyr cut -- where this rung puts the

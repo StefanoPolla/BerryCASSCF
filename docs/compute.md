@@ -19,6 +19,10 @@ STO-3G, PySCF 2.14:
 | **Whole Berry sweep** (3 loops x 3 CAS x 4 discretizations = 36 runs) | **~4 min** |
 | FCI reference point (STO-3G, 1.66M determinants) | ~28 s |
 | One CASSCF point, fulvene CAS(6,6)/STO-3G | 0.8 s |
+| One CASSCF point, butadiene CAS(12,12)/6-31G\* — **ALICE node, 8 threads** | 349 s |
+| the same, 1 thread | 876 s (so threading is worth 2.5x) |
+| One SA-CASSCF point, butadiene CAS(12,12)/6-31G\* — ALICE node | 144 s |
+| One CASSCF point, butadiene CAS(14,14)/6-31G\* — ALICE node | **13 123 s, and not converged** |
 | One SA-CASSCF point, ethylene CAS(8,8)/6-31G\* | 0.9 s warm, ~4 s with `strategy="best"` |
 | One SA-CASSCF point, ethylene CAS(10,10)/6-31G\* | 4.5 s |
 | One SA-CASSCF point, ethylene CAS(12,12)/6-31G\* | 28 s |

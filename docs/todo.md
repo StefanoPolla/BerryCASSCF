@@ -119,7 +119,7 @@ surface as if it came out that way.
 
 ---
 
-## 8. A larger butadiene reference on the cluster — sizing measured 2026-09-18
+## 8. A larger butadiene reference on the cluster — measured, and out of reach
 
 **What.** A rung above CAS(12,12) for butadiene, so the ladder gains a point and the question
 "has the position stopped moving?" gains an answer. `slurm/rung14.job` runs CAS(14,14): the
@@ -132,14 +132,17 @@ intersection position is relative to a rung that is not itself converged. A high
 show whether the position is settling. It does **not** settle the §3 disagreement, which is
 about the two methods disagreeing on a fixed loop; §9 does that, by measuring.
 
-**Status.** Written and validated, **not submitted**. It is sized by assuming CASSCF cost tracks
-determinant count (CAS(14,14) is 11.8 M against CAS(12,12)'s 853 k), which is the weakest number
-in `docs/compute.md`. `slurm/bench.job` measures one solve at that active space; submit `rung14`
-only once that measurement exists, and record the measurement either way.
+**Status: measured, and the answer is no.** `bench.job` timed one state-specific solve at
+CAS(14,14) on 2026-09-18: **13 123 s — 3.6 hours — returning `converged=False`**. That is 37x the
+CAS(12,12) cost where the determinant count predicts 13.8x, so the cost does not scale the way the
+sizing assumed. The two tasks would be ~26 h and ~47 h of points that do not converge, and the
+continuity checks would refuse the loop-transport one on that ground alone.
 
-**What would make it fail.** If a CAS(14,14) point costs hours rather than tens of minutes, the
-rung is not reachable by this route and that should be *recorded as the finding* rather than left
-as an unsized job in `slurm/`. Nothing in the write-up depends on it.
+So **the butadiene ladder stops at CAS(12,12) by measurement, not by choice**, and the failure
+mode anticipated below is the one that occurred. `slurm/rung14.job` is kept and marked
+not-viable: it is the record of what was tried. Reaching this rung needs a different solver —
+DMRG or selected CI — which is a project, not a job script, and nothing in the write-up depends
+on it.
 
 ---
 
