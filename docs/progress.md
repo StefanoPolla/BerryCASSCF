@@ -684,17 +684,38 @@ Two things fall out. First, **CAS(4,4)'s region straddles the mirror line** (87.
 parity worry raised at CAS(2,2) does not recur — which is further reason to read the CAS(2,2)
 `tw` offset as an artefact of its two exclusions rather than as physics.
 
-Second, and more interesting: at CAS(4,4) the **state-averaged scan misplaces the intersection by
-+5.5 deg** (116.41 against the exact 110.90 — the known ladder error at this rung), while loop
-transport's region ends 1.8 deg short of the exact answer. **Loop transport is the closer of the
-two to the exact result at this rung**, by roughly a factor of three, and the comparison is
-like-for-like because both are computed at CAS(4,4). This is the scoring that `docs/findings.md`
-§4 says no system in the project could provide, and ethylene provides it.
+Second, at CAS(4,4) the **state-averaged scan misplaces the intersection by +5.5 deg** (116.41
+against the exact 110.90 — the known ladder error at this rung), while loop transport's region
+runs from 102.9 to 109.1 and so ends 1.8 deg short of the exact answer.
 
-Stated conservatively, because it should be: these are bounds from three or four constraints, not
-positions; the regions are boxes around an arc; and at CAS(4,4) the measured region and the exact
-reference do **not** overlap, so loop transport is not exactly right either — only much less
-wrong than the comparator at the same active space.
+**I first wrote that up as loop transport being three times closer. It is not, and the comparison
+was rigged by accident:** 1.8 deg is the distance from the *nearest edge* of a region, and 5.51 deg
+the distance from a *point*. Comparing like with like — the centre of the region against the gap
+scan's estimate — gives this, over the four rungs measured so far:
+
+| CAS | region centre | half-width | error of centre | gap-scan error |
+|---|---|---|---|---|
+| (2,2) | 110.90 | 0.60 | **0.00** | 0.18 |
+| (4,4) | 106.00 | 3.10 | 4.90 | 5.51 |
+| (6,6) | 104.30 | 4.90 | 6.60 | 8.26 |
+| (8,8) | 105.40 | 5.70 | 5.50 | 7.00 |
+
+Loop transport is nearer the exact answer at every rung, but by 0.2 to 1.7 deg — and at the three
+upper rungs that margin is **smaller than the measurement's own half-width**. The defensible
+statement is that the two methods are comparable there, with loop transport perhaps slightly
+better, and that at CAS(2,2) it is exact to within a 0.6 deg band. Nothing here supports "beats
+the comparator".
+
+A sharper test is whether the measured region can *tell the two answers apart*, and mostly it
+cannot: at CAS(2,2) and CAS(8,8) the region contains both the exact position and the gap scan's,
+at CAS(4,4) it contains neither, and at **CAS(6,6) it contains the gap scan's and excludes the
+exact one** — the opposite of the story I was assembling. The regions are too wide to
+discriminate, which is a statement about resolution, not about which method is right.
+
+Stated conservatively, because it should be: these are bounds from two to five constraints, not
+positions; the regions are boxes drawn around an arc; and CAS(8,8)'s triangulated point (107.79,
+3.11 deg from exact) disagrees with its own region centre (105.40, 5.50 deg) by 2.4 deg, which is
+itself a measure of how far the precision is from supporting a ranking.
 
 ### 5. The correction: a refusal is not an exclusion
 
