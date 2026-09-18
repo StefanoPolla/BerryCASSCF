@@ -677,6 +677,104 @@ plot_ladder(eth_rows, "ethylene")
 """)
 
 md(r"""
+### What ethylene's constraints allow, taken together
+
+One centre gives a distance, not a position: the degeneracy lies somewhere on a ring. A second
+centre whose full-size loop reports $0$ excludes its whole interior. Intersecting every such
+constraint is the only honest way to say what has been measured — and for ethylene the result is
+not a point but a problem.
+
+The constraints available at each rung are: the **annulus** between the bracketing centre's
+`lo` and `hi`; the **outsides** of the two other full-size loops, both of which report $0$; and
+the inside of the ladder's `E_x` loop, which reports $\pi$ at every rung
+(`ethylene_ladder.ipynb`).
+""")
+
+code(r"""
+def ethylene_region(cas, ax):
+    d = load(f"ethylene_cas{cas[0]}-{cas[1]}.json")
+    if not d:
+        ax.set_title(f"CAS{cas}: not yet merged"); return None
+    shape = tuple(d["shape"])
+    bs = d["bisections"]
+    tw = np.linspace(60, 120, 481)
+    pyr = np.linspace(60, 150, 721)
+    T, P = np.meshgrid(tw, pyr, indexing="ij")
+
+    def rho_grid(c):
+        return np.hypot((T - c[0]) / shape[0], (P - c[1]) / shape[1])
+
+    b0 = bs[0]
+    mask = (rho_grid(tuple(b0["centre"])) >= b0["lo"]) & (rho_grid(tuple(b0["centre"])) <= b0["hi"])
+    for b in bs[1:]:
+        # a full-size loop reporting zero excludes its interior
+        if b.get("rho") is None and b["probes"] and b["probes"][0]["verdict"] == "zero":
+            mask &= rho_grid(tuple(b["centre"])) > 1.0
+    # the ladder's E_x loop reports pi at every rung: a circle of radius 12 about the reference
+    ex = np.hypot((T - 90.0) / 12.0, (P - 110.9) / 12.0) < 1.0
+    both = mask & ex
+
+    ax.contourf(T, P, mask.astype(float), levels=[0.5, 1.5], colors=["tab:red"], alpha=0.25)
+    ax.contourf(T, P, both.astype(float), levels=[0.5, 1.5], colors=["tab:red"], alpha=0.75)
+    ax.contour(T, P, ex.astype(float), levels=[0.5], colors=["tab:green"], linewidths=1.3)
+    for b in bs:
+        ax.plot(*b["centre"], "+", ms=9, color="k")
+    ax.axvline(90.0, color="0.4", ls=":", lw=1.2)
+    ref = tuple(d["reference"])
+    ax.plot(*ref, "P", ms=11, color="k")
+    ax.set_xlim(66, 114); ax.set_ylim(70, 145)
+    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
+    ax.set_title(f"ethylene CAS({cas[0]},{cas[1]})")
+    if both.any():
+        return (T[both].min(), T[both].max(), P[both].min(), P[both].max())
+    return None
+
+fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.4), sharex=True, sharey=True)
+for ax, cas in zip(axes, [(2, 2), (4, 4), (6, 6)]):
+    box = ethylene_region(cas, ax)
+    if box:
+        print(f"CAS{cas}: allowed after every constraint -> "
+              f"tw in ({box[0]:.1f}, {box[1]:.1f}), pyr in ({box[2]:.1f}, {box[3]:.1f})")
+axes[0].plot([], [], "s", color="tab:red", alpha=0.25, label="allowed by the bisections")
+axes[0].plot([], [], "s", color="tab:red", alpha=0.75, label="and inside E_x")
+axes[0].plot([], [], "-", color="tab:green", label="E_x (reports pi)")
+axes[0].plot([], [], "P", color="k", label="exact reference")
+axes[0].plot([], [], ":", color="0.4", label="mirror line tw = 90")
+axes[0].legend(fontsize=7, loc="upper left")
+plt.tight_layout(); plt.show()
+""")
+
+md(r"""
+**At CAS(2,2) the allowed region does not touch the mirror line, and that is a tension.** Ethylene's
+`tw` and `180 - tw` geometries are exact mirror images, so the set of degeneracies must be
+symmetric about `tw = 90`: anything off the line has a partner at its reflection. Every loop used
+above is centred on that line and therefore encloses both partners or neither — an **even** count,
+which reads as a trivial phase. A symmetric loop can never return $\pi$ for an off-line pair, yet
+the bracketing centre and `E_x` both return $\pi$.
+
+So at CAS(2,2) the observations cannot all be explained by one off-line object, and the
+intersection above rules out an on-line one. One of them is not measuring what it appears to.
+**CAS(4,4) shows no such tension** — both of its other loops were refused, so nothing excludes
+the mirror line there and its allowed region straddles it. That is the difference between a
+constraint and a missing measurement, and it is why the refusals matter. The candidates for the
+CAS(2,2) tension:
+
+* there are **several** degeneracies, and the large loops enclose different numbers of them —
+  the parity problem `docs/todo.md` §10 anticipated, here for the first time in real data;
+* the single clean $0$ that does the excluding comes from a loop reaching `tw` = 68 and
+  `pyr` = 129 at full size, far into pyramidalized geometries. If that walk transported a
+  different branch rather than the intended state, its $0$ is not a statement about enclosure —
+  and its three sibling loops were refused outright in that same region, which is at least
+  consistent with the region being hard.
+
+`slurm/mirror_test.job` separates these with two loops placed deliberately **off** the line, at
+(100, 106) and its exact mirror (80, 106), each containing one candidate region and excluding the
+other. Two $\pi$'s support the pair; two $0$'s move the fault to the large loops; a disagreement
+between two geometries that are exact mirror images would indicate a bug, and is the check built
+into the design.
+""")
+
+md(r"""
 ## Summary
 
 * A method that returns **one bit per loop** can be made to return a **position**, by bisecting the

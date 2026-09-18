@@ -16,9 +16,12 @@
 #
 #   cd slurm && sbatch mirror_test.job
 #
-# The problem this settles. Ethylene's first three centres give constraints that intersect
-# only OFF the tw = 90 line: at CAS(2,2) the allowed region is tw in (96.4, 99.5), phi in
-# (102.9, 109.2), once the E_x loop's pi from the ladder is included. But tw and 180 - tw are
+# The problem this settles. At CAS(2,2) ethylene's constraints intersect only OFF the tw = 90
+# line: tw in (92.0, 99.5), pyr in (103.0, 113.0), once the E_x loop's pi from the ladder is
+# included. Note that only ONE of the two non-bracketing loops contributes -- (80, 110.9),
+# which returned a clean 0. The other was refused at the step floor, and a refusal excludes
+# nothing. At CAS(4,4) both were refused, so there is no tension there at all, only a loose
+# measurement. But tw and 180 - tw are
 # exact mirror images, so anything off the line has a partner at its reflection -- and every
 # loop used so far is centred on tw = 90 and therefore symmetric, enclosing both partners or
 # neither. An even count reads as 0. A symmetric loop can never report the pi that both
