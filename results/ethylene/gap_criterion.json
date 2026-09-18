@@ -1,0 +1,86 @@
+{
+  "system": "ethylene",
+  "noise_mHa": 0.001,
+  "loop_semi_axis_deg": 12.0,
+  "coordinate": "phi",
+  "rows": [
+    {
+      "cas": [
+        2,
+        2
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 1.3336799367058256,
+      "fit_residual": 0.11848637633121087,
+      "miss_deg": 0.0,
+      "miss_over_radius": 0.0,
+      "above_noise": false
+    },
+    {
+      "cas": [
+        4,
+        4
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 1.2738713431837183,
+      "fit_residual": 0.1259863037985223,
+      "miss_deg": 0.0,
+      "miss_over_radius": 0.0,
+      "above_noise": false
+    },
+    {
+      "cas": [
+        6,
+        6
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 1.0605460506488502,
+      "slope_mHa_per_deg": 1.466294531839636,
+      "fit_residual": 0.05376862908690247,
+      "miss_deg": 0.7232830973721716,
+      "miss_over_radius": 0.06027359144768096,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        8,
+        8
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 1.451752787168582,
+      "fit_residual": 0.04674388014925857,
+      "miss_deg": 0.0,
+      "miss_over_radius": 0.0,
+      "above_noise": false
+    },
+    {
+      "cas": [
+        10,
+        10
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 1.4148042085657428,
+      "slope_mHa_per_deg": 1.4528266299181996,
+      "fit_residual": 0.17245737460417862,
+      "miss_deg": 0.9738286588575283,
+      "miss_over_radius": 0.08115238823812736,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        12,
+        12
+      ],
+      "floor_mHa": null,
+      "fitted_closest_approach_mHa": 0.5194272473061168,
+      "slope_mHa_per_deg": 1.3721162099807767,
+      "fit_residual": 0.10185566642955687,
+      "miss_deg": 0.3785592237215782,
+      "miss_over_radius": 0.031546601976798185,
+      "above_noise": true
+    }
+  ]
+}

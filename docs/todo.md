@@ -56,7 +56,7 @@ Kept here in one paragraph each so the plan reads as a record rather than a wish
 
 ---
 
-## 6. A criterion for when a gap-scan minimum counts as an intersection
+## 6. A criterion for when a gap-scan minimum counts as an intersection — done 2026-09-18
 
 **What.** Decide, explicitly and in code, when a state-averaged minimum gap is small enough to be
 called a conical intersection. Some combination of an absolute tolerance and the local cone slopes
@@ -77,6 +77,14 @@ report the *ingredients* (floor, slopes, implied miss distance, convergence nois
 single number as a convenience, stating it once and never tuning it. The honest outcome may be that
 this question cannot be settled by the gap scan at all — in which case §2 is the answer, since
 bisection measures the enclosed degeneracy without needing a gap threshold.
+
+**Done**, and no threshold was invented. `examples/report_gap_criterion.py` converts each rung's
+floor into the distance a cut would have to pass from a cone's apex to show it, which is a
+quantity with a natural comparison — the loop radius — rather than an arbitrary one. Butadiene
+CAS(12,12)'s 1.46 mHa becomes 0.83 deg against an 18 deg semi-axis, so the floor never supported
+the claim that the loop encloses nothing (`docs/findings.md` §3). The third caveat there is the
+live one: the conversion assumes a cone, and an avoided crossing has no apex to miss. Only the §9
+measurement separates those.
 
 ---
 

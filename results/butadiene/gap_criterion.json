@@ -1,0 +1,86 @@
+{
+  "system": "butadiene",
+  "noise_mHa": 0.001,
+  "loop_semi_axis_deg": 18.0,
+  "coordinate": "pyr",
+  "rows": [
+    {
+      "cas": [
+        2,
+        2
+      ],
+      "floor_mHa": 0.0031537790334823512,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 1.3101335350122476,
+      "fit_residual": 0.018694954384508793,
+      "miss_deg": 0.0024072195308342125,
+      "miss_over_radius": 0.00013373441837967847,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        4,
+        4
+      ],
+      "floor_mHa": 0.004496336998727202,
+      "fitted_closest_approach_mHa": 0.08641956995762608,
+      "slope_mHa_per_deg": 1.2367072920477953,
+      "fit_residual": 0.030298982846221255,
+      "miss_deg": 0.0036357325841282666,
+      "miss_over_radius": 0.00020198514356268148,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        6,
+        6
+      ],
+      "floor_mHa": 0.006070080900144603,
+      "fitted_closest_approach_mHa": 2.306303980991577,
+      "slope_mHa_per_deg": 1.3661240478854644,
+      "fit_residual": 0.28016207382367175,
+      "miss_deg": 0.004443286764141288,
+      "miss_over_radius": 0.00024684926467451597,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        8,
+        8
+      ],
+      "floor_mHa": 0.002646591809707388,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 0.8164706722725845,
+      "fit_residual": 0.05690627799388253,
+      "miss_deg": 0.003241502603321684,
+      "miss_over_radius": 0.0001800834779623158,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        10,
+        10
+      ],
+      "floor_mHa": 0.0064075443049205205,
+      "fitted_closest_approach_mHa": 0.0,
+      "slope_mHa_per_deg": 1.2655837505970455,
+      "fit_residual": 0.017774854214228718,
+      "miss_deg": 0.005062916066911991,
+      "miss_over_radius": 0.00028127311482844397,
+      "above_noise": true
+    },
+    {
+      "cas": [
+        12,
+        12
+      ],
+      "floor_mHa": 1.4594949295769766,
+      "fitted_closest_approach_mHa": 2.4105788360775344,
+      "slope_mHa_per_deg": 1.7486584768340283,
+      "fit_residual": 0.06713398600391729,
+      "miss_deg": 0.8346369224820923,
+      "miss_over_radius": 0.04636871791567179,
+      "above_noise": true
+    }
+  ]
+}

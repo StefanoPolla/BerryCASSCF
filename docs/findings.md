@@ -176,6 +176,46 @@ the project**. Three readings are live:
 * the loop-transport result is wrong here — both runs report falling back to a weaker warm start at
   several points, which is the failure mode §5 discusses.
 
+### The floor, converted into a distance, is not a disagreement about enclosure
+
+The floor was being compared against a tolerance nobody had fixed. The quantity that can be
+fixed is a **distance**: near a conical intersection the gap is linear in the branching-plane
+coordinates, so a floor `g` on a cut whose local slope is `a` is exactly what a cut passing
+`g / a` from the apex would show. `examples/report_gap_criterion.py` reports that conversion for
+every rung (`results/<system>/gap_criterion.json`):
+
+| CAS | (2,2) | (4,4) | (6,6) | (8,8) | (10,10) | **(12,12)** |
+|---|---|---|---|---|---|---|
+| floor found by direct search (mHa) | 0.0032 | 0.0045 | 0.0061 | 0.0026 | 0.0064 | **1.4595** |
+| local slope (mHa/deg) | 1.310 | 1.237 | 1.366 | 0.816 | 1.266 | 1.749 |
+| implied miss distance (deg) | 0.002 | 0.004 | 0.004 | 0.003 | 0.005 | **0.835** |
+| as a fraction of the loop's 18 deg semi-axis | 0.0001 | 0.0002 | 0.0002 | 0.0002 | 0.0003 | **0.046** |
+
+**CAS(12,12)'s floor is consistent with an intersection 0.83 deg from the searched point —
+4.6% of the loop radius, and therefore inside the loop.** So the gap scan does *not* say the
+loop encloses nothing; it says that if what it is approaching is a cone, the cut misses the apex
+by under a degree. A π from loop transport on an 18 deg loop is not in contradiction with that,
+and this document's earlier framing — "the gap scan finds nothing below 1.5 mHa anywhere in the
+loop" — invited a stronger reading than the number supports. The 300x contrast between this rung
+and the others is real and still unexplained; what it is *not* is evidence about enclosure.
+
+Three caveats, all of which make the conclusion stronger rather than weaker except the last:
+
+* the direct search stops on its evaluation budget, so its floor is an upper bound. A lower true
+  floor means a *smaller* miss distance;
+* the conversion assumes the perpendicular slope equals the fitted in-cut slope. Anisotropy of
+  a factor two moves the miss distance by a factor two — 0.4 or 1.7 deg, both still inside;
+* it assumes the surface near the minimum is a cone at all. If it is an avoided crossing with a
+  genuine 1.5 mHa gap, there is no apex to miss and the distance is meaningless. Nothing here
+  distinguishes those two, which is exactly why the **measurement** in the next section — where
+  loop transport is asked to locate what it encircles — is the experiment that settles it.
+
+The reading that survives is therefore the second of the three above: both methods may be seeing
+the same near-degeneracy, at different resolution. What remains genuinely open is not enclosure
+but **position**: at CAS(2,2) the located state-specific object is a factor 2.5 further out than
+the gap-scan minimum, far outside the measurement's own uncertainty, and that is not explained by
+a floor-to-distance conversion.
+
 Separating them needs the position of whatever loop transport encircles to be **measured** rather
 than inferred, which is what the bisection and triangulation experiment in `docs/todo.md` §2 is
 for: shrink the loop until the phase turns over, and repeat from a second centre.
