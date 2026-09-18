@@ -1,0 +1,1209 @@
+{
+  "system": "ethylene",
+  "cas": [
+    8,
+    8
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    12.0,
+    18.0
+  ],
+  "centres": [
+    [
+      90.0,
+      98.0
+    ],
+    [
+      90.0,
+      124.0
+    ],
+    [
+      80.0,
+      110.9
+    ]
+  ],
+  "reference": [
+    90.0,
+    110.9
+  ],
+  "reference_note": "CAS(12,12) full-valence gap scan, cone-refined (docs/findings.md \u00a71)",
+  "bisections": [
+    {
+      "centre": [
+        90.0,
+        98.0
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(8,8)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "pi",
+          "reason": "all settings agree: pi",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9145431899721335,
+              "n_points": 21,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2221,
+              "wall": 1461.630276441574,
+              "product": -0.6211375906715741,
+              "endpoint": -0.9999999967288753,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [7, 8, 16, 18] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9086645752299275,
+              "n_points": 30,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2765,
+              "wall": 1307.9463884830475,
+              "product": -0.7004641227487447,
+              "endpoint": -0.9999999998424143,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [8, 11, 22, 24, 25] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 4986,
+          "wall_time": 2769.5795361995697
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9961358526210904,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1203,
+              "wall": 204.97646808624268,
+              "product": 0.9826545775189826,
+              "endpoint": 0.9999999019271252,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9980172954000915,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1761,
+              "wall": 275.61455488204956,
+              "product": 0.9876242590147365,
+              "endpoint": 0.999999999504974,
+              "messages": []
+            }
+          ],
+          "cost_micro": 2964,
+          "wall_time": 480.59199380874634
+        },
+        {
+          "scale": 0.282842712474619,
+          "radius": [
+            3.394112549695428,
+            5.091168824543142
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9236141141318728,
+              "n_points": 12,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1922,
+              "wall": 316.8298149108887,
+              "product": 0.813642735902124,
+              "endpoint": 0.9999998227569946,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9656218857783244,
+              "n_points": 18,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2783,
+              "wall": 443.76220417022705,
+              "product": 0.8790365017467173,
+              "endpoint": 0.9999998217926996,
+              "messages": []
+            }
+          ],
+          "cost_micro": 4705,
+          "wall_time": 760.5931763648987
+        },
+        {
+          "scale": 0.5318295896944989,
+          "radius": [
+            6.381955076333987,
+            9.57293261450098
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9717553241833468,
+              "n_points": 9,
+              "n_rejected": 7,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 5207,
+              "wall": 2387.038399219513,
+              "product": 0.764218980998345,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9819068428488426,
+              "n_points": 11,
+              "n_rejected": 6,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 5819,
+              "wall": 1905.0100910663605,
+              "product": 0.7683816296200713,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.799 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            }
+          ],
+          "cost_micro": 11026,
+          "wall_time": 4292.049401283264
+        },
+        {
+          "scale": 0.3878454894973716,
+          "radius": [
+            4.654145873968459,
+            6.981218810952688
+          ],
+          "verdict": "undetermined",
+          "reason": "at least one setting failed its checks",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9156633947750008,
+              "n_points": 20,
+              "n_rejected": 4,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 6709,
+              "wall": 1771.7943212985992,
+              "product": 0.756229593391085,
+              "endpoint": 0.9999998783846977,
+              "messages": [
+                "CASSCF did not converge at point(s) [4]",
+                "continuation chain broken at point(s) [4]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9207906522515926,
+              "n_points": 25,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 6066,
+              "wall": 1160.5723872184753,
+              "product": 0.8075543129139933,
+              "endpoint": 0.9999998782266732,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [14] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 12775,
+          "wall_time": 2932.36817073822
+        },
+        {
+          "scale": 0.7292664737217109,
+          "radius": [
+            8.751197684660532,
+            13.126796526990796
+          ],
+          "verdict": "pi",
+          "reason": "all settings agree: pi",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9037046405926388,
+              "n_points": 26,
+              "n_rejected": 7,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 5908,
+              "wall": 2750.500456571579,
+              "product": -0.6408462631055951,
+              "endpoint": -0.9999999996311695,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [11, 12, 13, 14, 15, 16, 24] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9008919907115723,
+              "n_points": 33,
+              "n_rejected": 5,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 7170,
+              "wall": 3938.7346799373627,
+              "product": -0.7013669379099735,
+              "endpoint": -0.9999999994627574,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [12, 13, 14, 15, 16, 17, 18, 20, 21, 24, 25, 27, 28, 29, 30] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 13078,
+          "wall_time": 6689.2384967803955
+        },
+        {
+          "scale": 0.3312088016198889,
+          "radius": [
+            3.974505619438667,
+            5.961758429158
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.904886324211506,
+              "n_points": 14,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3231,
+              "wall": 647.8256356716156,
+              "product": 0.7792492995104077,
+              "endpoint": 0.9999998416648408,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [9] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9052764302647528,
+              "n_points": 19,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3595,
+              "wall": 568.0441620349884,
+              "product": 0.8170116263655023,
+              "endpoint": 0.9999998405644843,
+              "messages": []
+            }
+          ],
+          "cost_micro": 6826,
+          "wall_time": 1215.8707287311554
+        },
+        {
+          "scale": 0.622772421914596,
+          "radius": [
+            7.473269062975152,
+            11.209903594462729
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9664930259294224,
+              "n_points": 5,
+              "n_rejected": 5,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 2868,
+              "wall": 1261.6171190738678,
+              "product": 0.7593099509198887,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9821808467481804,
+              "n_points": 9,
+              "n_rejected": 6,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 4684,
+              "wall": 1370.585862159729,
+              "product": 0.7765660562297162,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+              ]
+            }
+          ],
+          "cost_micro": 7552,
+          "wall_time": 2632.2036514282227
+        },
+        {
+          "scale": 0.35841015581328556,
+          "radius": [
+            4.300921869759427,
+            6.45138280463914
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9687089926177166,
+              "n_points": 17,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4625,
+              "wall": 859.9566793441772,
+              "product": 0.8028349469457031,
+              "endpoint": 0.9999998549575981,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9877061352795509,
+              "n_points": 24,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 5643,
+              "wall": 1008.9358897209167,
+              "product": 0.8680166321276785,
+              "endpoint": 0.9999998541264398,
+              "messages": []
+            }
+          ],
+          "cost_micro": 10268,
+          "wall_time": 1868.8937418460846
+        }
+      ],
+      "lo": 0.35841015581328556,
+      "hi": 0.7292664737217109,
+      "undetermined": [
+        0.5318295896944989,
+        0.3878454894973716,
+        0.622772421914596
+      ],
+      "total_micro": 74180,
+      "wall_time": 23641.543509960175,
+      "rho": 0.5438383147674982,
+      "rho_uncertainty": 0.1854281589542127
+    },
+    {
+      "centre": [
+        90.0,
+        124.0
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(8,8)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9120814033766058,
+              "n_points": 19,
+              "n_rejected": 7,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 7427,
+              "wall": 9735.570786237717,
+              "product": -0.48883503235331455,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [5, 8, 9, 10, 11, 12, 14, 17, 18] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.699 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9453878645384503,
+              "n_points": 26,
+              "n_rejected": 5,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 7009,
+              "wall": 6478.67694401741,
+              "product": -0.5280703281981852,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [6, 7, 8, 14, 15, 17, 18, 19, 20, 25] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.680 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            }
+          ],
+          "cost_micro": 14436,
+          "wall_time": 16214.249237298965
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.985352354656352,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2657,
+              "wall": 773.1669824123383,
+              "product": 0.9670599259716345,
+              "endpoint": 0.999999963746386,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.988135521556766,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2134,
+              "wall": 561.5523047447205,
+              "product": 0.9728788369678512,
+              "endpoint": 0.9999999999672735,
+              "messages": []
+            }
+          ],
+          "cost_micro": 4791,
+          "wall_time": 1334.7205312252045
+        }
+      ],
+      "lo": 0.08,
+      "hi": null,
+      "undetermined": [
+        1.0
+      ],
+      "total_micro": 19227,
+      "wall_time": 17549.010698080063,
+      "rho": null,
+      "rho_uncertainty": null
+    },
+    {
+      "centre": [
+        80.0,
+        110.9
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(8,8)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "pi",
+          "reason": "all settings agree: pi",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9404349818951493,
+              "n_points": 20,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3306,
+              "wall": 1497.7470617294312,
+              "product": -0.6242634274051607,
+              "endpoint": -0.9835011535357241,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [15, 16, 17, 18, 19] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9045969110100962,
+              "n_points": 29,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4085,
+              "wall": 1685.7987298965454,
+              "product": -0.699026253726563,
+              "endpoint": -0.9835250078163151,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [15, 16, 20, 24, 27, 28] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 7391,
+          "wall_time": 3183.54758477211
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9998267949697043,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 439,
+              "wall": 81.54363584518433,
+              "product": 0.9985172921649448,
+              "endpoint": 0.9999999999536356,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9999118489477525,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 611,
+              "wall": 109.41648244857788,
+              "product": 0.9989592790258301,
+              "endpoint": 0.9999999999796378,
+              "messages": []
+            }
+          ],
+          "cost_micro": 1050,
+          "wall_time": 190.96110486984253
+        },
+        {
+          "scale": 0.282842712474619,
+          "radius": [
+            3.394112549695428,
+            5.091168824543142
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9978114077936093,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 533,
+              "wall": 97.54569983482361,
+              "product": 0.9810284147611101,
+              "endpoint": 0.999999984012351,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9985006136165799,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 822,
+              "wall": 141.0769600868225,
+              "product": 0.9866975289407263,
+              "endpoint": 0.9999999832560781,
+              "messages": []
+            }
+          ],
+          "cost_micro": 1355,
+          "wall_time": 238.62597942352295
+        },
+        {
+          "scale": 0.5318295896944989,
+          "radius": [
+            6.381955076333987,
+            9.57293261450098
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9891234260054129,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 752,
+              "wall": 140.0850853919983,
+              "product": 0.9254481820513037,
+              "endpoint": 0.9999999999899005,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9904411079621354,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1059,
+              "wall": 186.6665267944336,
+              "product": 0.9466030860110823,
+              "endpoint": 0.9999999999636611,
+              "messages": []
+            }
+          ],
+          "cost_micro": 1811,
+          "wall_time": 326.7525112628937
+        },
+        {
+          "scale": 0.7292664737217109,
+          "radius": [
+            8.751197684660532,
+            13.126796526990796
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9032076876597842,
+              "n_points": 11,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1397,
+              "wall": 367.7103638648987,
+              "product": 0.7927665410831826,
+              "endpoint": 0.987420536881088,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [6] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9351484264129764,
+              "n_points": 16,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1829,
+              "wall": 303.6514711380005,
+              "product": 0.8420376646245672,
+              "endpoint": 0.9874205749578219,
+              "messages": []
+            }
+          ],
+          "cost_micro": 3226,
+          "wall_time": 671.3627517223358
+        },
+        {
+          "scale": 0.8539710028576561,
+          "radius": [
+            10.247652034291875,
+            15.37147805143781
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9145129167150675,
+              "n_points": 15,
+              "n_rejected": 6,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 6569,
+              "wall": 3080.371225833893,
+              "product": -0.2773399691830022,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [8, 11] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "CASSCF did not converge at point(s) [14]",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.399 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable",
+                "continuation chain broken at point(s) [14]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9470492632145391,
+              "n_points": 24,
+              "n_rejected": 6,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 10716,
+              "wall": 3924.67303276062,
+              "product": -0.3231741190210058,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [9, 13] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.402 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            }
+          ],
+          "cost_micro": 17285,
+          "wall_time": 7005.045561552048
+        },
+        {
+          "scale": 0.7891593133928003,
+          "radius": [
+            9.469911760713604,
+            14.204867641070406
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9663420079445714,
+              "n_points": 25,
+              "n_rejected": 14,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 23517,
+              "wall": 10085.434757709503,
+              "product": 0.19511614532330226,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [8, 17, 20, 24] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "CASSCF did not converge at point(s) [16]",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.231 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable",
+                "continuation chain broken at point(s) [16]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9832765561343815,
+              "n_points": 18,
+              "n_rejected": 4,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 5792,
+              "wall": 1463.096935749054,
+              "product": 0.406082626259029,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [17] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.460 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            }
+          ],
+          "cost_micro": 29309,
+          "wall_time": 11548.533164978027
+        },
+        {
+          "scale": 0.9241055150022947,
+          "radius": [
+            11.089266180027536,
+            16.633899270041304
+          ],
+          "verdict": "pi",
+          "reason": "all settings agree: pi",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9216536322441644,
+              "n_points": 20,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4468,
+              "wall": 1956.6187870502472,
+              "product": -0.613673324376121,
+              "endpoint": -0.9775348485980494,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [3, 5, 8, 16, 18, 19] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9701379937922405,
+              "n_points": 32,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 7356,
+              "wall": 2540.1154515743256,
+              "product": -0.747250501353044,
+              "endpoint": -0.9775975731554127,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [15, 24, 26, 27, 30] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 11824,
+          "wall_time": 4496.737433195114
+        },
+        {
+          "scale": 0.7586220598444353,
+          "radius": [
+            9.103464718133225,
+            13.655197077199835
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9500529332771978,
+              "n_points": 13,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2136,
+              "wall": 576.6404938697815,
+              "product": 0.8061977715944972,
+              "endpoint": 0.9847478811794169,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [2] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9574033829759302,
+              "n_points": 19,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3321,
+              "wall": 609.1703724861145,
+              "product": 0.8470066818734525,
+              "endpoint": 0.9847494037820549,
+              "messages": []
+            }
+          ],
+          "cost_micro": 5457,
+          "wall_time": 1185.8120970726013
+        }
+      ],
+      "lo": 0.7586220598444353,
+      "hi": 0.9241055150022947,
+      "undetermined": [
+        0.8539710028576561,
+        0.7891593133928003
+      ],
+      "total_micro": 78708,
+      "wall_time": 28847.516639709473,
+      "rho": 0.841363787423365,
+      "rho_uncertainty": 0.08274172757892967
+    }
+  ],
+  "complete": true,
+  "wall_time": 70038.0804617405,
+  "triangulation": {
+    "candidates": [
+      [
+        89.88083259280991,
+        107.78745751080221
+      ],
+      [
+        83.53070678783313,
+        96.71165668816829
+      ]
+    ],
+    "residual": 7.850462293418876e-17,
+    "shape": [
+      12.0,
+      18.0
+    ],
+    "centres": [
+      [
+        90.0,
+        98.0
+      ],
+      [
+        80.0,
+        110.9
+      ]
+    ],
+    "rhos": [
+      0.5438383147674982,
+      0.841363787423365
+    ],
+    "chosen": [
+      89.88083259280991,
+      107.78745751080221
+    ],
+    "note": "two centres give two mirror-image candidates; chose the one nearer (90.0, 110.9) on external grounds",
+    "uncertainty": 0.14357889053738815,
+    "residual_over_uncertainty": 5.467699509333236e-16,
+    "consistent": true
+  },
+  "error_vs_reference": 3.1148228870993613,
+  "total_micro": 172115
+}

@@ -1,0 +1,57 @@
+#!/bin/bash
+#SBATCH --job-name=bc-loc12n
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=3-00:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=4G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-2
+#
+# Butadiene CAS(12,12) localization, retried with small loops.
+#
+#   cd slurm && sbatch localize_cas12_near.job
+#
+# Why a second attempt. localize_cas12.job has been running 12 h and two of its three centres
+# have not completed a SINGLE probe: their first probe is the full-size (12, 18) loop, which at
+# ~350 s per point and with rejected adaptive trials charged in full is many hours on its own.
+# Nine probes of that shape do not fit in three days.
+#
+# Ethylene showed both the diagnosis and the fix. There, every full-size (12, 18) loop in the
+# intersection region failed its checks, while a (6, 9) loop about a centre moved in returned a
+# clean bracket in ten minutes on a laptop. A smaller loop is cheaper for the same reason it is
+# more likely to work: fewer points, and none of them far out in a region the continuation
+# cannot follow.
+#
+# Centres, from what the cheap rungs measured rather than from the gap scan. Butadiene's
+# bisections about (90, 101.85) give rho = 0.5385 at CAS(2,2) and 0.7016 at CAS(4,4), which put
+# the object near pyr 111.5 and 114.5 if it sits on tw = 90. Taking pyr ~ 113 as the target, a
+# (6, 9) loop gives elliptical radii of 0.78, 0.78 and 0.84 from the three centres below -- all
+# comfortably inside 1 and far outside the 0.08 floor.
+#
+# The original job is left running: it is checkpointed per probe, so whatever it does finish is
+# kept, and the two runs write to different records (--label near).
+
+set -euo pipefail
+
+CENTRE=${SLURM_ARRAY_TASK_ID:-0}
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${CENTRE} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+CENTRES="90.0,106.0 90.0,120.0 95.0,112.0"
+echo "python -u examples/run_localization.py butadiene --cas 12 12 --shape 6 9 --centre-xy $CENTRES --only-centre $CENTRE --label near"
+python -u examples/run_localization.py butadiene --cas 12 12 --shape 6 9 --centre-xy $CENTRES --only-centre "$CENTRE" --label near
