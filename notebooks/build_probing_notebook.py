@@ -256,6 +256,63 @@ else:
 """)
 
 md(r"""
+## 5. How small can an *enclosing* loop be? The floor
+
+Everything above used loops that do **not** enclose, and those stay cheap and clean at any radius —
+10 points and overlap 0.998 at $r = 0.05°$. That is not the question an iterative search needs
+answered. A search that re-centres on the intersection and shrinks lives on **enclosing** loops, and
+those are the hard ones: every point is near-degenerate, and the tracked state is a state-specific
+CASSCF ground state with S1 on top of it.
+
+Formaldimine CAS(4,4) is the right place to measure it — the localization there is self-consistent
+(three centres, residual inside its own precision) and a point costs 0.1 s. Concentric loops on its
+triangulated position:
+""")
+
+code(r"""
+floor = load("radius_scan", "formaldimine_cas4-4_floor.json")
+if not floor:
+    print("run: python examples/run_radius_scan.py formaldimine --cas 4 4 "
+          "--centre 128.99 90.24 --radii 8 4 2 1 0.5 0.25 0.1 0.05 --label floor")
+else:
+    print(f"{'radius':>8} {'verdict':>14} {'points':>8} {'worst overlap':>14} "
+          f"{'micro-iterations':>17} {'wall (s)':>9}")
+    print("-" * 76)
+    prev = None
+    for rec in floor["probes"]:
+        runs = rec["runs"]
+        pts = max(x["n_points"] for x in runs)
+        worst = min(x["min_overlap"] for x in runs)
+        grow = "" if prev is None else f"  ({rec['cost_micro']/prev:.1f}x)"
+        print(f"{rec['radius']:>8g} {rec['verdict']:>14} {pts:>8} {worst:>14.3f} "
+              f"{rec['cost_micro']:>17}{grow:<7} {rec['wall_time']:>9.1f}")
+        prev = rec["cost_micro"]
+""")
+
+md(r"""
+Three things, and they pull in different directions.
+
+**The angular prediction holds.** Point counts are flat — 15 or 16 per setting at every radius from
+8° down to 1° — exactly as expected if the wavefunction turns by $\pi$ over any enclosing loop and
+the discretization requirement is angular rather than metric. A small enclosing loop needs no more
+points than a large one.
+
+**But it is not free.** Micro-iterations roughly **double with each halving** of the radius:
+1802, 3220, 6061, 11453. The point count is flat and the cost is not, so it is each *solve* getting
+harder — the near-degeneracy penalty, arriving exactly as predicted.
+
+**And there is a floor, at about 1°.** Loops at 0.5° and 0.25° still *contain* the intersection —
+with clearance 0.4° and 0.15° — and are refused anyway. Below that, $r = 0.05°$ returns a clean
+$0$: it has fallen inside the offset between the triangulated centre and the true position, which
+incidentally pins that offset to between 0.05° and 0.15°.
+
+So an iterative search on this system could shrink to roughly **1°** and no further. That is worth
+comparing honestly against what bisection already achieves here: the formaldimine CAS(4,4) bisection
+brackets $\rho$ to $\pm 0.03$ on a 10° semi-axis, i.e. $\pm 0.3°$. **The probe does not win on
+asymptotic precision.**
+""")
+
+md(r"""
 ## What this says, and what it does not
 
 **Standing:**
@@ -282,12 +339,32 @@ CAS(2,2) may be right for the wrong reason.
 * the refusals at $(94, 111)$ and $(86, 111)$ are consistent with a near-degeneracy there and also
   with a solution boundary. They are not evidence for either on their own.
 
-**What it changes about method design.** The probe is a better instrument than the bisection for
-this kind of question: 20 seconds instead of an hour, a decisive answer instead of a bracket, and a
-refusal that localizes rather than terminates. It also inverts the sanity check — instead of asking
-where loop transport thinks the intersection is, one can simply ask whether it encircles the
-intersection the gap scan already found. That question would have been worth asking on the first
-day.
+## What it changes about method design
+
+**The probe wins on robustness and cost, not on precision.** Its floor is about 1° (§5), while the
+formaldimine bisection already brackets to ±0.3°. So an iterative re-centring search would *not*
+resolve a position more finely than what exists — which was the hope, and it is not supported.
+
+What it does win is everything else:
+
+* **cost** — 20 s against an hour per answer at the cheap rungs, because a non-enclosing loop is
+  trivial to walk and only the enclosing ones are expensive;
+* **robustness** — the ethylene bisections produced regions ±3–6° wide because their loops wandered
+  into geometries the continuation could not follow, and seven of eight full-size loops there were
+  refused. Every probe used here stayed in a small neighbourhood and returned an answer;
+* **it fails informatively** — a refusal at a known small radius says the seam is *about that far
+  away*, where a refused bisection anchor used to end the measurement entirely.
+
+**And it inverts the sanity check.** Rather than reconstructing where loop transport thinks the
+intersection is and comparing, one can ask directly whether it encircles the intersection the gap
+scan already found. That is one probe. At ethylene CAS(2,2) it takes 20 seconds and the answer is
+no — a question worth having asked on the first day.
+
+**On the iterative search specifically.** The measured floor says such a search would converge to
+~1° and stop, and the cost doubles with every halving, so the last step dominates. That is a
+reasonable instrument for *verification* — "is it here, within a degree?" — and a poor one for
+squeezing out precision. The parts of it worth building are the ones already built: the probe, and
+anchors that move instead of giving up.
 """)
 
 nb = nbf.v4.new_notebook(cells=CELLS)

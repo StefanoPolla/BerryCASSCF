@@ -203,8 +203,107 @@
       ],
       "cost_micro": 8625,
       "wall_time": 27.627362966537476
+    },
+    {
+      "scale": 1.0,
+      "radius": 1.0,
+      "verdict": "undetermined",
+      "reason": "at least one setting failed its checks",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9102885630587342,
+          "n_points": 20,
+          "n_rejected": 2,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 9844,
+          "wall": 94.91623187065125,
+          "product": -0.7012582003654635,
+          "endpoint": -0.9999999998569946,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [6] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "CASSCF did not converge at point(s) [7, 8, 9, 10, 11]",
+            "continuation chain broken at point(s) [7, 8, 9, 10, 11]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9622533636316195,
+          "n_points": 26,
+          "n_rejected": 1,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 9400,
+          "wall": 128.89002108573914,
+          "product": -0.7848101251582316,
+          "endpoint": -0.9999999999116649,
+          "messages": [
+            "CASSCF did not converge at point(s) [7, 8, 9, 10, 11, 12, 13, 14, 15]",
+            "continuation chain broken at point(s) [7, 8, 9, 10, 11, 12, 13, 14, 15]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        }
+      ],
+      "cost_micro": 19244,
+      "wall_time": 223.80661582946777
+    },
+    {
+      "scale": 1.0,
+      "radius": 0.5,
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9711374307223501,
+          "n_points": 13,
+          "n_rejected": 1,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1892,
+          "wall": 5.627777099609375,
+          "product": 0.8944721338323834,
+          "endpoint": 0.9999999999570675,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9743462442968919,
+          "n_points": 17,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1985,
+          "wall": 6.226974964141846,
+          "product": 0.9112565605205674,
+          "endpoint": 0.9999999999629381,
+          "messages": []
+        }
+      ],
+      "cost_micro": 3877,
+      "wall_time": 11.855003833770752
     }
   ],
-  "complete": false,
-  "wall_time": 52.363670110702515
+  "complete": true,
+  "wall_time": 288.0261182785034
 }
