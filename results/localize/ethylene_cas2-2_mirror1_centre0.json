@@ -1,0 +1,153 @@
+{
+  "system": "ethylene",
+  "cas": [
+    2,
+    2
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    12.0,
+    18.0
+  ],
+  "centres": [
+    [
+      80.0,
+      106.0
+    ]
+  ],
+  "reference": [
+    90.0,
+    110.9
+  ],
+  "reference_note": "CAS(12,12) full-valence gap scan, cone-refined (docs/findings.md \u00a71)",
+  "bisections": [
+    {
+      "centre": [
+        80.0,
+        106.0
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(2,2)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "undetermined",
+          "reason": "at least one setting failed its checks",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9176919636804518,
+              "n_points": 14,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 801,
+              "wall": 103.96269369125366,
+              "product": -0.27815560208815465,
+              "endpoint": -0.456986252884436,
+              "messages": [
+                "endpoint |<Psi_0|Psi_N>| = 0.457 < 0.9: the loop did not return to the same state, so its sign is not interpretable",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.398 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9475035228532561,
+              "n_points": 23,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1245,
+              "wall": 154.7988202571869,
+              "product": -0.3496473278250011,
+              "endpoint": -0.4569805124186068,
+              "messages": [
+                "endpoint |<Psi_0|Psi_N>| = 0.457 < 0.9: the loop did not return to the same state, so its sign is not interpretable",
+                "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.435 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+              ]
+            }
+          ],
+          "cost_micro": 2046,
+          "wall_time": 258.7627286911011
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9995951512350675,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 336,
+              "wall": 41.877970457077026,
+              "product": 0.9976357903629265,
+              "endpoint": 0.9999999859702127,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9998035063704782,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 480,
+              "wall": 55.536190032958984,
+              "product": 0.9983502066125333,
+              "endpoint": 0.9999999864662046,
+              "messages": []
+            }
+          ],
+          "cost_micro": 816,
+          "wall_time": 97.41517400741577
+        }
+      ],
+      "lo": 0.08,
+      "hi": null,
+      "undetermined": [
+        1.0
+      ],
+      "total_micro": 2862,
+      "wall_time": 356.1963391304016,
+      "rho": null,
+      "rho_uncertainty": null
+    }
+  ],
+  "complete": true,
+  "wall_time": 356.19944024086
+}
