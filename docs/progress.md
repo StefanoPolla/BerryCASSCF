@@ -685,3 +685,54 @@ a branch change in one of them.
   there and 4 is enough for the small rungs.
 * `results/` is tracked in git *and* written by the cluster, so committing a cluster-produced file
   breaks the next `git pull` there. The check-then-drop recipe is in `docs/compute.md`.
+
+---
+
+## Resume here — jobs still running on ALICE as of 2026-09-18 05:13 CEST
+
+Nineteen tasks were still running when this session ended. They need no attention while they
+run; the drivers skip finished work, so **re-submitting any of these jobs is safe** and picks up
+only what is missing.
+
+| SLURM id | job | what it is doing | left |
+|---|---|---|---|
+| `5028447_[0-2]` | `localize_cas12.job` | butadiene CAS(12,12) bisection, one centre per task | ~2 d 20 h |
+| `5028404_[0,3-7,9,11]` | `localize.job` | butadiene ladder, the centres still unfinished | ~19 h |
+| `5028474_[0-3]` | `localize_ethylene.job` | ethylene CAS(8,8) all centres, CAS(6,6) centre 0 | ~20 h |
+| `5029232_[0-2]` | `mirror_test.job` | the off-line mirror centres (one task already finished) | ~7 h |
+| `5028403_0` | `berry_cas12.job` | butadiene `B_x` at CAS(12,12), N=31 | ~11 h |
+
+Check with `squeue -u pollas1`, or
+`~/.claude/skills/alice-hpc/scripts/alice-jobs.sh triage <jobid>` for a finished one.
+
+### What to do when they land, in order
+
+1. **Pull and commit.** `rsync -az alice:git_repos/BerryCASSCF/results/ results/`, commit from
+   the laptop, then clear the cluster's now-duplicate untracked copies with the recipe in
+   `docs/compute.md` §Pulling results back — otherwise the next `git pull` there aborts.
+2. **Merge each rung whose three centres are done**:
+   `python examples/run_localization.py <system> --cas <ne> <ncas> --merge`. It refuses
+   unfinished checkpoints, so a merge that errors means a centre is still running, not that
+   something is broken. For the CAS(12,12) run add the centre list:
+   `--centre-xy 90.0,101.85321091497578 90.0,90.0 99.0,110.0`.
+3. **Rebuild the notebook**: `python notebooks/build_locating_intersections_notebook.py` then
+   `jupyter nbconvert --to notebook --execute --inplace notebooks/locating_intersections.ipynb`.
+   Its ladder table and constraint-region figures pick up new rungs automatically.
+4. **Resolve the adaptive/uniform conflict** (item 6 above). When `5028404_*` for CAS(8,8)
+   lands, compare its full-size probe against `results/butadiene/butadiene_B_x_cas8-8_N{13,21}
+   .json` point by point. The question is which walk changed branch; `max_mo_change` and
+   `strategy` per point, plus the `messages` of each adaptive run, are the evidence. **Do not
+   quote either the ladder's "pi at every rung" or a bisection bracketed from a full-size loop
+   as settled until this is understood** — it affects both.
+5. **The CAS(12,12) localization is the one to wait for.** When its three centres merge, compare
+   the measured rho against the gap scan's 0.83 deg miss distance (item 2). If they agree, the
+   two methods are seeing the same object at different resolution and §3 closes; if the measured
+   object is somewhere else, the disagreement is real and about position, not enclosure.
+
+### Two things deliberately not done
+
+* **The ethylene third centres were not re-chosen per rung.** `docs/todo.md` §9 says each rung's
+  third centre should come from *its own* first-centre bracket; these were all placed from the
+  CAS(12,12) reference, and three of four were refused. The fix is one extra task per rung, not
+  a re-run, and it should wait until the first centres have reported.
+* **`rung14.job` was not submitted** and should not be, at 3.6 h per non-converged point.
