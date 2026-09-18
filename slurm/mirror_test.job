@@ -1,0 +1,66 @@
+#!/bin/bash
+#SBATCH --job-name=bc-mirror
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=0-08:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=4G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-3
+#
+# Does ethylene's degeneracy sit off the mirror line, in a pair? docs/todo.md §10.
+#
+#   cd slurm && sbatch mirror_test.job
+#
+# The problem this settles. Ethylene's first three centres give constraints that intersect
+# only OFF the tw = 90 line: at CAS(2,2) the allowed region is tw in (96.4, 99.5), phi in
+# (102.9, 109.2), once the E_x loop's pi from the ladder is included. But tw and 180 - tw are
+# exact mirror images, so anything off the line has a partner at its reflection -- and every
+# loop used so far is centred on tw = 90 and therefore symmetric, enclosing both partners or
+# neither. An even count reads as 0. A symmetric loop can never report the pi that both
+# centre 0 and E_x report, so the observations are inconsistent with a single off-line object
+# and equally inconsistent with a single on-line one.
+#
+# The test. Two centres placed deliberately OFF the line, at (100, 106) and its exact mirror
+# (80, 106). Each full-size (12, 18) loop covers tw 88-112 and 68-92 respectively, so each
+# contains one candidate region and excludes the other -- the tie a symmetric loop cannot
+# break.
+#
+#   both report pi   -> an unpaired degeneracy in each half: the pair hypothesis holds, and
+#                       the earlier zeros came from enclosing both partners at once.
+#   both report 0    -> there is nothing in that region, and the inconsistency lies in the
+#                       large symmetric loops instead (they span phi to 142, where the
+#                       continuation may be switching branch rather than transporting).
+#   they disagree    -> a bug or a broken continuation, since the two geometries are exact
+#                       mirror images computed independently; that is the check built in.
+#
+# Cost: ethylene CAS(2,2) and CAS(4,4) centres took 3-30 min each on this node.
+
+set -euo pipefail
+
+NE_VALUES=(4 2)
+CENTRE_SETS=("100.0,106.0" "80.0,106.0")
+RUNG=$((SLURM_ARRAY_TASK_ID / 2))
+WHICH=$((SLURM_ARRAY_TASK_ID % 2))
+NE=${NE_VALUES[$RUNG]}
+CENTRE=${CENTRE_SETS[$WHICH]}
+LABEL="mirror${WHICH}"
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/run_localization.py ethylene --cas $NE $NE --centre-xy $CENTRE --only-centre 0 --label $LABEL"
+python -u examples/run_localization.py ethylene --cas "$NE" "$NE" --centre-xy "$CENTRE" --only-centre 0 --label "$LABEL"

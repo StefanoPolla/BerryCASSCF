@@ -180,6 +180,9 @@ def main() -> int:
                          "about different centres share nothing, so at a large active space "
                          "they run as concurrent jobs and are combined afterwards with "
                          "--merge, which turns days in series into a day in parallel.")
+    ap.add_argument("--label", default=None,
+                    help="suffix for the record name, so a second set of centres does not "
+                         "overwrite the first: results/localize/<system>_cas<n>-<m>_<label>.json")
     ap.add_argument("--merge", action="store_true",
                     help="combine the per-centre records written by --only-centre into the "
                          "full record, and triangulate")
@@ -188,7 +191,7 @@ def main() -> int:
 
     spec = SYSTEMS[args.system]
     ne, ncas = args.cas
-    tag = f"{args.system}_cas{ne}-{ncas}"
+    tag = f"{args.system}_cas{ne}-{ncas}" + (f"_{args.label}" if args.label else "")
     out = os.path.join(ROOT, "results", "localize", f"{tag}.json")
     if args.only_centre is not None:
         out = os.path.join(ROOT, "results", "localize", f"{tag}_centre{args.only_centre}.json")
