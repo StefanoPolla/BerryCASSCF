@@ -1,0 +1,77 @@
+{
+  "system": "ethylene",
+  "cas": [
+    8,
+    8
+  ],
+  "basis": "6-31g*",
+  "centre": [
+    89.88,
+    107.79
+  ],
+  "radii": [
+    4.0,
+    2.0,
+    1.0,
+    0.5,
+    0.25
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 4.0,
+      "verdict": "undetermined",
+      "reason": "at least one setting failed its checks",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9063163983816267,
+          "n_points": 25,
+          "n_rejected": 6,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 7743,
+          "wall": 301.0293457508087,
+          "product": -0.6798263010631337,
+          "endpoint": -0.9999999450120889,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [24] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "CASSCF did not converge at point(s) [16]",
+            "continuation chain broken at point(s) [16]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.904014910469708,
+          "n_points": 31,
+          "n_rejected": 3,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 7660,
+          "wall": 353.53601908683777,
+          "product": -0.7057690762998639,
+          "endpoint": -0.9999999444399071,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [14, 20, 21, 25, 29] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "CASSCF did not converge at point(s) [18]",
+            "continuation chain broken at point(s) [18]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        }
+      ],
+      "cost_micro": 15403,
+      "wall_time": 654.5658922195435
+    }
+  ],
+  "complete": false,
+  "wall_time": 654.5663259029388
+}
