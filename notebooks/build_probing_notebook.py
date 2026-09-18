@@ -313,6 +313,59 @@ asymptotic precision.**
 """)
 
 md(r"""
+## 6. The check this makes cheap: does the loop encircle the gap scan's answer?
+
+Every comparison in this project has been indirect — locate the state-specific object by bisection,
+locate the state-averaged one by scanning, compare two positions each carrying its own error bar.
+The probe replaces all of that with one loop placed **on** the gap scan's intersection.
+
+The radius has to clear the ~1° floor of §5 and still contain nothing else; 2° does both. A verdict
+of $0$ is an *even* count, so the radius is reported with every answer.
+""")
+
+code(r"""
+rows_enc = []
+for sysname in ("formaldimine", "ethylene", "butadiene"):
+    p = os.path.join(ROOT, "results", "encirclement", f"{sysname}_r2.json")
+    if os.path.exists(p):
+        for r in json.load(open(p))["rungs"]:
+            rows_enc.append((sysname, tuple(r["cas"]), tuple(r["sa_intersection"]),
+                             r["verdict"], 2.0))
+# the CAS(12,12) probe ran on the cluster, one radius per task, under its own name
+g = load("radius_scan", "butadiene_cas12-12_gapmin_r1.25.json")
+if g:
+    rows_enc.append(("butadiene", (12, 12), tuple(g["centre"]),
+                     g["probes"][0]["verdict"], g["probes"][0]["radius"]))
+
+if not rows_enc:
+    print("run: python examples/verify_encirclement.py <system>")
+else:
+    say = {"pi": "YES", "zero": "NO", "undetermined": "refused"}
+    print(f"{'system':>13} {'CAS':>8} {'gap-scan intersection':>24} {'r':>5} "
+          f"{'verdict':>14} {'encircles it?':>14}")
+    print("-" * 84)
+    for sysname, cas, pt, verdict, r in rows_enc:
+        print(f"{sysname:>13} {('(%d,%d)' % cas):>8} {f'({pt[0]:.2f}, {pt[1]:.2f})':>24} "
+              f"{r:>5g} {verdict:>14} {say[verdict]:>14}")
+""")
+
+md(r"""
+**The check discriminates, which is what makes the negatives worth believing.**
+
+At formaldimine CAS(2,2) the answer is **no** — and independently, that rung's gap scan is known to
+be *qualitatively* wrong: it reports a spurious intersection near $\alpha = 141°$ and misses the
+real one at 132.6° (`docs/results.md` §3). The probe rejects a position already known to be wrong.
+
+At formaldimine CAS(4,4), where the gap scan is converged, the answer is **yes** — and the object
+it encircles is the one the triangulation found at (128.99, 90.24), 1° inside the probe.
+
+So the check is not returning "no" everywhere. It agrees where the two methods are known to agree,
+and refuses where one of them is known to be wrong. That is what licenses reading the butadiene
+CAS(12,12) and ethylene CAS(2,2) rows as evidence rather than as noise.
+""")
+
+
+md(r"""
 ## What this says, and what it does not
 
 **Standing:**

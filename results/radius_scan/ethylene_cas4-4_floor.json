@@ -1,0 +1,194 @@
+{
+  "system": "ethylene",
+  "cas": [
+    4,
+    4
+  ],
+  "basis": "6-31g*",
+  "centre": [
+    90.0,
+    108.4
+  ],
+  "radii": [
+    4.0,
+    2.0,
+    1.0,
+    0.5,
+    0.25,
+    0.1
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 4.0,
+      "verdict": "undetermined",
+      "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9271486323023459,
+          "n_points": 14,
+          "n_rejected": 6,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 4305,
+          "wall": 245.38210129737854,
+          "product": 0.5149478031131194,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.624 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9386822831726208,
+          "n_points": 18,
+          "n_rejected": 5,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 4078,
+          "wall": 384.19561290740967,
+          "product": 0.5418893328232564,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "fell back to a weaker warm start at point(s) [17] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.624 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        }
+      ],
+      "cost_micro": 8383,
+      "wall_time": 629.5782740116119
+    },
+    {
+      "scale": 1.0,
+      "radius": 2.0,
+      "verdict": "undetermined",
+      "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.94321488218561,
+          "n_points": 15,
+          "n_rejected": 8,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 5788,
+          "wall": 464.80358505249023,
+          "product": 0.6103193874452719,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.699 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9446784019294993,
+          "n_points": 19,
+          "n_rejected": 6,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 4443,
+          "wall": 733.9823861122131,
+          "product": 0.6208618642622653,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.697 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        }
+      ],
+      "cost_micro": 10231,
+      "wall_time": 1198.786276102066
+    },
+    {
+      "scale": 1.0,
+      "radius": 1.0,
+      "verdict": "undetermined",
+      "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9463398717749366,
+          "n_points": 15,
+          "n_rejected": 8,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 5593,
+          "wall": 980.4053339958191,
+          "product": 0.6702691732158481,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "fell back to a weaker warm start at point(s) [14] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.753 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.947787277546513,
+          "n_points": 17,
+          "n_rejected": 6,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 5248,
+          "wall": 920.2449839115143,
+          "product": 0.6734588813105592,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it",
+            "the closing step is discontinuous: |<Psi_last|Psi_0>| = 0.751 < 0.8. This overlap alone carries the sign of the product estimator, so its sign is not interpretable"
+          ]
+        }
+      ],
+      "cost_micro": 10841,
+      "wall_time": 1900.6509900093079
+    }
+  ],
+  "complete": false,
+  "wall_time": 3729.016770839691
+}

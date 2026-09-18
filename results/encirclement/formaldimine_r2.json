@@ -1,0 +1,123 @@
+{
+  "system": "formaldimine",
+  "radius": 2.0,
+  "rungs": [
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9996990562941253,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 203,
+          "wall": 2.2155189514160156,
+          "product": 0.9972301089336163,
+          "endpoint": 0.9999999999979858,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9998505053433278,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 246,
+          "wall": 1.590212106704712,
+          "product": 0.9980486254024098,
+          "endpoint": 0.9999999999981526,
+          "messages": []
+        }
+      ],
+      "cost_micro": 449,
+      "wall_time": 3.806180953979492,
+      "cas": [
+        2,
+        2
+      ],
+      "sa_intersection": [
+        141.0,
+        89.9990503714438
+      ],
+      "how": "grid scan, cone-refined"
+    },
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9285253393275997,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 3321,
+          "wall": 318.1793270111084,
+          "product": -0.6936893620867759,
+          "endpoint": -0.9999999984011698,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9807786169354071,
+          "n_points": 25,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 5158,
+          "wall": 42.11371898651123,
+          "product": -0.8071513104242295,
+          "endpoint": -0.9999999993195723,
+          "messages": []
+        }
+      ],
+      "cost_micro": 8479,
+      "wall_time": 360.29348826408386,
+      "cas": [
+        4,
+        4
+      ],
+      "sa_intersection": [
+        130.0,
+        89.99996125731703
+      ],
+      "how": "grid scan, cone-refined"
+    }
+  ],
+  "wall_time": 364.1039731502533
+}
