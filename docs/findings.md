@@ -394,7 +394,41 @@ This does **not** make loop transport right by default. With no exact reference 
 "π at every rung" is equally consistent with "very robust" and "consistently wrong in the same
 direction". What can be said is that it is self-consistent, passes every internal check, and is
 cheap. Settling it needs a system where an exact reference exists *and* the ladder still
-misbehaves — which none of the three provides.
+misbehaves.
+
+### Ethylene is that system, and the answer is "comparable", not "better" (2026-09-18)
+
+An earlier revision of this section said no system in the project provides the combination. That
+was wrong about ethylene: CAS(12,12) is its **full valence space**, so the intersection position
+at that rung is exact in this basis, and its ladder is the badly behaved one — accurate at
+CAS(2,2), displaced by 5–8 deg in the middle.
+
+Localizing the state-specific object there by bisection, at four rungs, and comparing both methods
+against that exact position (`notebooks/locating_intersections.ipynb`):
+
+| CAS | loop transport region (pyr) | its centre | error | gap-scan position | its error |
+|---|---|---|---|---|---|
+| (2,2) | (110.3, 111.5) | 110.92 ± 0.58 | **0.02** | 111.08 | 0.18 |
+| (4,4) | (102.9, 109.1) | 106.00 ± 3.10 | 4.90 | 116.41 | 5.51 |
+| (6,6) | (99.4, 109.2) | 104.30 ± 4.90 | 6.60 | 102.64 | 8.26 |
+| (8,8) | (99.7, 111.1) | 105.40 ± 5.70 | 5.50 | 103.90 | 7.00 |
+
+**Loop transport is nearer the exact answer at every rung, and the margin is not significant.**
+It wins by 0.2–1.7 deg while its own half-width is 0.6–5.7 deg, so at the three upper rungs the
+difference is smaller than the uncertainty on it. The one unambiguous statement is CAS(2,2), where
+loop transport is exact to 0.02 deg within a 0.6 deg band — at an active space that cannot
+represent the π system.
+
+The sharper question is whether the measurement can **tell the two candidate answers apart**, and
+mostly it cannot: the region contains both at CAS(2,2) and CAS(8,8), neither at CAS(4,4), and at
+CAS(6,6) it contains the gap scan's position while **excluding** the exact one. So this does not
+vindicate loop transport; it bounds how well the present bisections resolve anything, which is to
+±3–6 deg once the active space stops being trivial.
+
+Two honest caveats, in the direction that weakens the result. Regions are not positions: a wide
+region is easier to be "near" an answer with. And CAS(8,8)'s triangulated point, 107.79, sits
+2.4 deg from its own region centre of 105.40 — two estimates from the same data at the same rung,
+which is the plainest available measure of the precision actually on offer.
 
 ## 5. Failure behaviour: what the checks catch, what they cost, and what they miss
 
