@@ -5,74 +5,40 @@
     2
   ],
   "basis": "6-31g*",
-  "centre": [
-    90.0,
-    111.0
-  ],
-  "radii": [
-    4.0,
-    2.0,
-    1.0,
-    0.5,
-    0.25,
-    0.1
+  "radius": 2.0,
+  "centres": [
+    [
+      90.0,
+      105.0
+    ],
+    [
+      90.0,
+      107.0
+    ],
+    [
+      90.0,
+      109.0
+    ],
+    [
+      90.0,
+      113.0
+    ],
+    [
+      90.0,
+      115.0
+    ],
+    [
+      90.0,
+      117.0
+    ]
   ],
   "probes": [
     {
       "scale": 1.0,
-      "radius": 4.0,
-      "verdict": "undetermined",
-      "reason": "at least one setting failed its checks",
-      "runs": [
-        {
-          "setting": {
-            "d_max": 0.1,
-            "target_mismatch": 0.02
-          },
-          "status": "FAILED",
-          "phase": "undetermined",
-          "min_overlap": 0.9125468856221625,
-          "n_points": 20,
-          "n_rejected": 6,
-          "closed": true,
-          "hit_step_floor": false,
-          "micro": 6432,
-          "wall": 65.38103485107422,
-          "product": -0.670770871449851,
-          "endpoint": -0.9999994397118626,
-          "messages": [
-            "CASSCF did not converge at point(s) [7]",
-            "continuation chain broken at point(s) [7]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
-          ]
-        },
-        {
-          "setting": {
-            "d_max": 0.07,
-            "target_mismatch": 0.008
-          },
-          "status": "FAILED",
-          "phase": "undetermined",
-          "min_overlap": 0.9117407185101055,
-          "n_points": 27,
-          "n_rejected": 3,
-          "closed": true,
-          "hit_step_floor": false,
-          "micro": 6951,
-          "wall": 64.79279899597168,
-          "product": -0.717431211193787,
-          "endpoint": -0.9999995101388436,
-          "messages": [
-            "CASSCF did not converge at point(s) [11]",
-            "continuation chain broken at point(s) [11]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
-          ]
-        }
+      "radius": [
+        2.0,
+        2.0
       ],
-      "cost_micro": 13383,
-      "wall_time": 130.17421579360962
-    },
-    {
-      "scale": 1.0,
-      "radius": 2.0,
       "verdict": "zero",
       "reason": "all settings agree: 0",
       "runs": [
@@ -83,15 +49,68 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9670885381510089,
+          "min_overlap": 0.9915449443242346,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 532,
+          "wall": 4.6518449783325195,
+          "product": 0.9634435951339442,
+          "endpoint": 0.999999993357341,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9957137246605353,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 691,
+          "wall": 5.923981189727783,
+          "product": 0.9738424055485494,
+          "endpoint": 0.9999999943898503,
+          "messages": []
+        }
+      ],
+      "cost_micro": 1223,
+      "wall_time": 10.57610011100769,
+      "centre": [
+        90.0,
+        105.0
+      ]
+    },
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9668791218642241,
           "n_points": 11,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 1123,
-          "wall": 10.429762125015259,
-          "product": 0.905757748684537,
-          "endpoint": 0.999999973947991,
+          "micro": 1245,
+          "wall": 10.11463713645935,
+          "product": 0.8613421011072241,
+          "endpoint": 0.9596962747585158,
           "messages": []
         },
         {
@@ -101,24 +120,31 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9774866968853598,
-          "n_points": 16,
+          "min_overlap": 0.9227287405770995,
+          "n_points": 17,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 1114,
-          "wall": 10.427008867263794,
-          "product": 0.9300458883407976,
-          "endpoint": 0.9999999796586575,
+          "micro": 2145,
+          "wall": 16.70564293861389,
+          "product": 0.8663654363438902,
+          "endpoint": 0.9999998339874419,
           "messages": []
         }
       ],
-      "cost_micro": 2237,
-      "wall_time": 20.85701298713684
+      "cost_micro": 3390,
+      "wall_time": 26.820535898208618,
+      "centre": [
+        90.0,
+        107.0
+      ]
     },
     {
       "scale": 1.0,
-      "radius": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
       "verdict": "zero",
       "reason": "all settings agree: 0",
       "runs": [
@@ -129,15 +155,15 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.989934903382847,
-          "n_points": 10,
+          "min_overlap": 0.975017565218269,
+          "n_points": 11,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 751,
-          "wall": 7.420024871826172,
-          "product": 0.9461694384919141,
-          "endpoint": 0.9829842116502354,
+          "micro": 908,
+          "wall": 8.2045419216156,
+          "product": 0.8952311459893126,
+          "endpoint": 0.971476051734677,
           "messages": []
         },
         {
@@ -147,24 +173,31 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.993244062817774,
-          "n_points": 15,
+          "min_overlap": 0.9716887193243707,
+          "n_points": 17,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 1067,
-          "wall": 10.207113027572632,
-          "product": 0.9530462702490392,
-          "endpoint": 0.9829586266266264,
+          "micro": 1376,
+          "wall": 11.934422016143799,
+          "product": 0.9136459364330086,
+          "endpoint": 0.9999999458124784,
           "messages": []
         }
       ],
-      "cost_micro": 1818,
-      "wall_time": 17.627392053604126
+      "cost_micro": 2284,
+      "wall_time": 20.13921308517456,
+      "centre": [
+        90.0,
+        109.0
+      ]
     },
     {
       "scale": 1.0,
-      "radius": 0.5,
+      "radius": [
+        2.0,
+        2.0
+      ],
       "verdict": "zero",
       "reason": "all settings agree: 0",
       "runs": [
@@ -175,15 +208,15 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9989401928449705,
-          "n_points": 10,
+          "min_overlap": 0.9762502966979405,
+          "n_points": 11,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 583,
-          "wall": 6.203772306442261,
-          "product": 0.9937336029289985,
-          "endpoint": 0.9999999978778261,
+          "micro": 967,
+          "wall": 9.45421814918518,
+          "product": 0.9227760454523518,
+          "endpoint": 0.9999999764674155,
           "messages": []
         },
         {
@@ -193,24 +226,31 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9994750495082783,
+          "min_overlap": 0.9873219957703712,
           "n_points": 15,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 836,
-          "wall": 9.009610891342163,
-          "product": 0.9955025360788339,
-          "endpoint": 0.999999966876983,
+          "micro": 1160,
+          "wall": 11.171970844268799,
+          "product": 0.9420591415839019,
+          "endpoint": 0.9999999765843448,
           "messages": []
         }
       ],
-      "cost_micro": 1419,
-      "wall_time": 15.21361494064331
+      "cost_micro": 2127,
+      "wall_time": 20.626430988311768,
+      "centre": [
+        90.0,
+        113.0
+      ]
     },
     {
       "scale": 1.0,
-      "radius": 0.25,
+      "radius": [
+        2.0,
+        2.0
+      ],
       "verdict": "zero",
       "reason": "all settings agree: 0",
       "runs": [
@@ -221,15 +261,15 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9997607925596025,
+          "min_overlap": 0.9846544534001158,
           "n_points": 10,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 422,
-          "wall": 4.990607261657715,
-          "product": 0.9987828192385149,
-          "endpoint": 0.9999999997807625,
+          "micro": 874,
+          "wall": 8.466022729873657,
+          "product": 0.9358662354734213,
+          "endpoint": 0.9999999981829126,
           "messages": []
         },
         {
@@ -239,24 +279,31 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9998789838580733,
+          "min_overlap": 0.9889820861200683,
           "n_points": 15,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 511,
-          "wall": 6.262528896331787,
-          "product": 0.9991319226207676,
-          "endpoint": 0.9999999995614373,
+          "micro": 974,
+          "wall": 9.818910837173462,
+          "product": 0.9506097832581283,
+          "endpoint": 0.9999999936860237,
           "messages": []
         }
       ],
-      "cost_micro": 933,
-      "wall_time": 11.25337290763855
+      "cost_micro": 1848,
+      "wall_time": 18.285178184509277,
+      "centre": [
+        90.0,
+        115.0
+      ]
     },
     {
       "scale": 1.0,
-      "radius": 0.1,
+      "radius": [
+        2.0,
+        2.0
+      ],
       "verdict": "zero",
       "reason": "all settings agree: 0",
       "runs": [
@@ -267,15 +314,15 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.9924596234444601,
+          "min_overlap": 0.9871738771992208,
           "n_points": 10,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 295,
-          "wall": 3.698909044265747,
-          "product": 0.9845606210831223,
-          "endpoint": 0.9921449880410812,
+          "micro": 816,
+          "wall": 8.207679986953735,
+          "product": 0.9466824232673393,
+          "endpoint": 0.9999999992074275,
           "messages": []
         },
         {
@@ -285,22 +332,26 @@
           },
           "status": "OK",
           "phase": "trivial (0)",
-          "min_overlap": 0.992428074919443,
+          "min_overlap": 0.9915867677466786,
           "n_points": 15,
           "n_rejected": 0,
           "closed": true,
           "hit_step_floor": false,
-          "micro": 358,
-          "wall": 4.750282049179077,
-          "product": 0.9845080627466251,
-          "endpoint": 0.9921448833228785,
+          "micro": 1078,
+          "wall": 10.888248920440674,
+          "product": 0.9586595643462473,
+          "endpoint": 0.9999999935916475,
           "messages": []
         }
       ],
-      "cost_micro": 653,
-      "wall_time": 8.449424743652344
+      "cost_micro": 1894,
+      "wall_time": 19.09616494178772,
+      "centre": [
+        90.0,
+        117.0
+      ]
     }
   ],
   "complete": true,
-  "wall_time": 203.57750916481018
+  "wall_time": 115.54622483253479
 }
