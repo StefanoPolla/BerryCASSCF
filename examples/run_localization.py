@@ -180,6 +180,11 @@ def main() -> int:
                          "about different centres share nothing, so at a large active space "
                          "they run as concurrent jobs and are combined afterwards with "
                          "--merge, which turns days in series into a day in parallel.")
+    ap.add_argument("--shape", nargs=2, type=float, default=None, metavar=("RX", "RY"),
+                    help="loop semi-axes, overriding the system default. A loop is only usable "
+                         "where it can be transported: on ethylene every full-size (12, 18) "
+                         "loop tried in the intersection region failed its checks, so centres "
+                         "there need a smaller shape and correspondingly closer placement.")
     ap.add_argument("--label", default=None,
                     help="suffix for the record name, so a second set of centres does not "
                          "overwrite the first: results/localize/<system>_cas<n>-<m>_<label>.json")
@@ -211,7 +216,7 @@ def main() -> int:
         centres = [tuple(float(v) for v in c.split(",")) for c in args.centre_xy]
     else:
         centres = spec["centres"][: args.centres]
-    shape = spec["shape"]
+    shape = tuple(args.shape) if args.shape else spec["shape"]
     ref = spec["reference"]
 
     if args.merge:
@@ -222,6 +227,15 @@ def main() -> int:
             raise SystemExit("cannot merge, these per-centre records are missing:\n  "
                              + "\n  ".join(missing))
         results = merge_centre_records([load_json(q) for q in paths], centres)
+        # The loop shape is now a CLI option, so a merge can be asked for with a shape the
+        # records were not measured at. Every rho is in units of those semi-axes, so mixing
+        # them would silently rescale the measurement.
+        for i, r in enumerate(results):
+            if tuple(float(x) for x in r.shape) != tuple(float(x) for x in shape):
+                raise SystemExit(
+                    f"record {i} was measured with loop shape {tuple(r.shape)}, but this merge "
+                    f"was asked for shape {tuple(shape)}. Pass --shape "
+                    f"{r.shape[0]:g} {r.shape[1]:g} to merge it.")
         print(f"Merged {len(results)} per-centre records for {args.system} "
               f"{cas.cas_label}/{spec['basis']}")
         report(results, centres, shape, ref, spec, args, ne, ncas, out,
