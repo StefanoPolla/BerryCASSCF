@@ -70,7 +70,7 @@ resolution, measured rather than assumed.
 """)
 
 code(r"""
-import json, os, sys
+import glob, json, os, sys
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
@@ -800,7 +800,7 @@ it — were run at CAS(2,2) for exactly that reason.
 """)
 
 code(r"""
-NEAR_RUNGS = [(2, 2), (4, 4)]
+NEAR_RUNGS = [(2, 2), (4, 4), (6, 6), (8, 8)]
 near = load("ethylene_cas2-2_near.json")
 if not near:
     print("not run yet:")
@@ -847,8 +847,10 @@ def combined_region(cas, ax=None):
     # Intersect every trustworthy constraint at one rung: brackets (annuli), clean zeros
     # (exclusions), and the ladder's E_x loop reporting pi (an inclusion). Refusals say the
     # loop could not be walked, not that it is empty, so they constrain nothing.
-    recs = [r for r in (load(f"ethylene_cas{cas[0]}-{cas[1]}_near.json"),
-                        load(f"ethylene_cas{cas[0]}-{cas[1]}.json")) if r]
+    names = [f"ethylene_cas{cas[0]}-{cas[1]}.json", f"ethylene_cas{cas[0]}-{cas[1]}_near.json"]
+    names += [os.path.basename(q) for q in sorted(glob.glob(os.path.join(
+        ROOT, "results", "localize", f"ethylene_cas{cas[0]}-{cas[1]}_mirror*_centre0.json")))]
+    recs = [r for r in (load(n) for n in names) if r and r.get("complete", True)]
     if not recs:
         return None
     tw = np.linspace(70, 110, 801)
@@ -881,12 +883,26 @@ def combined_region(cas, ax=None):
     box = None
     if mask.any():
         box = (T[mask].min(), T[mask].max(), P[mask].min(), P[mask].max())
+        mid, half = 0.5 * (box[2] + box[3]), 0.5 * (box[3] - box[2])
+        gap = GAP_SCAN_PYR[cas]
+        has_exact = box[2] <= 110.90 <= box[3]
+        has_gap = box[2] <= gap <= box[3]
+        verdict = ("contains both, so it cannot tell them apart"
+                   if has_exact and has_gap else
+                   "contains the exact position and excludes the gap scan's"
+                   if has_exact else
+                   "contains the gap scan's position and excludes the exact one"
+                   if has_gap else "contains neither")
         print(f"  allowed:  tw ({box[0]:.1f}, {box[1]:.1f}), "
               f"pyr ({box[2]:.1f}, {box[3]:.1f})")
-        print(f"  exact reference pyr 110.90   gap scan this rung "
-              f"{GAP_SCAN_PYR[cas]:.2f}\n")
+        print(f"  centre {mid:.2f} +- {half:.2f}, so error vs the exact 110.90 is "
+              f"{abs(mid - 110.90):.2f};  gap scan {gap:.2f}, error "
+              f"{abs(gap - 110.90):.2f}")
+        print(f"  the region {verdict}")
+        print()
     else:
-        print("  the constraints are mutually inconsistent: no point satisfies all\n")
+        print("  the constraints are mutually inconsistent: no point satisfies all")
+        print()
     if ax is not None:
         ax.contourf(T, P, mask.astype(float), levels=[0.5, 1.5], colors=["tab:red"],
                     alpha=0.8)
