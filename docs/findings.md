@@ -366,6 +366,43 @@ this document already calls it indefensible for ethylene. And the cold-start rin
 independent solves disagree, not what a warm-started continuation does — it establishes that
 competing solutions exist there, not that the walk crossed between them.
 
+**The first limit has since weakened: CAS(4,4) and CAS(8,8) behave the same way.** Concentric loops
+on the best available position at each rung return **no π at any radius tested**:
+
+| ethylene rung | r = 4° | 2° | 1° | 0.5° | 0.25° | 0.1° |
+|---|---|---|---|---|---|---|
+| CAS(4,4), about (90.00, 108.40) | refused | refused | refused | **0** | refused | **0** |
+| CAS(8,8), about (89.88, 107.79) | refused | refused | *(stopped: 3.9 h for the second)* | | | |
+
+Formaldimine CAS(4,4) under the identical procedure is monotone and unambiguous — π at 8°, 4°, 2°
+and 1°, refusals at 0.5° and 0.25°, a clean 0 at 0.05°. Ethylene's verdicts do not even order: the
+only two clean ones say "nothing inside", at radii a factor of five apart, and every intermediate
+radius is refused. **At three ethylene rungs there is nothing locally encircle-able where the
+methods place the intersection**, which is the same conclusion §2 reached at CAS(2,2) by mapping
+rather than by scanning radius.
+
+### The check, run systematically: it agrees where it should (2026-09-18)
+
+`examples/verify_encirclement.py` puts one 2° loop on each rung's gap-scan intersection and asks
+whether loop transport encircles it. Formaldimine settles whether the check is trustworthy:
+
+| system | CAS | gap-scan intersection | verdict | encircles it? |
+|---|---|---|---|---|
+| formaldimine | (2,2) | (141.00, 90.00) | 0 | **no** |
+| formaldimine | (4,4) | (130.00, 90.00) | π | **yes** |
+| formaldimine | (6,6) | (130.92, 90.07) | π | **yes** |
+| butadiene | (12,12) | (89.97, 101.94) | 0 | **no** (r = 1.25°) |
+
+The CAS(2,2) row is a control nobody designed: that rung's gap scan is independently known to be
+qualitatively wrong — a spurious minimum near α = 141° while the real intersection is at 132.6°
+(`docs/results.md` §3) — and the probe rejects it. Both converged formaldimine rungs are accepted,
+and at CAS(4,4) the object encircled is the one triangulation found at (128.99, 90.24), 1° inside
+the loop.
+
+So the check agrees where the two methods are known to agree and refuses where one is known to be
+wrong. **That is what licenses reading the butadiene CAS(12,12) "no" as evidence** rather than as
+an artefact of the procedure.
+
 ## 3. The gap-scan minimum and the point loop transport encircles are different objects
 
 > Two subsections bearing directly on this question sit in §1, where the CAS(12,12) floor is

@@ -310,6 +310,44 @@ So an iterative search on this system could shrink to roughly **1°** and no fur
 comparing honestly against what bisection already achieves here: the formaldimine CAS(4,4) bisection
 brackets $\rho$ to $\pm 0.03$ on a 10° semi-axis, i.e. $\pm 0.3°$. **The probe does not win on
 asymptotic precision.**
+
+### Ethylene does not behave like this at all
+
+The same scan on ethylene's intersection region returns something qualitatively different — and it
+is the reason the floor cannot be quoted as a single number.
+""")
+
+code(r"""
+for name, cas in (("ethylene_cas4-4_floor.json", "CAS(4,4)"),
+                  ("ethylene_cas8-8_floor.json", "CAS(8,8)")):
+    rec = load("radius_scan", name)
+    if not rec:
+        continue
+    print(f"ethylene {cas}, concentric loops on the best available position "
+          f"({rec['centre'][0]:.2f}, {rec['centre'][1]:.2f}):")
+    for pr in rec["probes"]:
+        worst = min(x["min_overlap"] for x in pr["runs"])
+        print(f"   r = {pr['radius']:>5g}   {pr['verdict']:>13}   worst overlap {worst:.3f}   "
+              f"{pr['wall_time']:>7.0f} s")
+    if not rec.get("complete"):
+        print("   (stopped early: the next radii cost hours each for the same answer)")
+    print()
+""")
+
+md(r"""
+**No radius returns $\pi$.** On formaldimine the sequence was monotone — enclose, enclose, enclose,
+graze, exclude. Here the verdicts do not even order: refused at 4°, 2° and 1°, a clean $0$ at 0.5°,
+refused again at 0.25°, a clean $0$ at 0.1°. The two verdicts that *are* clean both say "nothing
+inside", at radii differing by a factor of five.
+
+So at this centre there is nothing to encircle at any scale tested, and the walk fails at most of
+them. That matches what §2–§4 found at CAS(2,2) by a different route, and it is why the ethylene
+CAS(8,8) run was stopped after two radii: 0.18 h and 3.94 h, both refused, with the remaining radii
+deeper into the same region.
+
+**The cost is in the refusals.** On ethylene the refused probes cost 600–1950 s while the clean ones
+cost 317 s. A refusal is not a cheap "don't know" — it is the adaptive controller spending its
+entire step-halving budget before giving up.
 """)
 
 md(r"""

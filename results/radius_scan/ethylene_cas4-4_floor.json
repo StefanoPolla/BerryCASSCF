@@ -187,8 +187,150 @@
       ],
       "cost_micro": 10841,
       "wall_time": 1900.6509900093079
+    },
+    {
+      "scale": 1.0,
+      "radius": 0.5,
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9223423160865497,
+          "n_points": 15,
+          "n_rejected": 1,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 2608,
+          "wall": 1464.3680720329285,
+          "product": 0.7945649921401671,
+          "endpoint": 0.9999999209718706,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9280286522292586,
+          "n_points": 21,
+          "n_rejected": 1,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 2939,
+          "wall": 484.16260981559753,
+          "product": 0.8185953318158292,
+          "endpoint": 0.9999999202885901,
+          "messages": []
+        }
+      ],
+      "cost_micro": 5547,
+      "wall_time": 1948.531280040741
+    },
+    {
+      "scale": 1.0,
+      "radius": 0.25,
+      "verdict": "undetermined",
+      "reason": "at least one setting failed its checks",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9257949311480821,
+          "n_points": 11,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 3589,
+          "wall": 257.5083181858063,
+          "product": 0.8390892006183236,
+          "endpoint": 0.9792464249909322,
+          "messages": [
+            "CASSCF did not converge at point(s) [0]"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9287469510855021,
+          "n_points": 17,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 4149,
+          "wall": 332.57397198677063,
+          "product": 0.8528683715714147,
+          "endpoint": 0.9792462465770809,
+          "messages": [
+            "CASSCF did not converge at point(s) [0]"
+          ]
+        }
+      ],
+      "cost_micro": 7738,
+      "wall_time": 590.082759141922
+    },
+    {
+      "scale": 1.0,
+      "radius": 0.1,
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9993330106629995,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 716,
+          "wall": 14.997496843338013,
+          "product": 0.9969161599901449,
+          "endpoint": 0.9999997858871496,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9996563641794979,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 938,
+          "wall": 302.25417399406433,
+          "product": 0.9978023141987887,
+          "endpoint": 0.9999999966732808,
+          "messages": []
+        }
+      ],
+      "cost_micro": 1654,
+      "wall_time": 317.25218200683594
     }
   ],
-  "complete": false,
-  "wall_time": 3729.016770839691
+  "complete": true,
+  "wall_time": 6584.886719942093
 }
