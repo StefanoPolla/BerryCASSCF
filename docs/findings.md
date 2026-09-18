@@ -307,6 +307,11 @@ for the gap scan ladder.
 
 ## 3. The gap-scan minimum and the point loop transport encircles are different objects
 
+> Two subsections bearing directly on this question sit in §1, where the CAS(12,12) floor is
+> discussed: **the controls at that rung** (both trivial at three discretizations, so the π is
+> selective) and **the floor converted into a distance** (1.46 mHa is a 0.83 deg miss — inside
+> the loop, so the floor was never evidence about enclosure). Read them with this section.
+
 At butadiene CAS(8,8) the gap-scan minimum sits at pyr = 121.2, **outside** the enclosing loop
 (centre 101.85, radius 18 deg). The natural prediction was that this rung would return a trivial
 phase. **It returns π**, as do all other rungs.
