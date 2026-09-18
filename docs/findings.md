@@ -141,6 +141,35 @@ threshold this work has not fixed; what is certain is that it is not resolution 
 Loop transport at CAS(12,12) nonetheless returns **π**, stable across two discretizations
 (N=13 and N=21, min overlaps 0.83 and 0.88, endpoint −1.000000 exactly).
 
+### The controls at that rung, which the claim had been missing (2026-09-18)
+
+Until now CAS(12,12) had been run on the **enclosing loop only**. A π with nothing to contrast
+it against is weak evidence: a solver in difficulty at a large active space could produce one
+anywhere. Both control loops have now been run at the same rung, at three discretizations each
+(`slurm/berry_cas12.job`):
+
+| loop | N=13 | N=21 | N=31 | min abs adjacent overlap |
+|---|---|---|---|---|
+| `B_x` (encloses) | **π**, Π = −0.493 | **π**, Π = −0.626 | *running* | 0.83, 0.88 |
+| `B_1` (control) | 0, Π = +0.868 | 0, Π = +0.915 | 0, Π = +0.941 | 0.986, 0.995, 0.997 |
+| `B_2` (control) | 0, Π = +0.868 | 0, Π = +0.915 | 0, Π = +0.941 | 0.986, 0.994, 0.997 |
+
+Every run reports `OK`, and every endpoint estimator is ±1.000000 exactly. Three things follow:
+
+* **the π is selective.** The two controls are trivial at every discretization, so whatever
+  produces π on `B_x` does not produce it on loops of the same size and shape 30 deg away;
+* **the enclosing loop is the hard one**, by the method's own difficulty measure: its worst
+  adjacent overlap is 0.83–0.88 where the controls sit at 0.99. That is the signature of a loop
+  passing near a degeneracy, and it is *absent* on the controls;
+* **the two controls agree with each other to 1e-4** (Π = +0.8679 against +0.8678 at N=13,
+  +0.9409 against +0.9409 at N=31). They are mirror-image loops traversed completely
+  independently, so this is an end-to-end check of the pipeline, not a shared intermediate.
+
+The third of the three readings above — that the loop-transport result is simply wrong at this
+rung — now requires a failure that is selective in exactly the way a real degeneracy would be,
+and that leaves the two controls untouched at three discretizations each. It is no longer the
+economical explanation.
+
 **Two objections to reading that as a disagreement were raised and tested; both have now been
 answered, and the claim still should not be pushed as far as it first was.**
 
