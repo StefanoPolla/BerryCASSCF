@@ -1,0 +1,156 @@
+{
+  "system": "butadiene",
+  "cas": [
+    8,
+    8
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    12.0,
+    18.0
+  ],
+  "centres": [
+    [
+      90.0,
+      101.85321091497578
+    ],
+    [
+      90.0,
+      90.0
+    ],
+    [
+      99.0,
+      101.85321091497578
+    ]
+  ],
+  "reference": null,
+  "reference_note": "no exact reference exists for butadiene",
+  "bisections": [
+    {
+      "centre": [
+        99.0,
+        101.85321091497578
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(8,8)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "undetermined",
+          "reason": "at least one setting failed its checks",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9137360373415847,
+              "n_points": 21,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3655,
+              "wall": 1157.615290403366,
+              "product": -0.6186306701697963,
+              "endpoint": -0.9999999995657556,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [13, 20] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9507489832269312,
+              "n_points": 33,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4409,
+              "wall": 1607.3137757778168,
+              "product": -0.6923566405194446,
+              "endpoint": -0.9864902752244327,
+              "messages": [
+                "continuation chain broken at point(s) [12]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+              ]
+            }
+          ],
+          "cost_micro": 8064,
+          "wall_time": 2764.930943250656
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.96,
+            1.44
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9996274477186436,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1058,
+              "wall": 228.5488224029541,
+              "product": 0.9977279973879815,
+              "endpoint": 0.9999999999472077,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9998099456719995,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 1357,
+              "wall": 287.391818523407,
+              "product": 0.9983998354622918,
+              "endpoint": 0.9999999999088703,
+              "messages": []
+            }
+          ],
+          "cost_micro": 2415,
+          "wall_time": 515.9416952133179
+        }
+      ],
+      "lo": 0.08,
+      "hi": null,
+      "undetermined": [
+        1.0
+      ],
+      "total_micro": 10479,
+      "wall_time": 3280.88001871109,
+      "rho": null,
+      "rho_uncertainty": null
+    }
+  ],
+  "complete": true,
+  "wall_time": 3280.882397413254
+}
