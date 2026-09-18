@@ -788,6 +788,144 @@ the loop shrunk to match, rather than larger loops reaching further out.
 """)
 
 md(r"""
+### Smaller loops, closer in: the region is workable after all
+
+The refusals above are a statement about **loop size**, not about the plane. A (12, 18) ellipse
+about a centre 13 degrees away sweeps out to `pyr` = 124 and `tw` = 68, geometries far from
+anything the intersection region resembles. Shrinking the loop and moving the centres in keeps
+every probe where the continuation works.
+
+Three centres with a **(6, 9)** loop — (90, 106) and (90, 118) on the mirror line, (95, 112) off
+it — were run at CAS(2,2) for exactly that reason.
+""")
+
+code(r"""
+near = load("ethylene_cas2-2_near.json")
+if not near:
+    print("not run yet:")
+    print("  python examples/run_localization.py ethylene --cas 2 2 --shape 6 9 \\")
+    print("         --centre-xy 90,106 90,118 95,112 --label near")
+else:
+    shape_n = tuple(near["shape"])
+    ref_n = tuple(near["reference"])
+    print(f"ethylene CAS(2,2), loop shape {shape_n}, reference {ref_n}\n")
+    for b in near["bisections"]:
+        c = tuple(b["centre"])
+        if b.get("rho") is None:
+            first = b["probes"][0]
+            print(f"  centre {str(c):>16}: no bracket "
+                  f"(full size -> {first['verdict']})")
+            continue
+        implied = elliptical_radius(ref_n, c, shape_n)
+        print(f"  centre {str(c):>16}: rho = {b['rho']:.4f} +- {b['rho_uncertainty']:.4f}"
+              f"    reference would be {implied:.4f}"
+              f"    {'inside' if abs(implied - b['rho']) <= b['rho_uncertainty'] else 'OUTSIDE'}"
+              f" the bracket")
+    tri = near.get("triangulation")
+    if tri and tri.get("chosen"):
+        ch = tri["chosen"]
+        print(f"\n  triangulated position: ({ch[0]:.2f}, {ch[1]:.2f})")
+        print(f"  exact reference:       ({ref_n[0]:.2f}, {ref_n[1]:.2f})")
+        print(f"  separation:            {np.hypot(ch[0]-ref_n[0], ch[1]-ref_n[1]):.2f} deg")
+        print(f"  residual {tri['residual']:.5f} in units of the semi-axes"
+              + (f", {tri['residual_over_uncertainty']:.2f} of its own precision"
+                 if tri.get("residual_over_uncertainty") is not None else ""))
+        print(f"  note: {tri['note']}")
+    else:
+        print("\n  no triangulation (fewer than two centres bracketed)")
+    print(f"\n  cost {near['total_micro']} micro-iterations, {near['wall_time']/60:.0f} min "
+          f"on a laptop")
+""")
+
+code(r"""
+# Every trustworthy constraint at this rung, intersected: two brackets (annuli), two clean
+# zeros (exclusions), and the ladder's E_x loop reporting pi (an inclusion). Refusals
+# contribute nothing and are listed as skipped.
+big = load("ethylene_cas2-2.json")
+if near and big:
+    tw = np.linspace(70, 110, 801)
+    pyr = np.linspace(85, 130, 901)
+    T, P = np.meshgrid(tw, pyr, indexing="ij")
+
+    def rho_of(c, shape):
+        return np.hypot((T - c[0]) / shape[0], (P - c[1]) / shape[1])
+
+    mask = np.ones_like(T, dtype=bool)
+    used, skipped = [], []
+    for rec in (near, big):
+        shape = tuple(rec["shape"])
+        for b in rec["bisections"]:
+            c, first = tuple(b["centre"]), b["probes"][0]
+            r = rho_of(c, shape)
+            if b.get("rho") is not None:
+                mask &= (r >= b["lo"]) & (r <= b["hi"])
+                used.append(f"bracket about {c}, shape {shape}")
+            elif first["verdict"] == "zero":
+                mask &= r > 1.0
+                used.append(f"exclusion about {c}, shape {shape}")
+            else:
+                skipped.append(f"refusal about {c}, shape {shape}")
+    mask &= np.hypot((T - 90.0) / 12.0, (P - 110.9) / 12.0) < 1.0
+    used.append("E_x from the ladder (reports pi)")
+
+    for u in used:
+        print(f"  used    {u}")
+    for k in skipped:
+        print(f"  skipped {k}  (a refusal excludes nothing)")
+    ref_n = tuple(near["reference"])
+    if mask.any():
+        print(f"\n  allowed region: tw in ({T[mask].min():.1f}, {T[mask].max():.1f}), "
+              f"pyr in ({P[mask].min():.1f}, {P[mask].max():.1f})")
+        print(f"  exact reference (full valence):      ({ref_n[0]:.2f}, {ref_n[1]:.2f})")
+        print(f"  gap scan at this same rung:          (90.00, 111.08)")
+    else:
+        print("\n  the constraints are mutually inconsistent: no point satisfies all of them")
+
+    fig, ax = plt.subplots(figsize=(6.6, 5.4))
+    ax.contourf(T, P, mask.astype(float), levels=[0.5, 1.5], colors=["tab:red"], alpha=0.8)
+    th = np.linspace(0, 2 * np.pi, 801)
+    for rec, col in ((near, "tab:blue"), (big, "tab:green")):
+        shape = tuple(rec["shape"])
+        for b in rec["bisections"]:
+            c = tuple(b["centre"])
+            ax.plot(*c, "+", ms=9, color=col)
+            if b.get("rho") is None:
+                continue
+            ax.plot(c[0] + b["rho"] * shape[0] * np.cos(th),
+                    c[1] + b["rho"] * shape[1] * np.sin(th), "-", lw=1.1, color=col)
+    ax.plot(*ref_n, "P", ms=13, color="k", label="exact reference (full valence)")
+    ax.plot(90.0, 111.08, "*", ms=14, color="gold", mec="k", mew=0.7,
+            label="gap scan, same rung")
+    ax.axvline(90.0, color="0.5", ls=":", lw=1.0, label="mirror line")
+    ax.set_xlim(80, 102); ax.set_ylim(100, 122)
+    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
+    ax.set_title("ethylene CAS(2,2): everything the loops constrain, intersected")
+    ax.legend(fontsize=8, loc="upper left")
+    plt.tight_layout(); plt.show()
+""")
+
+md(r"""
+**In `pyr` the measurement lands on the reference.** The allowed region is `pyr` in
+(110.3, 111.5), and the exact full-valence answer is **110.90** with the same rung's gap scan at
+**111.08** — both inside it. Along the coordinate the intersection actually moves in, loop
+transport and the state-averaged scan agree to within the measurement's own resolution, and both
+agree with the exact answer.
+
+**In `tw` it does not**: the region sits at (93.8, 94.7), about 4 degrees off the `tw` = 90 mirror
+line where symmetry requires a lone degeneracy to sit. That cannot be right for a single object,
+so the `tw` constraint is the one to distrust — it comes from the two exclusions, each a single
+loop whose interior is taken to be empty, and the region is small enough (151 grid cells) that a
+modest error in either would move or empty it.
+
+**This supersedes a reading taken earlier from one bracket alone.** With only the (90, 98) centre,
+assuming the object sat on the mirror line put it at `pyr` = 112.8, about 1.7 degrees past the
+reference, and that looked like the same state-specific/state-averaged offset formaldimine shows.
+Combining constraints removes it: the assumption of being on the line was doing the work, not the
+data. The offset at ethylene CAS(2,2) is **not** resolved by these measurements — what is resolved
+is that `pyr` agrees with the exact reference, which is a stronger and simpler statement.
+""")
+
+md(r"""
 ## Summary
 
 * A method that returns **one bit per loop** can be made to return a **position**, by bisecting the

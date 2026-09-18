@@ -641,10 +641,35 @@ three provides one. **Ethylene does**: CAS(12,12) is its full valence space, so 
 position is exact in this basis, and its ladder is the badly behaved one.
 
 At CAS(2,2), the bisection about (90, 98) brackets **rho = 0.8216 ± 0.0324**, while the same
-rung's gap scan implies 0.7267 and the exact full-valence reference implies 0.7167. Both lie
-**outside** the measured bracket. The state-specific object sits about 1.7 deg beyond the
-state-averaged one — the same magnitude as formaldimine's 1.44 and 1.63 deg, now measured against
-a reference that is exact rather than against another approximation.
+rung's gap scan implies 0.7267 and the exact full-valence reference implies 0.7167 — both outside
+that bracket. Read on its own, and assuming the object sits on the `tw` = 90 mirror line, that
+says the state-specific object is about 1.7 deg past the state-averaged one, the same magnitude
+as formaldimine's 1.44 and 1.63 deg.
+
+**That reading did not survive more measurements, and the assumption was doing the work.** A
+second run with *small* loops — shape (6, 9) rather than (12, 18), centres moved in to match —
+took 10 minutes on the laptop and added a second bracket (about (90, 106): rho = 0.8725 ± 0.0516)
+and a second clean exclusion (about (90, 118)). Intersecting every trustworthy constraint at this
+rung — two brackets, two clean zeros, and the ladder's `E_x` pi, with the two refusals
+contributing nothing — gives
+
+| | `tw` | `pyr` |
+|---|---|---|
+| allowed region | (93.8, 94.7) | **(110.3, 111.5)** |
+| exact reference, full valence | 90.00 | **110.90** |
+| gap scan, same rung | 90.00 | **111.08** |
+
+**Along `pyr`, the coordinate the intersection actually moves in, loop transport lands on the
+exact answer** — and on the state-averaged one, which is inside the same band. No offset survives
+there. Along `tw` the region sits 4 deg off the mirror line, which cannot be right for a lone
+degeneracy in a system with that exact symmetry, so the `tw` constraint is the one to distrust:
+it rests on the two exclusions, each a single loop whose interior is assumed empty, and the
+surviving region is 151 grid cells, small enough that a modest error in either would move it.
+
+The correction matters more than the result: **one bracket plus a symmetry assumption produced a
+confident 1.7 deg offset that four constraints then removed.** That is the failure mode
+triangulation exists to prevent, and it happened here because a single centre was treated as a
+position.
 
 ### 5. The correction: a refusal is not an exclusion
 
@@ -778,6 +803,9 @@ Check with `squeue -u pollas1`, or
 
 ### Two things deliberately not done
 
+* **The small-loop result above is CAS(2,2) only.** The same three centres at (6, 9) should be
+  run at the other rungs — 10 minutes each at the cheap ones — before anything is concluded about
+  how the position moves with active space.
 * **The ethylene third centres were not re-chosen per rung.** `docs/todo.md` §9 says each rung's
   third centre should come from *its own* first-centre bracket; these were all placed from the
   CAS(12,12) reference, and three of four were refused. The fix is one extra task per rung, not
