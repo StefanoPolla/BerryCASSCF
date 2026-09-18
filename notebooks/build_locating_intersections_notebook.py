@@ -870,6 +870,12 @@ def combined_region(cas, ax=None):
             elif first["verdict"] == "zero":
                 mask &= r > 1.0
                 used.append(f"exclusion about {c}, shape {shape}")
+            elif first["verdict"] == "pi":
+                # A full-size loop that returns pi without bracketing is an INCLUSION:
+                # the object is inside it. Weaker than a bracket, but not nothing, and
+                # it was previously discarded along with the refusals.
+                mask &= r < 1.0
+                used.append(f"inclusion about {c}, shape {shape}")
             else:
                 skipped.append(f"refusal about {c}, shape {shape}")
     mask &= np.hypot((T - 90.0) / 12.0, (P - 110.9) / 12.0) < 1.0
