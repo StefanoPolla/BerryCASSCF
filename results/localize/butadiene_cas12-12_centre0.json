@@ -1,0 +1,103 @@
+{
+  "system": "butadiene",
+  "cas": [
+    12,
+    12
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    12.0,
+    18.0
+  ],
+  "centres": [
+    [
+      90.0,
+      101.85321091497578
+    ],
+    [
+      90.0,
+      90.0
+    ],
+    [
+      99.0,
+      110.0
+    ]
+  ],
+  "reference": null,
+  "reference_note": "no exact reference exists for butadiene",
+  "bisections": [
+    {
+      "centre": [
+        90.0,
+        101.85321091497578
+      ],
+      "shape": [
+        12.0,
+        18.0
+      ],
+      "cas_label": "CAS(12,12)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            12.0,
+            18.0
+          ],
+          "verdict": "undetermined",
+          "reason": "at least one setting failed its checks",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9443163771436132,
+              "n_points": 20,
+              "n_rejected": 1,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 2928,
+              "wall": 16283.98216676712,
+              "product": -0.6454881993332915,
+              "endpoint": -0.9999999998951055,
+              "messages": [
+                "continuation chain broken at point(s) [2]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "non-trivial (pi)",
+              "min_overlap": 0.9397730448466395,
+              "n_points": 29,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 3623,
+              "wall": 28495.795726060867,
+              "product": -0.7366563291094236,
+              "endpoint": -0.9999999942555459,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [8, 9, 14, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 6551,
+          "wall_time": 44779.78837609291
+        }
+      ],
+      "lo": null,
+      "hi": null,
+      "undetermined": [],
+      "total_micro": 6551,
+      "wall_time": 44779.78837609291
+    }
+  ],
+  "complete": false,
+  "wall_time": 44779.82801413536
+}

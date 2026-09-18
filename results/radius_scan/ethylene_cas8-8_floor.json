@@ -70,8 +70,63 @@
       ],
       "cost_micro": 15403,
       "wall_time": 654.5658922195435
+    },
+    {
+      "scale": 1.0,
+      "radius": 2.0,
+      "verdict": "undetermined",
+      "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9938225593502845,
+          "n_points": 7,
+          "n_rejected": 7,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 5550,
+          "wall": 9960.024734020233,
+          "product": 0.9399537726110516,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "fell back to a weaker warm start at point(s) [6] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9963662117338448,
+          "n_points": 11,
+          "n_rejected": 6,
+          "closed": false,
+          "hit_step_floor": true,
+          "micro": 5171,
+          "wall": 4232.091903924942,
+          "product": 0.943979233722805,
+          "endpoint": null,
+          "messages": [
+            "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+            "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+            "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+          ]
+        }
+      ],
+      "cost_micro": 10721,
+      "wall_time": 14192.116948127747
     }
   ],
   "complete": false,
-  "wall_time": 654.5663259029388
+  "wall_time": 14846.68363904953
 }

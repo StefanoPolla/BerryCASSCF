@@ -1,0 +1,101 @@
+{
+  "system": "butadiene",
+  "cas": [
+    12,
+    12
+  ],
+  "basis": "6-31g*",
+  "shape": [
+    6.0,
+    9.0
+  ],
+  "centres": [
+    [
+      90.0,
+      106.0
+    ],
+    [
+      90.0,
+      120.0
+    ],
+    [
+      95.0,
+      112.0
+    ]
+  ],
+  "reference": null,
+  "reference_note": "no exact reference exists for butadiene",
+  "bisections": [
+    {
+      "centre": [
+        90.0,
+        120.0
+      ],
+      "shape": [
+        6.0,
+        9.0
+      ],
+      "cas_label": "CAS(12,12)",
+      "probes": [
+        {
+          "scale": 1.0,
+          "radius": [
+            6.0,
+            9.0
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9369174575254042,
+              "n_points": 19,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4117,
+              "wall": 7907.3444356918335,
+              "product": 0.7495649407837132,
+              "endpoint": 0.9999999750223737,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [7] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9565410769183015,
+              "n_points": 27,
+              "n_rejected": 2,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 5642,
+              "wall": 8697.487413167953,
+              "product": 0.8032873503363603,
+              "endpoint": 0.999999975010803,
+              "messages": []
+            }
+          ],
+          "cost_micro": 9759,
+          "wall_time": 16604.84236264229
+        }
+      ],
+      "lo": null,
+      "hi": null,
+      "undetermined": [],
+      "total_micro": 9759,
+      "wall_time": 16604.84236264229
+    }
+  ],
+  "complete": false,
+  "wall_time": 16604.871468782425
+}

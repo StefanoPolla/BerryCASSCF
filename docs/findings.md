@@ -248,6 +248,35 @@ but **position**: at CAS(2,2) the located state-specific object is a factor 2.5 
 the gap-scan minimum, far outside the measurement's own uncertainty, and that is not explained by
 a floor-to-distance conversion.
 
+### Asked directly, in one probe: the answer is no (2026-09-18)
+
+Reconstructing a position first was the long way round. A single loop, centred **on** the gap-scan
+minimum and small enough to contain nothing else, answers the question by itself:
+
+> butadiene CAS(12,12), circular loop of radius **1.25°** about (89.968, 101.944) — the searched
+> minimum itself — returns a clean **0**. Both step-control settings agree, worst adjacent overlap
+> 0.978, 2.9 h on one core.
+
+So the state-specific transport does **not** encircle the state-averaged minimum at the rung where
+the disagreement is sharpest. That is finding 3 in its strong form, and it now rests on one probe
+rather than on an inference chain.
+
+The argument closes tightly with §1's floor-to-distance conversion. That conversion says the
+1.46 mHa floor is what a cut passing **0.83°** from a cone apex would show — and 0.83° is *inside*
+this loop. So even granting the gap scan its own most favourable reading, the object it is
+approaching lies within the loop that loop transport says encloses nothing.
+
+Two caveats, neither of which rescues the alternative. A zero verdict means an **even** count, so
+two degeneracies inside a 1.25° loop would also read 0 — possible in principle, unmotivated here.
+And the same probe at ethylene CAS(2,2) behaves the same way (§2), where the geometry is understood
+well enough to show that what loop transport encircles is not a point degeneracy at all. The
+pattern across the two systems is that **loop transport and the gap scan are not sensing the same
+object**, and at ethylene the state-specific side looks like solution structure rather than
+topology.
+
+The larger radii of the same scan — 2.5°, 5°, 10° — are still running and will say how far away the
+enclosed object is.
+
 Separating them needs the position of whatever loop transport encircles to be **measured** rather
 than inferred, which is what the bisection and triangulation experiment in `docs/todo.md` §2 is
 for: shrink the loop until the phase turns over, and repeat from a second centre.
