@@ -169,11 +169,25 @@ python examples/calibrate_thresholds.py
 | [adaptive_stepping.ipynb](notebooks/adaptive_stepping.ipynb) | how should a loop be discretized, and does adapting it pay? |
 | [locating_intersections.ipynb](notebooks/locating_intersections.ipynb) | can a method returning one bit per loop return a *position*? |
 | [stepping_comparison.ipynb](notebooks/stepping_comparison.ipynb) | one update per point, or optimize each point to convergence? |
+| [probing_by_small_loops.ipynb](notebooks/probing_by_small_loops.ipynb) | is the intersection inside *this* loop? — and what that reveals at ethylene CAS(2,2) |
 | [summary.ipynb](notebooks/summary.ipynb) | the cross-system verdict, short |
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the
 gap scans additionally checkpoint after each grid row, and a localization writes a record after
 every probe, so a run killed after two days resumes instead of starting over.
+
+### Does the loop actually encircle the intersection?
+
+```bash
+python examples/run_centre_probe.py ethylene --cas 2 2 --radius 2 --centres 90,109 90,111 \
+       --label check                                  # ~20 s per probe
+python examples/run_radius_scan.py formaldimine --cas 4 4 --centre 128.99 90.24 --label floor
+```
+
+One small loop, one bit: *is a degeneracy inside it?* Cheap enough to ask dozens of times, and it
+answers a question bisection cannot — whether loop transport is encircling the intersection the gap
+scan found, or something else. At ethylene CAS(2,2) it is something else, and
+[docs/findings.md](docs/findings.md) §2 says what that does to the verdict for that rung.
 
 ### Is a small gap an intersection?
 

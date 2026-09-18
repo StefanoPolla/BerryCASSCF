@@ -305,6 +305,38 @@ to. Nothing in the present data separates those.
 The cost asymmetry is large: loop transport at the smallest active space is seconds, against hours
 for the gap scan ladder.
 
+### The second reading wins at ethylene CAS(2,2): the π is not the intersection (2026-09-18)
+
+Small-loop probing (`notebooks/probing_by_small_loops.ipynb`) asked the question this table never
+did — not "what phase does the loop report?" but "**does the loop encircle the intersection?**" At
+ethylene CAS(2,2) the answer is no, and the evidence is cheap and direct:
+
+* **five concentric loops containing the state-averaged intersection** — radii 3°, 2°, 1°, 0.5°,
+  0.25° about (90, 110.9) — all report a **trivial** phase. The exact full-valence position is at
+  the centre of every one of them;
+* shrinking `E_x` gives a monotone sequence — π at 12°, 10°, 8°, 6°, refused at 5° and 4°, zero at
+  3° and below — so whatever carries the phase sits **4.5 ± 1.5° from the intersection**;
+* nine probes of radius 2° covering the mirror line from `pyr` 99 to 123, the whole span of `E_x`,
+  all report zero: it is not on the line either;
+* the only probes that react are at (94, 111) and (86, 111), both **refused**. But
+  `E(tw = 94) = E(tw = 86)` to 6e-13 — the mirror is exact — so anything off the line comes in
+  pairs, a loop centred on the line encloses both or neither, and an **even count cannot give π**.
+
+No arrangement of point degeneracies compatible with the symmetry explains the observations. What
+the region does contain is **competing state-specific CASSCF solutions**: the in-CAS gap map is
+ragged at exactly `tw` = 87 and 93, and cold-start energies around a 3° circle jump at four of 72
+points. A sign picked up crossing between CASSCF solutions is not a Berry phase.
+
+**So the ethylene CAS(2,2) row above says "correct" for what now looks like the wrong reason.** The
+verdict π happens to match the topology a converged calculation would give, and it is not obtained
+by encircling the intersection. The row stands as a description of what the method *reported*; it
+should not be read as evidence that the method *worked* at that rung.
+
+Three limits on this, all real. It is one rung of one system. CAS(2,2) is below the π space and
+this document already calls it indefensible for ethylene. And the cold-start ring maps where
+independent solves disagree, not what a warm-started continuation does — it establishes that
+competing solutions exist there, not that the walk crossed between them.
+
 ## 3. The gap-scan minimum and the point loop transport encircles are different objects
 
 > Two subsections bearing directly on this question sit in §1, where the CAS(12,12) floor is
