@@ -685,19 +685,45 @@ that stay in the region where transport works: centres nearer the object so that
 already small, or a smaller shape. The bracketing centre (90, 98) works precisely because its
 transition radius, 0.82, keeps every probe inside that region.
 
-### 6. Adaptive and uniform transport disagree on one loop — unresolved
+### 6. A reported adaptive/uniform conflict — withdrawn, it was a misattribution
 
-Butadiene CAS(8,8), the `B_x` loop exactly as the ladder defines it (centre (90, 101.853), radius
-(12, 18)): **uniform** transport returns pi at N=13 and N=21 (endpoint −1.000000, worst overlaps
-0.813 and 0.890, both `OK`), while the **adaptive** walk inside the bisection returns **0** at
-full size with both step-control settings agreeing. Same loop, same active space, opposite
-verdicts.
+An earlier version of this entry reported that uniform transport returned pi on butadiene's
+`B_x` loop at CAS(8,8) while the adaptive walk returned 0 on the identical loop, and flagged it
+as blocking both the ladder result and every bisection bracketed from a full-size loop. **That
+was wrong, and the error was mine in reading, not the code's in running.**
 
-This is not yet diagnosable: the task predates probe-level checkpointing, so its per-probe record
-does not exist until it finishes. It matters in both directions — it bears on the ladder's "pi at
-every rung" and on every bisection that uses a full-size loop as its outer bracket. **Next step**
-is to read that record when the task lands and compare the two walks point by point, looking for
-a branch change in one of them.
+The `ZERO` verdict at `scale 1.0000` came from `butadiene_cas8-8_centre1` — the loop about
+**(90, 90)**, not the `B_x` centre (90, 101.853). Three concurrent array tasks were appending to
+one shared log file, because they started before the per-task log naming was added, and the line
+carries no centre. The saved records settle it: the probe with 8117 micro-iterations at scale 1.0
+belongs to centre 1, and a loop about (90, 90) reporting 0 at full size is the expected result —
+CAS(4,4) does the same.
+
+Checked directly rather than argued, by running the adaptive walk on the actual `B_x` loop
+locally at that active space:
+
+```python
+loop = Loop("B_x", (90.0, 101.85321091497578), (12.0, 18.0))
+traverse_loop_adaptive(loop, cas=CasConfig(basis="6-31g*", ncas=8, nelecas=8), ...)
+```
+
+| step control | phase | Π | endpoint | worst overlap | points |
+|---|---|---|---|---|---|
+| `d_max` 0.10, target 0.020 | **pi** | −0.6583 | −1.0000 | 0.929 | 19 |
+| `d_max` 0.07, target 0.008 | **pi** | −0.7581 | −1.0000 | 0.955 | 29 |
+
+Both agree with the uniform runs (pi at N=13 and 21). **There is no conflict**, nothing is
+blocked, and the two transports agree wherever they have been compared.
+
+Two things worth keeping from the episode. First, the per-task log naming added earlier today was
+not cosmetic: a shared log across concurrent tasks produced a false finding within hours of being
+introduced. Second, the correct reflex was the cheap one — butadiene CAS(8,8) is ~5 s per point,
+so the "unresolvable until a cluster task lands" claim was itself wrong: the check took four
+minutes on the laptop.
+
+A genuine observation does come out of those records, unrelated to the false alarm: the (90, 90)
+loop at full size reports **0** at CAS(4,4) and CAS(8,8) but **pi** at CAS(6,6). What that loop
+encloses is rung-dependent, which is worth following up when the ladder completes.
 
 ### Operational notes worth keeping
 
@@ -741,12 +767,10 @@ Check with `squeue -u pollas1`, or
 3. **Rebuild the notebook**: `python notebooks/build_locating_intersections_notebook.py` then
    `jupyter nbconvert --to notebook --execute --inplace notebooks/locating_intersections.ipynb`.
    Its ladder table and constraint-region figures pick up new rungs automatically.
-4. **Resolve the adaptive/uniform conflict** (item 6 above). When `5028404_*` for CAS(8,8)
-   lands, compare its full-size probe against `results/butadiene/butadiene_B_x_cas8-8_N{13,21}
-   .json` point by point. The question is which walk changed branch; `max_mo_change` and
-   `strategy` per point, plus the `messages` of each adaptive run, are the evidence. **Do not
-   quote either the ladder's "pi at every rung" or a bisection bracketed from a full-size loop
-   as settled until this is understood** — it affects both.
+4. **Look at what the (90, 90) loop encloses per rung.** It reports 0 at full size at CAS(4,4)
+   and CAS(8,8) but pi at CAS(6,6) (item 6). If that survives the remaining rungs it is a
+   rung-dependent statement about enclosure, which is the same phenomenon the ladder measures
+   at `B_x` and worth reporting alongside it.
 5. **The CAS(12,12) localization is the one to wait for.** When its three centres merge, compare
    the measured rho against the gap scan's 0.83 deg miss distance (item 2). If they agree, the
    two methods are seeing the same object at different resolution and §3 closes; if the measured
