@@ -1,0 +1,210 @@
+{
+  "system": "formaldimine",
+  "cas": [
+    4,
+    4
+  ],
+  "basis": "sto-3g",
+  "centre": [
+    130.0,
+    89.9
+  ],
+  "radii": [
+    10.0,
+    6.0,
+    4.0,
+    2.0,
+    1.0,
+    0.5
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 10.0,
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9547580185683825,
+          "n_points": 16,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 655,
+          "wall": 2.474700927734375,
+          "product": -0.698940739457779,
+          "endpoint": -0.9999999999261695,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9782820323811866,
+          "n_points": 26,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 960,
+          "wall": 3.5377800464630127,
+          "product": -0.8028981066625988,
+          "endpoint": -0.999999999986181,
+          "messages": []
+        }
+      ],
+      "cost_micro": 1615,
+      "wall_time": 6.012797832489014
+    },
+    {
+      "scale": 1.0,
+      "radius": 6.0,
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.95405412059492,
+          "n_points": 16,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1020,
+          "wall": 3.206899881362915,
+          "product": -0.7065456034229838,
+          "endpoint": -0.99999999999558,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9772397660215176,
+          "n_points": 25,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1460,
+          "wall": 4.919183969497681,
+          "product": -0.8069589315144223,
+          "endpoint": -0.9999999999141111,
+          "messages": []
+        }
+      ],
+      "cost_micro": 2480,
+      "wall_time": 8.126358032226562
+    },
+    {
+      "scale": 1.0,
+      "radius": 4.0,
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9558625906635912,
+          "n_points": 16,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1469,
+          "wall": 4.345669984817505,
+          "product": -0.7064252903384189,
+          "endpoint": -0.999999999743314,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9779685578989868,
+          "n_points": 25,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 2175,
+          "wall": 6.250268936157227,
+          "product": -0.8083886702564114,
+          "endpoint": -0.9999999997444757,
+          "messages": []
+        }
+      ],
+      "cost_micro": 3644,
+      "wall_time": 10.596221923828125
+    },
+    {
+      "scale": 1.0,
+      "radius": 2.0,
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.930333295972601,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 3418,
+          "wall": 9.886182069778442,
+          "product": -0.6942258195516493,
+          "endpoint": -0.9999999993698037,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9807968192128348,
+          "n_points": 25,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 5207,
+          "wall": 17.740915060043335,
+          "product": -0.8071378006228229,
+          "endpoint": -0.9999999995764393,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [24] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+          ]
+        }
+      ],
+      "cost_micro": 8625,
+      "wall_time": 27.627362966537476
+    }
+  ],
+  "complete": false,
+  "wall_time": 52.363670110702515
+}
