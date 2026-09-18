@@ -586,3 +586,102 @@ bench says what a CAS(14,14) point costs.
   than leaving an unsized job in `slurm/`.
 
 **Unresolved.** Everything the jobs are for. Nothing here changes a scientific conclusion yet.
+
+---
+
+## 2026-09-18 — What the cluster returned, and one correction
+
+Results from the campaign submitted earlier the same day. The two multi-day jobs are still
+running; everything below is finished work.
+
+### 1. The CAS(12,12) pi is selective (butadiene, `berry_cas12.job`)
+
+The rung that carries `docs/findings.md` §3 had never been run on a control loop. Both are now
+done, at three discretizations each:
+
+| loop | N=13 | N=21 | N=31 | worst adjacent overlap |
+|---|---|---|---|---|
+| `B_x` encloses | **pi** | **pi** | *running* | 0.83, 0.88 |
+| `B_1` control | 0 | 0 | 0 | 0.986, 0.995, 0.997 |
+| `B_2` control | 0 | 0 | 0 | 0.986, 0.994, 0.997 |
+
+Every run `OK`, every endpoint estimator ±1.000000 exactly, and the two controls — mirror-image
+loops traversed independently — agree to 1e-4. The enclosing loop is also the *hard* one by the
+method's own measure (0.83 against 0.99), which is what passing near a degeneracy looks like.
+"The loop-transport result is simply wrong at this rung" now needs a failure selective enough to
+spare both controls at three discretizations each.
+
+### 2. The gap floor was never evidence about enclosure (`docs/todo.md` §6, now done)
+
+No threshold was invented. Near a conical intersection the gap is linear in the branching-plane
+coordinates, so a floor `g` on a cut of local slope `a` is what a cut passing `g/a` from the apex
+would show. `examples/report_gap_criterion.py` reports that conversion per rung. Butadiene
+CAS(12,12): floor 1.4595 mHa, slope 1.749 mHa/deg, **miss distance 0.83 deg — 4.6% of the loop's
+18 deg semi-axis, and therefore inside the loop.** Every other rung lands at 0.002-0.005 deg. So
+the gap scan never said the loop encloses nothing; `docs/findings.md` said it did, and that
+framing is withdrawn. The 300x contrast between this rung and the others is real and unexplained,
+but it is not about enclosure.
+
+### 3. CAS(14,14) is out of reach, measured (`docs/todo.md` §8, closed)
+
+`bench.job` timed one state-specific solve: **13 123 s — 3.6 h — returning `converged=False`**.
+That is 37x the CAS(12,12) cost where determinant counting predicts 13.8x. The butadiene ladder
+therefore stops at CAS(12,12) **by measurement, not by choice**, and going higher needs a
+different solver (DMRG, selected CI), not a longer walltime. `slurm/rung14.job` is kept, marked
+not-viable at the top, as the record.
+
+### 4. Ethylene joins the localization experiment, and immediately disagrees
+
+`docs/findings.md` §4 said the open question — is loop transport right, or consistently wrong? —
+needs a system with an exact reference whose ladder still misbehaves, and concluded none of the
+three provides one. **Ethylene does**: CAS(12,12) is its full valence space, so the intersection
+position is exact in this basis, and its ladder is the badly behaved one.
+
+At CAS(2,2), the bisection about (90, 98) brackets **rho = 0.8216 ± 0.0324**, while the same
+rung's gap scan implies 0.7267 and the exact full-valence reference implies 0.7167. Both lie
+**outside** the measured bracket. The state-specific object sits about 1.7 deg beyond the
+state-averaged one — the same magnitude as formaldimine's 1.44 and 1.63 deg, now measured against
+a reference that is exact rather than against another approximation.
+
+### 5. The correction: a refusal is not an exclusion
+
+A first reading of ethylene's other two centres treated their non-bracketing as "the loop
+encloses nothing" and built an inconsistency on it. Checking the probe records, **three of the
+four non-bracketing loops across CAS(2,2) and CAS(4,4) were refused at the adaptive step floor**,
+which says the loop could not be walked, not that it is empty. Only (80, 110.9) at CAS(2,2)
+returned a clean 0.
+
+What survives: at CAS(2,2), that one clean 0 plus the ladder's `E_x` pi leaves an allowed region
+of `tw` in (92.0, 99.5), `pyr` in (103.0, 113.0) — **off the mirror line**, where every degeneracy
+must be paired and every `tw`-symmetric loop must read even. That is a real tension and
+`slurm/mirror_test.job` is testing it with two deliberately off-line centres. What does not
+survive: the same claim at CAS(4,4), where both other loops were refused, nothing excludes the
+line, and the allowed region straddles it.
+
+**The first mirror probe has itself come back refused** (centre (80, 106), CAS(2,2), full size:
+"at least one setting failed its checks"), which is consistent with the region simply being hard
+to walk at full loop size — the second candidate explanation rather than the first.
+
+### 6. Adaptive and uniform transport disagree on one loop — unresolved
+
+Butadiene CAS(8,8), the `B_x` loop exactly as the ladder defines it (centre (90, 101.853), radius
+(12, 18)): **uniform** transport returns pi at N=13 and N=21 (endpoint −1.000000, worst overlaps
+0.813 and 0.890, both `OK`), while the **adaptive** walk inside the bisection returns **0** at
+full size with both step-control settings agreeing. Same loop, same active space, opposite
+verdicts.
+
+This is not yet diagnosable: the task predates probe-level checkpointing, so its per-probe record
+does not exist until it finishes. It matters in both directions — it bears on the ladder's "pi at
+every rung" and on every bisection that uses a full-size loop as its outer bracket. **Next step**
+is to read that record when the task lands and compare the two walks point by point, looking for
+a branch change in one of them.
+
+### Operational notes worth keeping
+
+* The node is **2.7x slower per point** than the laptop, consistently across active spaces.
+* `cpu_lorentz` saturates on **memory**, not CPUs (`DefMemPerCPU` 4027 MB). A 16 GB request
+  against a measured 593 MB peak blocked this account's own flagship job; 4 GB everywhere now.
+* Threading is worth 2.5x at CAS(12,12) (349 s on 8 threads, 876 s on one), so 8 CPUs is justified
+  there and 4 is enough for the small rungs.
+* `results/` is tracked in git *and* written by the cluster, so committing a cluster-produced file
+  breaks the next `git pull` there. The check-then-drop recipe is in `docs/compute.md`.
