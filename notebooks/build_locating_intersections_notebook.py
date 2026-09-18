@@ -800,6 +800,7 @@ it — were run at CAS(2,2) for exactly that reason.
 """)
 
 code(r"""
+NEAR_RUNGS = [(2, 2), (4, 4)]
 near = load("ethylene_cas2-2_near.json")
 if not near:
     print("not run yet:")
@@ -838,25 +839,29 @@ else:
 """)
 
 code(r"""
-# Every trustworthy constraint at this rung, intersected: two brackets (annuli), two clean
-# zeros (exclusions), and the ladder's E_x loop reporting pi (an inclusion). Refusals
-# contribute nothing and are listed as skipped.
-big = load("ethylene_cas2-2.json")
-if near and big:
+# Gap-scan positions per rung, cone-refined, from docs/findings.md section 1.
+GAP_SCAN_PYR = {(2, 2): 111.08, (4, 4): 116.41, (6, 6): 102.64,
+                (8, 8): 103.90, (10, 10): 110.93, (12, 12): 110.90}
+
+def combined_region(cas, ax=None):
+    # Intersect every trustworthy constraint at one rung: brackets (annuli), clean zeros
+    # (exclusions), and the ladder's E_x loop reporting pi (an inclusion). Refusals say the
+    # loop could not be walked, not that it is empty, so they constrain nothing.
+    recs = [r for r in (load(f"ethylene_cas{cas[0]}-{cas[1]}_near.json"),
+                        load(f"ethylene_cas{cas[0]}-{cas[1]}.json")) if r]
+    if not recs:
+        return None
     tw = np.linspace(70, 110, 801)
     pyr = np.linspace(85, 130, 901)
     T, P = np.meshgrid(tw, pyr, indexing="ij")
 
-    def rho_of(c, shape):
-        return np.hypot((T - c[0]) / shape[0], (P - c[1]) / shape[1])
-
     mask = np.ones_like(T, dtype=bool)
     used, skipped = [], []
-    for rec in (near, big):
+    for rec in recs:
         shape = tuple(rec["shape"])
         for b in rec["bisections"]:
             c, first = tuple(b["centre"]), b["probes"][0]
-            r = rho_of(c, shape)
+            r = np.hypot((T - c[0]) / shape[0], (P - c[1]) / shape[1])
             if b.get("rho") is not None:
                 mask &= (r >= b["lo"]) & (r <= b["hi"])
                 used.append(f"bracket about {c}, shape {shape}")
@@ -868,40 +873,41 @@ if near and big:
     mask &= np.hypot((T - 90.0) / 12.0, (P - 110.9) / 12.0) < 1.0
     used.append("E_x from the ladder (reports pi)")
 
+    print(f"CAS{cas}")
     for u in used:
         print(f"  used    {u}")
     for k in skipped:
         print(f"  skipped {k}  (a refusal excludes nothing)")
-    ref_n = tuple(near["reference"])
+    box = None
     if mask.any():
-        print(f"\n  allowed region: tw in ({T[mask].min():.1f}, {T[mask].max():.1f}), "
-              f"pyr in ({P[mask].min():.1f}, {P[mask].max():.1f})")
-        print(f"  exact reference (full valence):      ({ref_n[0]:.2f}, {ref_n[1]:.2f})")
-        print(f"  gap scan at this same rung:          (90.00, 111.08)")
+        box = (T[mask].min(), T[mask].max(), P[mask].min(), P[mask].max())
+        print(f"  allowed:  tw ({box[0]:.1f}, {box[1]:.1f}), "
+              f"pyr ({box[2]:.1f}, {box[3]:.1f})")
+        print(f"  exact reference pyr 110.90   gap scan this rung "
+              f"{GAP_SCAN_PYR[cas]:.2f}\n")
     else:
-        print("\n  the constraints are mutually inconsistent: no point satisfies all of them")
+        print("  the constraints are mutually inconsistent: no point satisfies all\n")
+    if ax is not None:
+        ax.contourf(T, P, mask.astype(float), levels=[0.5, 1.5], colors=["tab:red"],
+                    alpha=0.8)
+        ax.plot(90.0, 110.9, "P", ms=12, color="k", label="exact reference")
+        ax.plot(90.0, GAP_SCAN_PYR[cas], "*", ms=14, color="gold", mec="k", mew=0.7,
+                label="gap scan, same rung")
+        ax.axvline(90.0, color="0.5", ls=":", lw=1.0)
+        ax.set_xlim(80, 102)
+        ax.set_ylim(98, 122)
+        ax.set_xlabel("tw (deg)")
+        ax.set_title(f"ethylene CAS({cas[0]},{cas[1]})")
+    return box
 
-    fig, ax = plt.subplots(figsize=(6.6, 5.4))
-    ax.contourf(T, P, mask.astype(float), levels=[0.5, 1.5], colors=["tab:red"], alpha=0.8)
-    th = np.linspace(0, 2 * np.pi, 801)
-    for rec, col in ((near, "tab:blue"), (big, "tab:green")):
-        shape = tuple(rec["shape"])
-        for b in rec["bisections"]:
-            c = tuple(b["centre"])
-            ax.plot(*c, "+", ms=9, color=col)
-            if b.get("rho") is None:
-                continue
-            ax.plot(c[0] + b["rho"] * shape[0] * np.cos(th),
-                    c[1] + b["rho"] * shape[1] * np.sin(th), "-", lw=1.1, color=col)
-    ax.plot(*ref_n, "P", ms=13, color="k", label="exact reference (full valence)")
-    ax.plot(90.0, 111.08, "*", ms=14, color="gold", mec="k", mew=0.7,
-            label="gap scan, same rung")
-    ax.axvline(90.0, color="0.5", ls=":", lw=1.0, label="mirror line")
-    ax.set_xlim(80, 102); ax.set_ylim(100, 122)
-    ax.set_xlabel("tw (deg)"); ax.set_ylabel("pyr (deg)")
-    ax.set_title("ethylene CAS(2,2): everything the loops constrain, intersected")
-    ax.legend(fontsize=8, loc="upper left")
-    plt.tight_layout(); plt.show()
+fig, axes = plt.subplots(1, len(NEAR_RUNGS), figsize=(5.4 * len(NEAR_RUNGS), 4.6),
+                         sharey=True)
+axes = np.atleast_1d(axes)
+for ax, cas in zip(axes, NEAR_RUNGS):
+    combined_region(cas, ax)
+axes[0].set_ylabel("pyr (deg)")
+axes[0].legend(fontsize=8, loc="upper left")
+plt.tight_layout(); plt.show()
 """)
 
 md(r"""

@@ -671,6 +671,31 @@ confident 1.7 deg offset that four constraints then removed.** That is the failu
 triangulation exists to prevent, and it happened here because a single centre was treated as a
 position.
 
+**A second rung, CAS(4,4), run the same way (13 min on the laptop):**
+
+| | `tw` | `pyr` |
+|---|---|---|
+| allowed region, CAS(2,2) | (93.8, 94.7) | **(110.3, 111.5)** |
+| allowed region, CAS(4,4) | (87.3, 92.7) | **(102.9, 109.1)** |
+| exact reference, full valence | 90.00 | **110.90** |
+| gap scan at CAS(4,4), same rung | 90.00 | **116.41** |
+
+Two things fall out. First, **CAS(4,4)'s region straddles the mirror line** (87.3 to 92.7), so the
+parity worry raised at CAS(2,2) does not recur — which is further reason to read the CAS(2,2)
+`tw` offset as an artefact of its two exclusions rather than as physics.
+
+Second, and more interesting: at CAS(4,4) the **state-averaged scan misplaces the intersection by
++5.5 deg** (116.41 against the exact 110.90 — the known ladder error at this rung), while loop
+transport's region ends 1.8 deg short of the exact answer. **Loop transport is the closer of the
+two to the exact result at this rung**, by roughly a factor of three, and the comparison is
+like-for-like because both are computed at CAS(4,4). This is the scoring that `docs/findings.md`
+§4 says no system in the project could provide, and ethylene provides it.
+
+Stated conservatively, because it should be: these are bounds from three or four constraints, not
+positions; the regions are boxes around an arc; and at CAS(4,4) the measured region and the exact
+reference do **not** overlap, so loop transport is not exactly right either — only much less
+wrong than the comparator at the same active space.
+
 ### 5. The correction: a refusal is not an exclusion
 
 A first reading of ethylene's other two centres treated their non-bracketing as "the loop
@@ -803,9 +828,9 @@ Check with `squeue -u pollas1`, or
 
 ### Two things deliberately not done
 
-* **The small-loop result above is CAS(2,2) only.** The same three centres at (6, 9) should be
-  run at the other rungs — 10 minutes each at the cheap ones — before anything is concluded about
-  how the position moves with active space.
+* **The small-loop runs cover CAS(2,2) and CAS(4,4).** The same three centres at (6, 9) still
+  need CAS(6,6), (8,8), (10,10) and (12,12) — minutes each at the cheap rungs, hours at the top —
+  before anything is concluded about how the position moves with active space.
 * **The ethylene third centres were not re-chosen per rung.** `docs/todo.md` §9 says each rung's
   third centre should come from *its own* first-centre bracket; these were all placed from the
   CAS(12,12) reference, and three of four were refused. The fix is one extra task per rung, not
