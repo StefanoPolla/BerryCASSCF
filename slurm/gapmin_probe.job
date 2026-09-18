@@ -1,0 +1,64 @@
+#!/bin/bash
+#SBATCH --job-name=bc-gapmin
+#SBATCH --output=./out/%x-%a.out
+#SBATCH --error=./err/%x-%a.err
+#SBATCH --time=3-00:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=4G
+#SBATCH --partition=cpu_lorentz        # SITE: ALICE private partition, 7-day cap
+#SBATCH --account=cpu_lorentz          # SITE: ALICE rejects cpu_lorentz without this
+#SBATCH --mail-type=NONE
+#SBATCH --array=0-3
+#
+# Is the state-specific degeneracy where the gap scan puts its minimum?  One radius per task.
+#
+#   cd slurm && sbatch gapmin_probe.job
+#
+# This asks docs/findings.md §3 directly instead of reconstructing a position first. At
+# butadiene CAS(12,12) a direct 2D search bottoms out at 1.4595 mHa at (89.968, 101.944), and
+# loop transport returns pi on a loop that contains that point. Those are consistent with one
+# object seen at two resolutions, and equally consistent with two different objects -- the
+# question the project has been circling since the rung was run.
+#
+# Centring concentric loops ON the gap-scan minimum separates them in one stroke:
+#
+#   pi at every radius        -> the state-specific degeneracy is there too; one object, and
+#                                the 1.5 mHa floor is just what this model's resolution looks
+#                                like. §3 closes.
+#   pi only at large radius   -> the loop is enclosing something further out; the two methods
+#                                are locating different objects, which is §3 in its strong form.
+#   0 at every radius         -> nothing of the state-specific kind is there at all.
+#
+# The radii are chosen against what the cheap rungs measured. Bisections about (90, 101.85)
+# give rho = 0.5385 at CAS(2,2) and 0.7016 at CAS(4,4) with a (12, 18) loop, putting the
+# state-specific object near pyr 111.5-114.5. From the gap-scan minimum at pyr 101.94 that is
+# 9.6-12.6 deg away, so r = 10 should reach it and r = 5 and below should not -- unless the
+# object is at the minimum itself, in which case every radius returns pi.
+#
+# One radius per array task because they are independent and each is hours at this active
+# space: in series this would be a day and a half.
+#
+# A cheap control runs first on the laptop at CAS(2,2), where the same two positions are known
+# to differ (gap scan 105.67, loop transport ~111.5); see docs/progress.md.
+
+set -euo pipefail
+
+RADII=(10.0 5.0 2.5 1.25)
+R=${RADII[$SLURM_ARRAY_TASK_ID]}
+
+cd ..
+ml purge
+ml load ALICE/default                            # SITE: ALICE module stack
+ml load Python/3.11.5-GCCcore-13.2.0             # SITE: the module the venv was built on
+source "$HOME/git_repos/BerryCASSCF/.venv/bin/activate"
+
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${OMP_NUM_THREADS}"
+export OPENBLAS_NUM_THREADS="${OMP_NUM_THREADS}"
+
+echo "host=$(hostname) job=${SLURM_JOB_ID:-none}_${SLURM_ARRAY_TASK_ID:-none} threads=${OMP_NUM_THREADS}"
+echo "commit=$(git rev-parse --short HEAD)"
+echo "python -u examples/run_radius_scan.py butadiene --cas 12 12 --centre 89.968 101.944 --radii $R --label gapmin_r$R"
+python -u examples/run_radius_scan.py butadiene --cas 12 12 --centre 89.968 101.944 --radii "$R" --label "gapmin_r$R"

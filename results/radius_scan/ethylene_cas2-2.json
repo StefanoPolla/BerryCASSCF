@@ -1,0 +1,76 @@
+{
+  "system": "ethylene",
+  "cas": [
+    2,
+    2
+  ],
+  "basis": "6-31g*",
+  "centre": [
+    90.0,
+    111.0
+  ],
+  "radii": [
+    4.0,
+    2.0,
+    1.0,
+    0.5,
+    0.25,
+    0.1
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 4.0,
+      "verdict": "undetermined",
+      "reason": "at least one setting failed its checks",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9125468856221625,
+          "n_points": 20,
+          "n_rejected": 6,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 6432,
+          "wall": 65.38103485107422,
+          "product": -0.670770871449851,
+          "endpoint": -0.9999994397118626,
+          "messages": [
+            "CASSCF did not converge at point(s) [7]",
+            "continuation chain broken at point(s) [7]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9117407185101055,
+          "n_points": 27,
+          "n_rejected": 3,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 6951,
+          "wall": 64.79279899597168,
+          "product": -0.717431211193787,
+          "endpoint": -0.9999995101388436,
+          "messages": [
+            "CASSCF did not converge at point(s) [11]",
+            "continuation chain broken at point(s) [11]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        }
+      ],
+      "cost_micro": 13383,
+      "wall_time": 130.17421579360962
+    }
+  ],
+  "complete": false,
+  "wall_time": 130.17430305480957
+}
