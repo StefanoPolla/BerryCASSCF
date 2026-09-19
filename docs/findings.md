@@ -387,10 +387,16 @@ on the best available position at each rung return **no π at any radius tested*
 | ethylene rung | r = 4° | 2° | 1° | 0.5° | 0.25° | 0.1° |
 |---|---|---|---|---|---|---|
 | CAS(4,4), about (90.00, 108.40) | refused | refused | refused | **0** | refused | **0** |
-| CAS(8,8), about (89.88, 107.79) | refused | refused | *(stopped: 3.9 h for the second)* | | | |
+| CAS(8,8), about (89.88, 107.79) | refused | refused | *(stopped after two refusals)* | | | |
 
 Formaldimine CAS(4,4) under the identical procedure is monotone and unambiguous — π at 8°, 4°, 2°
-and 1°, refusals at 0.5° and 0.25°, a clean 0 at 0.05°. Ethylene's verdicts do not even order: the
+and 1°, refusals at 0.5° and 0.25°, a clean 0 at 0.05°.
+
+*(Costs here are micro-iterations, never laptop seconds: the ethylene CAS(8,8) probes took 15 403
+and 10 721 micro-iterations — the second is less work than the first — while taking 655 s and
+14 192 s of wall time on a shared, sleeping machine. An earlier revision cited those seconds as
+the reason for stopping that run; the work counts do not support it, and the real reason is that
+two refusals had already answered the question.)* Ethylene's verdicts do not even order: the
 only two clean ones say "nothing inside", at radii a factor of five apart, and every intermediate
 radius is refused. **At three ethylene rungs there is nothing locally encircle-able where the
 methods place the intersection**, which is the same conclusion §2 reached at CAS(2,2) by mapping

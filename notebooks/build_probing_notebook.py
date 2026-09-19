@@ -93,12 +93,13 @@ for rec in ((shrink or {}).get("probes", []) + (onsa or {}).get("probes", [])):
                  "micro": rec["cost_micro"], "wall": rec["wall_time"]})
 rows.sort(key=lambda d: -d["r"])
 print(f"{'radius (deg)':>13} {'verdict':>14} {'points':>8} {'worst overlap':>14} "
-      f"{'micro':>9} {'wall (s)*':>10}")
-print("-" * 62)
+      f"{'micro':>9}")
+print("-" * 52)
 for d in rows:
     print(f"{d['r']:>13g} {d['verdict']:>14} {d['pts']:>8} {d['worst']:>14.3f} "
-          f"{d['micro']:>9} {d['wall']:>10.1f}")
-print("\n* local wall time, indicative only -- the machine sleeps and shares cores.")
+          f"{d['micro']:>9}")
+print("\nCost is micro-iterations. Local wall times are not reported: these runs share a")
+print("laptop with each other and it sleeps, so seconds measure the machine, not the work.")
 print("\n(the r = 4 and r = 2 rows come from a scan centred on (90, 111.0) rather than")
 print(" (90, 110.9); at this resolution the 0.1 deg differences do not matter)")
 """)
@@ -286,8 +287,8 @@ if not floor:
           "--centre 128.99 90.24 --radii 8 4 2 1 0.5 0.25 0.1 0.05 --label floor")
 else:
     print(f"{'radius':>8} {'verdict':>14} {'points':>8} {'worst overlap':>14} "
-          f"{'micro-iterations':>17} {'wall (s)*':>10}")
-    print("-" * 76)
+          f"{'micro-iterations':>17}")
+    print("-" * 68)
     prev = None
     for rec in floor["probes"]:
         runs = rec["runs"]
@@ -295,7 +296,7 @@ else:
         worst = min(x["min_overlap"] for x in runs)
         grow = "" if prev is None else f"  ({rec['cost_micro']/prev:.1f}x)"
         print(f"{rec['radius']:>8g} {rec['verdict']:>14} {pts:>8} {worst:>14.3f} "
-              f"{rec['cost_micro']:>17}{grow:<7} {rec['wall_time']:>10.1f}")
+              f"{rec['cost_micro']:>17}{grow}")
         prev = rec["cost_micro"]
 """)
 
@@ -340,7 +341,7 @@ for name, cas in (("ethylene_cas4-4_floor.json", "CAS(4,4)"),
         print(f"   r = {pr['radius']:>5g}   {pr['verdict']:>13}   worst overlap {worst:.3f}   "
               f"{pr['cost_micro']:>7} micro")
     if not rec.get("complete"):
-        print("   (stopped early: the next radii were costing more for the same answer)")
+        print("   (stopped early -- see the note below on why the stated reason was wrong)")
     print()
 """)
 
