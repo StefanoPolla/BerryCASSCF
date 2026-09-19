@@ -648,7 +648,8 @@ as formaldimine's 1.44 and 1.63 deg.
 
 **That reading did not survive more measurements, and the assumption was doing the work.** A
 second run with *small* loops — shape (6, 9) rather than (12, 18), centres moved in to match —
-took 10 minutes on the laptop and added a second bracket (about (90, 106): rho = 0.8725 ± 0.0516)
+cost 64 192 micro-iterations and added a second bracket (about (90, 106):
+rho = 0.8725 ± 0.0516)
 and a second clean exclusion (about (90, 118)). Intersecting every trustworthy constraint at this
 rung — two brackets, two clean zeros, and the ladder's `E_x` pi, with the two refusals
 contributing nothing — gives
@@ -671,7 +672,7 @@ confident 1.7 deg offset that four constraints then removed.** That is the failu
 triangulation exists to prevent, and it happened here because a single centre was treated as a
 position.
 
-**A second rung, CAS(4,4), run the same way (13 min on the laptop):**
+**A second rung, CAS(4,4), run the same way:**
 
 | | `tw` | `pyr` |
 |---|---|---|

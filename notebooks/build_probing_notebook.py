@@ -33,9 +33,16 @@ result the project has been quoting.
 
 > **The probe.** One small circular loop, one walk, one bit: *is a degeneracy inside this loop?*
 
-That is cheap. At ethylene CAS(2,2) a probe costs about **20 seconds**, against an hour or more for
-a bisection — so a question that used to be a cluster job is a coffee break, and the answers can
-be used to decide where to look next.
+That is cheap. A probe of a loop that encloses nothing takes about **1500 CASSCF micro-iterations**
+at ethylene CAS(2,2), against tens of thousands for a bisection — so a question that used to be a
+cluster job is a coffee break, and the answers can be used to decide where to look next.
+
+**Cost is counted in micro-iterations throughout**, following the convention the rest of this
+project uses: they are parameter updates, they are the currency arXiv:2304.06070 counts, and they
+do not depend on which machine ran the job or what else it was doing. Wall times appear in the
+tables below because they are recorded, but every local one is *indicative only* — this laptop
+sleeps and shares its cores. The cluster times, which are labelled where they appear, are dedicated
+single-node allocations and can be read at face value.
 
 Three verdicts, and the third is not a failure:
 
@@ -83,12 +90,15 @@ for rec in ((shrink or {}).get("probes", []) + (onsa or {}).get("probes", [])):
     rows.append({"r": rec["radius"], "verdict": rec["verdict"],
                  "pts": max((x["n_points"] for x in runs), default=0),
                  "worst": min((x["min_overlap"] for x in runs), default=np.nan),
-                 "wall": rec["wall_time"]})
+                 "micro": rec["cost_micro"], "wall": rec["wall_time"]})
 rows.sort(key=lambda d: -d["r"])
-print(f"{'radius (deg)':>13} {'verdict':>14} {'points':>8} {'worst overlap':>14} {'wall (s)':>9}")
+print(f"{'radius (deg)':>13} {'verdict':>14} {'points':>8} {'worst overlap':>14} "
+      f"{'micro':>9} {'wall (s)*':>10}")
 print("-" * 62)
 for d in rows:
-    print(f"{d['r']:>13g} {d['verdict']:>14} {d['pts']:>8} {d['worst']:>14.3f} {d['wall']:>9.1f}")
+    print(f"{d['r']:>13g} {d['verdict']:>14} {d['pts']:>8} {d['worst']:>14.3f} "
+          f"{d['micro']:>9} {d['wall']:>10.1f}")
+print("\n* local wall time, indicative only -- the machine sleeps and shares cores.")
 print("\n(the r = 4 and r = 2 rows come from a scan centred on (90, 111.0) rather than")
 print(" (90, 110.9); at this resolution the 0.1 deg differences do not matter)")
 """)
@@ -144,15 +154,15 @@ for rec in (line, gaps):
     if rec:
         for p in rec["probes"]:
             probes.append({"centre": tuple(p["centre"]), "verdict": p["verdict"],
-                           "radius": rec["radius"], "wall": p["wall_time"]})
+                           "radius": rec["radius"], "micro": p["cost_micro"]})
 onl = [p for p in probes if abs(p["centre"][0] - 90.0) < 1e-9]
 off = [p for p in probes if abs(p["centre"][0] - 90.0) >= 1e-9]
 print("on the mirror line, radius 2 deg:")
 for p in sorted(onl, key=lambda q: q["centre"][1]):
-    print(f"   pyr {p['centre'][1]:>6.1f}   {p['verdict']:>13}   {p['wall']:>6.1f} s")
+    print(f"   pyr {p['centre'][1]:>6.1f}   {p['verdict']:>13}   {p['micro']:>7} micro")
 print("\noff the line, radius 2 deg:")
 for p in off:
-    print(f"   {str(p['centre']):>14}   {p['verdict']:>13}   {p['wall']:>6.1f} s")
+    print(f"   {str(p['centre']):>14}   {p['verdict']:>13}   {p['micro']:>7} micro")
 """)
 
 md(r"""
@@ -265,8 +275,8 @@ those are the hard ones: every point is near-degenerate, and the tracked state i
 CASSCF ground state with S1 on top of it.
 
 Formaldimine CAS(4,4) is the right place to measure it — the localization there is self-consistent
-(three centres, residual inside its own precision) and a point costs 0.1 s. Concentric loops on its
-triangulated position:
+(three centres, residual inside its own precision) and it is the cheapest system here. Concentric
+loops on its triangulated position:
 """)
 
 code(r"""
@@ -276,7 +286,7 @@ if not floor:
           "--centre 128.99 90.24 --radii 8 4 2 1 0.5 0.25 0.1 0.05 --label floor")
 else:
     print(f"{'radius':>8} {'verdict':>14} {'points':>8} {'worst overlap':>14} "
-          f"{'micro-iterations':>17} {'wall (s)':>9}")
+          f"{'micro-iterations':>17} {'wall (s)*':>10}")
     print("-" * 76)
     prev = None
     for rec in floor["probes"]:
@@ -285,7 +295,7 @@ else:
         worst = min(x["min_overlap"] for x in runs)
         grow = "" if prev is None else f"  ({rec['cost_micro']/prev:.1f}x)"
         print(f"{rec['radius']:>8g} {rec['verdict']:>14} {pts:>8} {worst:>14.3f} "
-              f"{rec['cost_micro']:>17}{grow:<7} {rec['wall_time']:>9.1f}")
+              f"{rec['cost_micro']:>17}{grow:<7} {rec['wall_time']:>10.1f}")
         prev = rec["cost_micro"]
 """)
 
@@ -328,9 +338,9 @@ for name, cas in (("ethylene_cas4-4_floor.json", "CAS(4,4)"),
     for pr in rec["probes"]:
         worst = min(x["min_overlap"] for x in pr["runs"])
         print(f"   r = {pr['radius']:>5g}   {pr['verdict']:>13}   worst overlap {worst:.3f}   "
-              f"{pr['wall_time']:>7.0f} s")
+              f"{pr['cost_micro']:>7} micro")
     if not rec.get("complete"):
-        print("   (stopped early: the next radii cost hours each for the same answer)")
+        print("   (stopped early: the next radii were costing more for the same answer)")
     print()
 """)
 
@@ -342,12 +352,12 @@ inside", at radii differing by a factor of five.
 
 So at this centre there is nothing to encircle at any scale tested, and the walk fails at most of
 them. That matches what §2–§4 found at CAS(2,2) by a different route, and it is why the ethylene
-CAS(8,8) run was stopped after two radii: 0.18 h and 3.94 h, both refused, with the remaining radii
-deeper into the same region.
+CAS(8,8) run was stopped after two radii, both refused, with the remaining radii deeper into the
+same region.
 
-**The cost is in the refusals.** On ethylene the refused probes cost 600–1950 s while the clean ones
-cost 317 s. A refusal is not a cheap "don't know" — it is the adaptive controller spending its
-entire step-halving budget before giving up.
+**A refusal is not a cheap "don't know".** It is the adaptive controller spending its entire
+step-halving budget before giving up, and the micro-iteration counts show it: on ethylene the
+refused probes run to 8000–15000 micro-iterations against 1654 for the clean one at r = 0.1°.
 """)
 
 md(r"""
@@ -438,8 +448,8 @@ resolve a position more finely than what exists — which was the hope, and it i
 
 What it does win is everything else:
 
-* **cost** — 20 s against an hour per answer at the cheap rungs, because a non-enclosing loop is
-  trivial to walk and only the enclosing ones are expensive;
+* **cost** — ~1500 micro-iterations against tens of thousands for a bisection at the cheap rungs,
+  because a non-enclosing loop is trivial to walk and only the enclosing ones are expensive;
 * **robustness** — the ethylene bisections produced regions ±3–6° wide because their loops wandered
   into geometries the continuation could not follow, and seven of eight full-size loops there were
   refused. Every probe used here stayed in a small neighbourhood and returned an answer;
@@ -448,8 +458,9 @@ What it does win is everything else:
 
 **And it inverts the sanity check.** Rather than reconstructing where loop transport thinks the
 intersection is and comparing, one can ask directly whether it encircles the intersection the gap
-scan already found. That is one probe. At ethylene CAS(2,2) it takes 20 seconds and the answer is
-no — a question worth having asked on the first day.
+scan already found. That is one probe, and at the cheap rungs it is under two thousand
+micro-iterations. At ethylene CAS(2,2) the answer is no — a question worth having asked on the
+first day.
 
 **On the iterative search specifically.** The measured floor says such a search would converge to
 ~1° and stop, and the cost doubles with every halving, so the last step dominates. That is a

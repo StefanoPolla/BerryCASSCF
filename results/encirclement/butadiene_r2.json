@@ -1,0 +1,239 @@
+{
+  "system": "butadiene",
+  "radius": 2.0,
+  "rungs": [
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9926923844313454,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 687,
+          "wall": 618.0588939189911,
+          "product": 0.9614272772945178,
+          "endpoint": 0.9999999998679379,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9963824552088861,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 828,
+          "wall": 1338.0925598144531,
+          "product": 0.9722087076587469,
+          "endpoint": 0.9999999863145854,
+          "messages": []
+        }
+      ],
+      "cost_micro": 1515,
+      "wall_time": 1956.1519238948822,
+      "cas": [
+        2,
+        2
+      ],
+      "sa_intersection": [
+        89.96995436493307,
+        105.66731017524526
+      ],
+      "how": "direct 2D search"
+    },
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9925448070910087,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1145,
+          "wall": 1004.3191101551056,
+          "product": 0.9564028078157067,
+          "endpoint": 0.9999999894998908,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9956949445595965,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1129,
+          "wall": 2478.965232849121,
+          "product": 0.967933163627895,
+          "endpoint": 0.9999999998219802,
+          "messages": []
+        }
+      ],
+      "cost_micro": 2274,
+      "wall_time": 3483.2847471237183,
+      "cas": [
+        4,
+        4
+      ],
+      "sa_intersection": [
+        89.97723580896854,
+        109.4132486130732
+      ],
+      "how": "direct 2D search"
+    },
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9514158897071724,
+          "n_points": 11,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1112,
+          "wall": 2101.868063211441,
+          "product": 0.8903026956136566,
+          "endpoint": 0.9999999999930818,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9730187844969738,
+          "n_points": 16,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1145,
+          "wall": 4219.579930305481,
+          "product": 0.9240100486943142,
+          "endpoint": 0.9999999999983573,
+          "messages": []
+        }
+      ],
+      "cost_micro": 2257,
+      "wall_time": 6321.448552846909,
+      "cas": [
+        6,
+        6
+      ],
+      "sa_intersection": [
+        89.10800117254257,
+        114.6128428191004
+      ],
+      "how": "direct 2D search"
+    },
+    {
+      "scale": 1.0,
+      "radius": [
+        2.0,
+        2.0
+      ],
+      "verdict": "zero",
+      "reason": "all settings agree: 0",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9880999616069229,
+          "n_points": 10,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 747,
+          "wall": 1895.2541828155518,
+          "product": 0.9535807721059126,
+          "endpoint": 0.9999999999974107,
+          "messages": []
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "trivial (0)",
+          "min_overlap": 0.9935892879969626,
+          "n_points": 15,
+          "n_rejected": 0,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 1015,
+          "wall": 7905.811307191849,
+          "product": 0.9666924796102733,
+          "endpoint": 0.9999999595121203,
+          "messages": []
+        }
+      ],
+      "cost_micro": 1762,
+      "wall_time": 9801.065923929214,
+      "cas": [
+        8,
+        8
+      ],
+      "sa_intersection": [
+        89.97618137300014,
+        121.08422960331652
+      ],
+      "how": "direct 2D search"
+    }
+  ],
+  "wall_time": 21562.098089933395
+}

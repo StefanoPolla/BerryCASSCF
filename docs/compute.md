@@ -46,6 +46,28 @@ STO-3G, PySCF 2.14:
 Overlaps are three to four orders of magnitude cheaper than the CASSCF solve they compare,
 so the exact nonorthogonal treatment costs essentially nothing.
 
+### Local wall times are indicative only
+
+Everything in the table above was timed on a laptop, which sleeps, throttles, and shares its
+cores with whatever else is open. A run that reports 19 hours may have spent some of them
+suspended, and two runs of the same work can differ by a large factor for reasons that have
+nothing to do with the calculation. **Do not use a local wall time as a measurement.**
+
+The comparable quantity is the **CASSCF micro-iteration** — parameter updates, the currency
+arXiv:2304.06070 counts and the one `berrycasscf` records in every result file
+(`cost_micro`, `total_micro`, and per-run `micro`). It is machine-independent, it is what the
+adaptive-stepping study already compares on, and it is what any cost claim in the notebooks
+should quote.
+
+Two caveats so it is not over-trusted either. Micro-iterations count updates, not their price:
+a micro-iteration at CAS(12,12) moves far more parameters than one at CAS(2,2), so counts are
+comparable *within* an active space and only roughly across them. And they do not capture
+per-point overhead such as integral transformation, which wall time does.
+
+**Cluster timings are different** and can be read at face value: a SLURM job is a dedicated
+allocation on a known node. Where a wall time is quoted as evidence anywhere in this
+repository it should say which of the two it is.
+
 Reproduce with:
 
 ```bash

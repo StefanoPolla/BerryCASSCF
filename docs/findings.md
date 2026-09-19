@@ -255,7 +255,7 @@ minimum and small enough to contain nothing else, answers the question by itself
 
 > butadiene CAS(12,12), circular loop of radius **1.25°** about (89.968, 101.944) — the searched
 > minimum itself — returns a clean **0**. Both step-control settings agree, worst adjacent overlap
-> 0.978, 2.9 h on one core.
+> 0.978, at a cost of 7 066 micro-iterations (2.9 h on one dedicated cluster core).
 
 So the state-specific transport does **not** encircle the state-averaged minimum at the rung where
 the disagreement is sharpest. That is finding 3 in its strong form, and it now rests on one probe
