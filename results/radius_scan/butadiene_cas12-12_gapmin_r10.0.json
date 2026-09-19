@@ -1,0 +1,69 @@
+{
+  "system": "butadiene",
+  "cas": [
+    12,
+    12
+  ],
+  "basis": "6-31g*",
+  "centre": [
+    89.968,
+    101.944
+  ],
+  "radii": [
+    10.0
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 10.0,
+      "verdict": "pi",
+      "reason": "all settings agree: pi",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.9179646557113957,
+          "n_points": 21,
+          "n_rejected": 2,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 3818,
+          "wall": 26768.56894493103,
+          "product": -0.6364593375148933,
+          "endpoint": -0.9999999998182459,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [12, 19] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "OK",
+          "phase": "non-trivial (pi)",
+          "min_overlap": 0.907617650237604,
+          "n_points": 29,
+          "n_rejected": 1,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 4505,
+          "wall": 36513.170500040054,
+          "product": -0.7110262913663415,
+          "endpoint": -0.9999999930451763,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [7, 8, 13, 16, 19, 23, 27] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+          ]
+        }
+      ],
+      "cost_micro": 8323,
+      "wall_time": 63281.74908900261
+    }
+  ],
+  "complete": true,
+  "wall_time": 63281.77525138855
+}

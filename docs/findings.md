@@ -274,8 +274,23 @@ pattern across the two systems is that **loop transport and the gap scan are not
 object**, and at ethylene the state-specific side looks like solution structure rather than
 topology.
 
-The larger radii of the same scan — 2.5°, 5°, 10° — are still running and will say how far away the
-enclosed object is.
+**And the larger radii measure how far away it actually is.** The same scan, continued on the
+cluster:
+
+| radius about the gap-scan minimum | 10° | 5° | 2.5° | 1.25° |
+|---|---|---|---|---|
+| verdict | **π** | refused | *running* | **0** |
+| worst adjacent overlap | 0.908 | 0.980 | | 0.978 |
+| cost (micro-iterations) | 8 323 | 11 614 | | 7 066 |
+
+Enclosed at 10°, grazing at 5°, empty at 1.25°: **whatever loop transport encircles sits about 5°
+from where the gap scan puts its minimum.** Three probes, against a bisection that ran twelve hours
+without completing one.
+
+The small-loop localization running alongside agrees and narrows it further. A (6, 9) loop about
+(90, 106) returns π, so the object is inside that ellipse; the same loop about (90, 120) returns 0
+at full size and at 0.08, so it is outside that one. Together with the 5° bracket, and taking the
+`tw` = 90 line, that puts it near **pyr ≈ 107** against the gap scan's 101.94.
 
 Separating them needs the position of whatever loop transport encircles to be **measured** rather
 than inferred, which is what the bisection and triangulation experiment in `docs/todo.md` §2 is
