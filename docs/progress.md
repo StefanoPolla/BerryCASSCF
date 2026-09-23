@@ -862,3 +862,71 @@ Check with `squeue -u pollas1`, or
   — so centres should be placed *closer* to the expected object, not further, and the loop shape
   shrunk with them.
 * **`rung14.job` was not submitted** and should not be, at 3.6 h per non-converged point.
+
+---
+
+## 2026-09-23 — Everything returned; notebooks consolidated and indexed
+
+All cluster and local work from the 18th–19th has finished. Two jobs ended badly and both are
+recorded rather than retried: four ladder centres hit the 24 h walltime on their first submission
+(they predated probe checkpointing) and were resubmitted with three days, after which all four
+completed; and the butadiene CAS(12,12) bisection never completed a probe on its bracketing centre
+in three days, across two submissions with two loop shapes. That rung's question was answered
+instead by the small-loop probe, at a cost of four probes.
+
+### Results added
+
+**Butadiene localization ladder, complete.** Five rungs bracketed, two triangulated:
+
+| CAS | ρ about the `B_x` centre | implied `pyr` | gap scan | difference |
+|---|---|---|---|---|
+| (2,2) | 0.5385 ± 0.0843 | 111.55 | 105.67 | +5.88 |
+| (4,4) | 0.7016 ± 0.0277 | 114.48 | 109.41 | +5.07 |
+| (6,6) | 0.2367 ± 0.0461 | 106.11 | 114.61 | −8.50 |
+| (8,8) | 0.2367 ± 0.0461 | 106.11 | 121.08 | −14.97 |
+| (10,10) | 0.2820 ± 0.1058 | 106.93 | 104.90 | +2.03 |
+
+Loop transport spans 8.4° over these five rungs against the gap scan's 16.2°, and sits within a
+degree of itself from CAS(6,6) upward. The two never coincide, and neither the size nor the sign of
+the difference settles. `docs/findings.md` §4.
+
+**Encirclement, complete for butadiene.** Four clean zeros from CAS(2,2) to CAS(8,8), a refusal at
+CAS(10,10) — the rung where the two positions are 2° apart, so a 2° probe grazing is what to expect
+— and a clean zero at CAS(12,12). Two independent constructions agreeing about which rung is the
+near miss is the best internal check available here.
+
+**The separation at CAS(12,12) is measured**: concentric probes on the gap-scan minimum give π at
+10°, refusals at 5° and 2.5°, zero at 1.25°, so the objects are 2.5–5° apart. Four probes, 57 000
+micro-iterations, against a bisection that spent three days without finishing one.
+
+### Notebooks
+
+**Consolidated a duplicate.** `small_loop_probing.ipynb` and `probing_by_small_loops.ipynb` had
+grown to cover the same experiments from opposite ends — the first had the better control section
+and the tight `r` = 0.5 pair localization, the second had the floor measurement and the systematic
+check. They are now one notebook, `probing_by_small_loops.ipynb`, in seven sections from validation
+to conclusions; the other builder and notebook are deleted.
+
+**Added `notebooks/README.md`**: an index giving each notebook's question, a reading order (the four
+system/method-result notebooks as one argument, the three machinery notebooks as reference), how the
+arguments connect, and the two cross-cutting conventions a reader needs first — cost in
+micro-iterations rather than wall time, and refusals as results that exclude nothing about geometry.
+
+All eight notebooks rebuilt and executed clean.
+
+### One correction carried into the documents
+
+Local wall times were being quoted as measurements throughout the 18th–19th. They are not: this
+laptop sleeps and shares cores. Everything is restated in CASSCF micro-iterations, the currency the
+rest of the project already used; `docs/compute.md` says so and notes the two ways micro-iterations
+can be over-trusted in turn.
+
+### Next step
+
+The open question is unchanged and now sharper: **at butadiene no rung has loop transport encircling
+the gap scan's intersection, and at ethylene the object it does encircle cannot be a degeneracy at
+all** (findings §2). The obvious next move is the one system where this can be scored — ethylene has
+an exact in-basis reference — using the probe rather than bisection: concentric probes on the exact
+full-valence position at CAS(10,10) and CAS(12,12), which no run has yet done. If loop transport
+does not encircle the *exact* intersection at the converged rungs either, the method is measuring
+something other than the S0/S1 topology and the whole comparison needs reframing.

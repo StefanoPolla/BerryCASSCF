@@ -164,12 +164,15 @@ python notebooks/build_locating_intersections_notebook.py
 python examples/calibrate_thresholds.py
 ```
 
+**[notebooks/README.md](notebooks/README.md) is the index**: what each notebook contains, the order
+to read them in, and how the arguments connect. In brief:
+
 | notebook | question |
 |---|---|
 | [adaptive_stepping.ipynb](notebooks/adaptive_stepping.ipynb) | how should a loop be discretized, and does adapting it pay? |
 | [locating_intersections.ipynb](notebooks/locating_intersections.ipynb) | can a method returning one bit per loop return a *position*? |
 | [stepping_comparison.ipynb](notebooks/stepping_comparison.ipynb) | one update per point, or optimize each point to convergence? |
-| [probing_by_small_loops.ipynb](notebooks/probing_by_small_loops.ipynb) | is the intersection inside *this* loop? — and what that reveals at ethylene CAS(2,2) |
+| [probing_by_small_loops.ipynb](notebooks/probing_by_small_loops.ipynb) | is the intersection inside *this* loop? — read before believing any single π |
 | [summary.ipynb](notebooks/summary.ipynb) | the cross-system verdict, short |
 
 Every driver **skips work already saved** under `results/`, so all of them are restartable; the

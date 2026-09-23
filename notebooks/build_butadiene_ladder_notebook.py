@@ -519,6 +519,90 @@ costing five otherwise-decidable questions. With the chain check on, **no thresh
 """)
 
 md(r"""
+## Where does loop transport think the intersection is?
+
+The comparison so far has been phase-against-position: loop transport answers "yes, enclosed" while
+the gap scan answers "here". They can be compared on the same footing by making loop transport
+produce a position too &mdash; bisecting the loop radius about fixed centres until the phase turns
+over, then intersecting the results (`locating_intersections.ipynb` explains the construction).
+
+Six rungs of that, and the table below is the point of this notebook.
+""")
+
+code(r"""
+import json, os
+CENTRE = (90.0, 101.85321091497578)      # the B_x centre, and centre 1 of every bisection
+SHAPE = (12.0, 18.0)                     # the B_x semi-axes
+
+def gap_scan_pyr(ne):
+    gm = os.path.join(ROOT, "results", "butadiene", "gap_minimum_search.json")
+    for r in json.load(open(gm))["runs"]:
+        if tuple(r["cas"]) == (ne, ne):
+            return r["found"][1]
+    return None
+
+rows = []
+for ne in (2, 4, 6, 8, 10, 12):
+    p = os.path.join(ROOT, "results", "localize", f"butadiene_cas{ne}-{ne}.json")
+    if not os.path.exists(p):
+        rows.append({"cas": ne, "rho": None, "unc": None, "tri": None, "n": 0,
+                     "gap": gap_scan_pyr(ne)})
+        continue
+    d = json.load(open(p))
+    b0 = d["bisections"][0]
+    rows.append({"cas": ne, "rho": b0.get("rho"), "unc": b0.get("rho_uncertainty"),
+                 "tri": (d.get("triangulation") or {}).get("chosen"),
+                 "n": sum(1 for x in d["bisections"] if x.get("rho") is not None),
+                 "gap": gap_scan_pyr(ne)})
+
+print(f"{'CAS':>8} {'rho about the B_x centre':>25} {'implied pyr*':>13} {'triangulated':>20} "
+      f"{'gap scan':>10} {'difference':>11}")
+print("-" * 92)
+for r in rows:
+    if r["rho"] is None:
+        print(f"{('(%d,%d)' % (r['cas'], r['cas'])):>8} {'not measured':>25} {'':>13} {'':>20} "
+              f"{r['gap']:>10.2f}")
+        continue
+    imp = CENTRE[1] + r["rho"] * SHAPE[1]
+    tri = f"({r['tri'][0]:.2f}, {r['tri'][1]:.2f})" if r["tri"] else f"{r['n']}/3 centres"
+    print(f"{('(%d,%d)' % (r['cas'], r['cas'])):>8} "
+          f"{('%.4f +- %.4f' % (r['rho'], r['unc'])):>25} {imp:>13.2f} {tri:>20} "
+          f"{r['gap']:>10.2f} {imp - r['gap']:>+11.2f}")
+print("\n* implied pyr assumes the object lies on the tw = 90 line; the triangulations that")
+print("  succeeded put it within ~1.2 deg of it, so the assumption is close but not exact.")
+
+got = [CENTRE[1] + r["rho"] * SHAPE[1] for r in rows if r["rho"] is not None]
+gaps = [r["gap"] for r in rows if r["rho"] is not None]
+print(f"\nspread of loop-transport positions: {max(got) - min(got):5.1f} deg")
+print(f"spread of gap-scan positions:       {max(gaps) - min(gaps):5.1f} deg")
+print(f"top three rungs, loop transport:    {min(got[2:]):.2f} to {max(got[2:]):.2f} deg")
+""")
+
+md(r"""
+**Both methods move, and one moves much less.** Over the five rungs where both have an answer,
+loop transport's positions span 8.4&deg; and the gap scan's 16.2&deg; &mdash; and the gap scan's full
+six-rung spread, including the CAS(12,12) row that loop transport did not bracket, is 19.1&deg;.
+From CAS(6,6) upward loop transport sits at 106&ndash;107&deg;
+&mdash; a spread of under a degree over three rungs &mdash; while the gap scan over those same rungs
+reports 114.6, 121.1 and 104.9.
+
+**And they never coincide.** The last column is the disagreement, and it does not shrink with the
+active space: +5.9, +5.1, &minus;8.5, &minus;15.0, +2.0. Both the size and the *sign* change.
+
+This is the quantitative form of the phase result above. The topological answer was identical at
+every rung; the position it implies is far steadier than the comparator's; and the two are measuring
+objects that are several degrees apart at every active space. Which of them is right cannot be
+settled here &mdash; butadiene has no exact reference &mdash; but §3 of `docs/findings.md` and
+`probing_by_small_loops.ipynb` show the disagreement is real rather than a resolution artefact.
+
+Two honesty notes. The bisections bracket to &plusmn;0.03&ndash;0.11 in &rho;, i.e. &plusmn;0.5&ndash;1.9&deg;
+in `pyr`, so the +2.0&deg; row at CAS(10,10) is the one place where the two are within reach of each
+other. And only two rungs triangulated cleanly: CAS(6,6) from three centres with a residual of
+0.024, and CAS(10,10) from two, which leaves a mirror ambiguity between (89.87, 96.78) and
+(89.87, 106.93) that nothing in that run resolves.
+""")
+
+md(r"""
 So the Berry phase returns the same answer &mdash; &pi; on the enclosing loop, 0 on both controls
 &mdash; at every active space tested, while the state-averaged estimate of *where* the
 intersection is scatters over 19&deg; and never settles. **The topological method is more stable

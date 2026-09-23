@@ -89,15 +89,124 @@
           ],
           "cost_micro": 9173,
           "wall_time": 79039.3023481369
+        },
+        {
+          "scale": 0.08,
+          "radius": [
+            0.48,
+            0.72
+          ],
+          "verdict": "zero",
+          "reason": "all settings agree: 0",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9979615625993508,
+              "n_points": 10,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 4015,
+              "wall": 9549.742828130722,
+              "product": 0.9924842215583476,
+              "endpoint": 0.9999993088968226,
+              "messages": []
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "OK",
+              "phase": "trivial (0)",
+              "min_overlap": 0.9990228798599957,
+              "n_points": 15,
+              "n_rejected": 0,
+              "closed": true,
+              "hit_step_floor": false,
+              "micro": 5440,
+              "wall": 14486.133189439774,
+              "product": 0.9947324305622487,
+              "endpoint": 0.9999993181432913,
+              "messages": [
+                "fell back to a weaker warm start at point(s) [13] (orbitals still continued, CI guess dropped or gradient threshold relaxed)"
+              ]
+            }
+          ],
+          "cost_micro": 9455,
+          "wall_time": 24035.880726337433
+        },
+        {
+          "scale": 0.282842712474619,
+          "radius": [
+            1.697056274847714,
+            2.545584412271571
+          ],
+          "verdict": "undetermined",
+          "reason": "step floor reached: shrinking the step did not restore continuity, so the loop passes very near something the walk cannot transport through",
+          "runs": [
+            {
+              "setting": {
+                "d_max": 0.1,
+                "target_mismatch": 0.02
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9929899569408478,
+              "n_points": 8,
+              "n_rejected": 7,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 7982,
+              "wall": 27441.17850446701,
+              "product": 0.918869715910926,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+              ]
+            },
+            {
+              "setting": {
+                "d_max": 0.07,
+                "target_mismatch": 0.008
+              },
+              "status": "FAILED",
+              "phase": "undetermined",
+              "min_overlap": 0.9962086627581077,
+              "n_points": 14,
+              "n_rejected": 8,
+              "closed": false,
+              "hit_step_floor": true,
+              "micro": 12425,
+              "wall": 57730.02810335159,
+              "product": 0.9245871216882701,
+              "endpoint": null,
+              "messages": [
+                "the adaptive walk did not reach t = 1, so the loop was never closed and no Berry phase is defined for it",
+                "step floor reached: shrinking to d_min=0.001 did not restore continuity, so the problem is not discretization. Either the loop passes through or very near a degeneracy, or the solver is switching between nearby stationary solutions; the walk cannot tell these apart and does not guess",
+                "fell back to a weaker warm start at point(s) [13] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+                "the walk never reached t = 1, so the path is not a closed loop and no Berry phase is defined for it"
+              ]
+            }
+          ],
+          "cost_micro": 20407,
+          "wall_time": 85171.21241807938
         }
       ],
       "lo": null,
       "hi": null,
       "undetermined": [],
-      "total_micro": 9173,
-      "wall_time": 79039.3023481369
+      "total_micro": 39035,
+      "wall_time": 188246.3954925537
     }
   ],
   "complete": false,
-  "wall_time": 79039.32254242897
+  "wall_time": 188246.4931268692
 }

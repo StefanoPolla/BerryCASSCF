@@ -412,6 +412,11 @@ whether loop transport encircles it. Formaldimine settles whether the check is t
 | formaldimine | (2,2) | (141.00, 90.00) | 0 | **no** |
 | formaldimine | (4,4) | (130.00, 90.00) | π | **yes** |
 | formaldimine | (6,6) | (130.92, 90.07) | π | **yes** |
+| butadiene | (2,2) | (89.97, 105.67) | 0 | **no** |
+| butadiene | (4,4) | (89.98, 109.41) | 0 | **no** |
+| butadiene | (6,6) | (89.11, 114.61) | 0 | **no** |
+| butadiene | (8,8) | (89.98, 121.08) | 0 | **no** |
+| butadiene | (10,10) | (89.96, 104.90) | refused | *grazing — the two positions are 2° apart here* |
 | butadiene | (12,12) | (89.97, 101.94) | 0 | **no** (r = 1.25°) |
 
 The CAS(2,2) row is a control nobody designed: that rung's gap scan is independently known to be
@@ -421,8 +426,9 @@ and at CAS(4,4) the object encircled is the one triangulation found at (128.99, 
 the loop.
 
 So the check agrees where the two methods are known to agree and refuses where one is known to be
-wrong. **That is what licenses reading the butadiene CAS(12,12) "no" as evidence** rather than as
-an artefact of the procedure.
+wrong. **That is what licenses reading butadiene's "no" as evidence** rather than as an artefact of
+the procedure — and butadiene says no at every rung that returns a verdict, with the one refusal
+falling exactly where the two positions are closest.
 
 ## 3. The gap-scan minimum and the point loop transport encircles are different objects
 
@@ -548,6 +554,40 @@ Two honest caveats, in the direction that weakens the result. Regions are not po
 region is easier to be "near" an answer with. And CAS(8,8)'s triangulated point, 107.79, sits
 2.4 deg from its own region centre of 105.40 — two estimates from the same data at the same rung,
 which is the plainest available measure of the precision actually on offer.
+
+### Butadiene, both methods' positions, all six rungs (2026-09-23)
+
+The phase result above is qualitative — same answer at every rung. Localizing the state-specific
+object by bisection turns it into positions, and puts the two methods on the same footing
+(`notebooks/butadiene_ladder.ipynb`, final section):
+
+| CAS | ρ about the `B_x` centre | implied `pyr` * | triangulated | gap scan | difference |
+|---|---|---|---|---|---|
+| (2,2) | 0.5385 ± 0.0843 | 111.55 | 1/3 centres | 105.67 | +5.88 |
+| (4,4) | 0.7016 ± 0.0277 | 114.48 | 1/3 centres | 109.41 | +5.07 |
+| (6,6) | 0.2367 ± 0.0461 | 106.11 | (91.18, 105.73) | 114.61 | −8.50 |
+| (8,8) | 0.2367 ± 0.0461 | 106.11 | 1/3 centres | 121.08 | −14.97 |
+| (10,10) | 0.2820 ± 0.1058 | 106.93 | (89.87, 96.78) | 104.90 | +2.03 |
+| (12,12) | not bracketed † | | | 101.94 | |
+
+\* assuming the object lies on the `tw` = 90 line; the two successful triangulations put it within
+1.2° of it, so the assumption is close but not exact.
+† its three centres were run twice on the cluster and the bracketing centre never completed a probe
+inside three days; the question was answered instead by the cheaper probe in §3, which is the right
+lesson about instrument choice.
+
+**Loop transport's positions are the steadier ones, quantitatively.** Over the five rungs both
+methods answered, loop transport spans 8.4° and the gap scan 16.2° (19.1° including the CAS(12,12)
+row loop transport could not bracket). From CAS(6,6) upward loop transport sits at 106–107° — under
+a degree of movement across three rungs — while the gap scan over those same rungs reports 114.6,
+121.1 and 104.9.
+
+**And they never coincide.** The difference is +5.9, +5.1, −8.5, −15.0, +2.0: neither the size nor
+the sign settles. Since the brackets are ±0.5–1.9° in `pyr`, only the CAS(10,10) row has the two
+within reach of each other — and that is exactly the rung where the encirclement probe comes back
+*refused* rather than a clean zero, which is what a 2° loop grazing an object 2° away should do.
+The internal consistency there is worth noting: two independent constructions agree about which rung
+is the near miss.
 
 ## 5. Failure behaviour: what the checks catch, what they cost, and what they miss
 

@@ -1,0 +1,71 @@
+{
+  "system": "butadiene",
+  "cas": [
+    12,
+    12
+  ],
+  "basis": "6-31g*",
+  "centre": [
+    89.968,
+    101.944
+  ],
+  "radii": [
+    2.5
+  ],
+  "probes": [
+    {
+      "scale": 1.0,
+      "radius": 2.5,
+      "verdict": "undetermined",
+      "reason": "at least one setting failed its checks",
+      "runs": [
+        {
+          "setting": {
+            "d_max": 0.1,
+            "target_mismatch": 0.02
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9376493429332309,
+          "n_points": 21,
+          "n_rejected": 4,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 13962,
+          "wall": 42049.49059724808,
+          "product": 0.6889333676123109,
+          "endpoint": 0.9743235185122293,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [3, 6] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "continuation chain broken at point(s) [7]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        },
+        {
+          "setting": {
+            "d_max": 0.07,
+            "target_mismatch": 0.008
+          },
+          "status": "FAILED",
+          "phase": "undetermined",
+          "min_overlap": 0.9320339785450339,
+          "n_points": 29,
+          "n_rejected": 2,
+          "closed": true,
+          "hit_step_floor": false,
+          "micro": 16030,
+          "wall": 43270.62371754646,
+          "product": 0.7447062720557612,
+          "endpoint": 0.9743221308513913,
+          "messages": [
+            "fell back to a weaker warm start at point(s) [7, 26, 28] (orbitals still continued, CI guess dropped or gradient threshold relaxed)",
+            "continuation chain broken at point(s) [10]: the warm start was abandoned there, so those points were not reached by continuation. Gauge fixing repairs an arbitrary sign but not a change of branch, so the phase is not interpretable."
+          ]
+        }
+      ],
+      "cost_micro": 29992,
+      "wall_time": 85320.12733745575
+    }
+  ],
+  "complete": true,
+  "wall_time": 85320.1431248188
+}
