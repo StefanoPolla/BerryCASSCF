@@ -436,10 +436,18 @@ md(r"""
   accurate to 0.18&deg;, but nothing available at that level says so &mdash; the next rung moves
   the intersection by 5.5&deg;. The test a practitioner can actually apply, "does enlarging the
   space change the answer", is satisfied only from CAS(10,10).
-* **Loop transport is correct at every rung**, CAS(2,2) included. What grows with the active space
-  is not the error but the *discretization* needed: the minimum adjacent overlap at N = 13 falls
-  from 0.895 to ~0.67, so the larger rungs fail continuity at N = 13 and pass at N = 21. That is
-  loop resolution, not a failure to describe the physics.
+* **Loop transport reports the correct topology at every rung**, CAS(2,2) included. What grows with
+  the active space is not the error but the *discretization* needed: the minimum adjacent overlap at
+  N = 13 falls from 0.895 to ~0.67, so the larger rungs fail continuity at N = 13 and pass at N = 21.
+  That is loop resolution, not a failure to describe the physics.
+* **But "correct" here means the verdict, not the mechanism &mdash; and at CAS(2,2) the mechanism is
+  wrong.** Small-loop probing (`probing_by_small_loops.ipynb`) shows that the loop reporting &pi; at
+  that rung does **not** enclose this intersection: five concentric loops that contain it all report
+  a trivial phase, and what the loop does encircle sits 4.5&plusmn;1.5&deg; away, in a region holding
+  competing state-specific CASSCF solutions rather than a degeneracy. The same probing finds no
+  enclosing radius at all at CAS(4,4) and CAS(8,8). So the &pi; column above should be read as what
+  the method *returned*, not as evidence that it worked at the lower rungs &mdash; and the agreement
+  with the exact answer at CAS(2,2) is the more suspicious for it.
 * **The gap scan is both the expensive method and the unstable one** &mdash; hours against seconds,
   and it is the one that has to be converged.
 """)

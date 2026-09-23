@@ -181,14 +181,34 @@ line-fitting artifact (a free 2D search gets only 16% below it), and it is not a
 hiding off the sampled cross (a 5×5 grid over the loop area has its minimum at the centre).
 
 **But it is still not "there is no intersection there".** 1.5 mHa is 0.04 eV, inside the error of
-the model itself, so a surface that genuinely touches could present a floor that size. Settling it
-needs a criterion for when a state-averaged minimum gap is compatible with a true crossing — which
-this work has not established — or a direct measurement of what loop transport is encircling, which
-is what `locating_intersections.ipynb` is for.
+the model itself, so a surface that genuinely touches could present a floor that size.
+
+**Both routes out of that impasse have since been taken, and the question moved rather than
+closed.** Converting the floor into a distance (`examples/report_gap_criterion.py`) says a 1.46 mHa
+floor with the local slope of 1.75 mHa/deg is what a cut passing **0.83°** from a cone apex would
+show — 4.6% of the loop radius, so the floor never supported "the loop encloses nothing". And
+measuring what loop transport encircles, with a small loop placed *on* the searched minimum
+(`probing_by_small_loops.ipynb` §7), returns a clean **0**: it does not encircle that point, and
+the two objects are 2.5–5° apart.
+
+So the disagreement is real and it is about **position**, not enclosure — and it is not confined to
+this rung. Butadiene's probe says no at every active space that returns a verdict, and at ethylene
+the object loop transport encircles cannot be a point degeneracy at all, because the exact mirror
+symmetry would make it a pair and a pair cannot produce π. **The sharpest open question is now
+whether loop transport is tracking the S0/S1 topology at all on these two systems, or a boundary
+between state-specific CASSCF solutions.** The cheapest decisive test is stated at the end of
+`docs/progress.md`.
 
 ## 4. What was built, and what it cost to find out
 
-Three methodological additions, each with a notebook:
+Four methodological additions, each with a notebook:
+
+* **Probing with small loops** (`probing_by_small_loops.ipynb`). A loop placed *on* an intersection
+  answers, in one walk and ~1500 micro-iterations, whether loop transport encircles the object the
+  comparator found. Validated against a control whose answer was known first, it accepts converged
+  formaldimine rungs and rejects the one whose gap scan is independently known to be wrong — and it
+  is what turned the open question above from an inference into a measurement.
+
 
 * **Binding continuity checks.** A "continuation chain broken" diagnostic was reported for most of
   this project and never acted on. It is now a check, chosen by calibrating all 116 saved runs
